@@ -15,7 +15,7 @@
             container: 'map', // HTML element ID
             style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9', // Marina's grey map style
             center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
-            zoom: 12,
+            zoom: 11.5,
             minZoom: 10,
             maxZoom: 18
         });
@@ -26,6 +26,17 @@
             type: "geojson",
             data: localData
         });
+
+        map.addLayer({
+            id: "redlining_layer",
+            type: "line",
+            source: "redlining_data",
+            paint: {
+                "line-color": "#ad494e",
+                "line-opacity": 0.5,
+                "line-width": 2
+            },
+        });
     });
     
     
@@ -33,3 +44,4 @@
 
 <h1>Speculative Affordances: FP2</h1>
 <p>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</p>
+<br>
