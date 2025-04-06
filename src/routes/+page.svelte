@@ -12,7 +12,7 @@
     onMount(() => {
 		const map = new mapboxgl.Map({
 			container: 'map', // HTML element ID
-			style: 'mapbox://styles/mapbox/streets-v12', // map style
+			style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9', // Marina's grey map style
 			center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
 			zoom: 12,
 			minZoom: 10,
