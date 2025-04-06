@@ -1,2 +1,2 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<h1>Speculative Affordances: FP2</h1>
+<p>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</p>
