@@ -19,6 +19,13 @@
 			maxZoom: 18
 		});
 	});
+
+    await new Promise(resolve => map.on("load", resolve));
+    map.addSource("boston_route", {
+			type: "geojson",
+			data: "https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    });
+    
 </script>
 
 <h1>Speculative Affordances: FP2</h1>
