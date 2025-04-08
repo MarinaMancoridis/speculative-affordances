@@ -12,8 +12,11 @@
     mapboxgl.accessToken = "pk.eyJ1IjoibGVuYWFybXMiLCJhIjoiY205N3V0aGw2MGJnMDJsb2tiNDB1czFzaiJ9.bTzeSaHAUueU3tJHFNXyAA";
     
     let homes = [];
+    let zillowData = [];
+    let mergedData = [];
     let map = null;
     let mapViewChanged = 0;
+    let hoveredIndex = -1;
 
     function getHomes (home) {
         let point = new mapboxgl.LngLat(+home.Longitude, +home.Latitude);
@@ -25,6 +28,9 @@
 
     onMount(async () => {
         
+        const jsonResponse = await fetch('/data/zillow_data.json');
+        zillowData = await jsonResponse.json();
+
         homes = await d3.csv("/data/mass_records.csv", row => ({
             ...row,
             Latitude: Number(row.Latitude), 
@@ -32,6 +38,14 @@
             Address: String(row.Address),
             Name: String(row.Name)
         }));
+
+       homes = homes.map(item => {
+            if (zillowData[item.Address]) {
+                item.zestimate = zillowData[item.Address].zestimate;
+                item.price = zillowData[item.Address].price;
+            }
+            return item;
+        });
 
         map = new mapboxgl.Map({
             container: 'map', // HTML element ID
@@ -60,7 +74,7 @@
             },
         });
 
-        console.log(homes)
+        console.log(mergedData)
 
     });
 
@@ -75,9 +89,8 @@
         {#key mapViewChanged}
             {#each homes as home}
                 <circle { ...getHomes(home) } r="5" fill="steelblue">
-                    <title>Purchased by: {home.Name}</title>
+                    <title>Address: {home.Address} Purchased by: {home.Name} Sold for: {home.price} Zestimate: {home.zestimate}</title>
                 </circle> 
-                
             {/each}
         {/key}
 	</svg>
