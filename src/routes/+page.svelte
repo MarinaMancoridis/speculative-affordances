@@ -9,7 +9,7 @@
     import { onMount } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
 
-    mapboxgl.accessToken = "pk.eyJ1IjoibGVuYWFybXMiLCJhIjoiY205N3V0aGw2MGJnMDJsb2tiNDB1czFzaiJ9.bTzeSaHAUueU3tJHFNXyAA";
+    mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
     
     let homes = [];
     let zillowData = [];
@@ -49,7 +49,7 @@
 
         map = new mapboxgl.Map({
             container: 'map', // HTML element ID
-            style: 'mapbox://styles/mapbox/streets-v12',
+            style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
             center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
             zoom: 11.5,
             minZoom: 10,
