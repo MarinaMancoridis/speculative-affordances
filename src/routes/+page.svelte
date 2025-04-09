@@ -36,6 +36,19 @@
         return [times, values];
     };
 
+    // Gets the most recent "sold" event, if it exists
+    function getLastSoldEvent (home) {
+        const priceHistory = home["priceHistory"];
+        if (priceHistory) {
+            for (const historicalEvent of priceHistory) {
+                if (historicalEvent["event"] === "Sold") {
+                    return historicalEvent;
+                }
+            }
+        }
+        return undefined;
+    }
+
     // Cache the lookup for each year
     function calculateZestimateSince (times, values, scale) {
         let lookup = new Map();
@@ -100,8 +113,15 @@
         homes = homes.map(item => {
             if (zillowData[item.Address]) {
                 item.zestimate = zillowData[item.Address].zestimate;
-                item.price = zillowData[item.Address].price;
-
+                const recentSoldEvent = getLastSoldEvent(zillowData[item.Address]);
+                if (recentSoldEvent) {
+                    item.price = recentSoldEvent["price"];
+                    item.dateLastSold = recentSoldEvent["date"];
+                } else {
+                    item.price = undefined;
+                    item.dateLastSold = undefined;
+                }
+                
                 // color fill
                 item.color = calculateAddressColor(item);
 
@@ -195,11 +215,14 @@
 
 
 <div id="map">
+    <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
 	<svg>
         {#key mapViewChanged}
             {#each homes as home}
                 <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
-                    <title>Address: {home.Address} Purchased by: {home.Name} Sold for: {home.price} Zestimate: {home.zestimate}</title>
+                    <title>
+                        Address: {home.Address}. Purchased by: {home.Name}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. Zestimate: ${home.zestimate}.
+                    </title>
                 </circle> 
             {/each}
         {/key}
