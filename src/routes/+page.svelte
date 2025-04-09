@@ -82,10 +82,10 @@
 
     onMount(async () => {
         
-        const jsonResponse = await fetch('/data/zillow_data.json');
+        const jsonResponse = await fetch('./../src/data/zillow_data.json');
         zillowData = await jsonResponse.json();
 
-        homes = await d3.csv("/data/mass_records.csv", row => ({
+        homes = await d3.csv("./../src/data/mass_records.csv", row => ({
             ...row,
             Latitude: Number(row.Latitude), 
             Longitude: Number(row.Longitude),
