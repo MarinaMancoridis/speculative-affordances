@@ -96,9 +96,11 @@
 
     onMount(async () => {
         
+        // Get Zillow Data
         const jsonResponse = await fetch(`${base}/data/zillow_data.json`)
         zillowData = await jsonResponse.json();
 
+        // Get Mass Records Data
         homes = await d3.csv(`${base}/data/mass_records.csv`, row => ({
             ...row,
             Latitude: Number(row.Latitude), 
@@ -110,6 +112,7 @@
         let all_times = [];
         let all_values = [];
 
+        // Combine Mass Records & Zillow Data
         homes = homes.map(item => {
             if (zillowData[item.Address]) {
                 item.zestimate = zillowData[item.Address].zestimate;
@@ -167,7 +170,7 @@
             source: "redlining_data",
             paint: {
                 "fill-color": ["get", "fill"],
-                "fill-opacity": 0.3,
+                "fill-opacity": 0.5,
                 "fill-outline-color": "#ad494e"
             },
         });
@@ -179,41 +182,9 @@
 </script>
 
 <p><b>Speculative Affordances, FP2:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
-<h1> 🏠 Contextualizing iBuying Practices in Historically Redlined Districts</h1>
+<h1> 🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠 </h1>
+
 <div style="display: flex; gap: 2em; align-items: flex-start; flex-wrap: wrap;">
-<p style="flex: 1; min-width: 250px; font-size: 1.10em;">
-  In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts. <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase and resell homes, often with minimal human involvement. <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning. Each circle represents a home — <i>hover over any point</i> to see information about the home, selling price, and Zestimate value. <i>Scroll on the map</i> to explore different parts of the Greater Boston Area. <i>Use the slider</i> to see how Zestimate values change by year. 
-  Notice that homes in <span style="color: hotpink;">hazardous</span> and <span style="color: goldenrod;">definitely declining</span> areas tend to have lower Zestimates and slightly more volatility, 
-  providing weak evidence that the economics effects of historical redlining may be long-lasting.
-</p>
-
-  <div style="border: 1px solid #ccc; border-radius: 8px; padding: 1em; font-size: 0.95em; max-width: 300px; flex-shrink: 0;">
-    <strong>Legend: HOLC District Categories</strong>
-    <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: green; border-radius: 50%; margin-right: 8px;"></span> Best</li>
-      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
-      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #f5dd42; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
-      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: hotpink; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
-      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #4f5152; border-radius: 50%; margin-right: 8px;"></span> Industrial/Non-Residential</li>
-    </ul>
-  </div>
-</div>
-
-<label style="margin-left: auto; color: #333; font-weight: 500;">
-  Zestimate since:
-  <input 
-    type="range" 
-    min="{timeScale[0]}" 
-    max="{timeScale[1]}" 
-    bind:value={timeIndex} 
-    style="width: 20vw; accent-color: #4a90e2; margin-top: 0.25em;"
-  />
-  <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
-    {timeIndex}
-  </time>
-</label>
-
-
 <div id="map">
     <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
 	<svg>
@@ -221,10 +192,62 @@
             {#each homes as home}
                 <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
                     <title>
-                        Address: {home.Address}. Purchased by: {home.Name}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. Zestimate: ${home.zestimate}.
+                        Purchased by: {home.Name}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. Zestimate: ${home.zestimate}.
                     </title>
                 </circle> 
             {/each}
         {/key}
 	</svg>
 </div>
+  <div style="border: 1px solid #ccc; border-radius: 8px; padding: 1em; font-size: 0.95em; max-width: 300px; flex-shrink: 0;">
+    <strong>HOLC District Categories</strong>
+    <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffff00; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #d9838d; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #000000; border-radius: 50%; margin-right: 8px;"></span> Industrial/Commercial/Non-Residential</li>
+      <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFFFFF; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Not on Historic Maps</li>
+    </ul>
+    <strong>Features</strong>
+    <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+      <li>Circle = iBought Home</li>
+      <li>Size of circle = Zestimate ($$$)</li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<label style="margin-right: auto; color: #333; font-weight: 500;">
+  <b>Zestimate Year:<b>
+  <input 
+    type="range" 
+    min="{timeScale[0]}" 
+    max="{timeScale[1]}" 
+    bind:value={timeIndex} 
+    style="width: 20vw; accent-color: #644E8F; margin-top: 0.25em;"
+  />
+  <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
+    {timeIndex}
+  </time>
+</label>
+
+<p style="flex: 1; min-width: 250px; font-size: 1.10em;">
+  In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts. 
+  
+  <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase and resell homes, often with minimal human involvement.
+
+  <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning. 
+
+<br><br>
+  <i>Hover over any point</i> to see information about the home, selling price, and Zestimate value. 
+  <br>
+  <i>Scroll on the map</i> to explore different parts of the Greater Boston Area. 
+  <br>
+  <i>Use the slider</i> to see how Zestimate values change by year. 
+ 
+ <br><br>
+  Notice that homes in <b><span style="color:  #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod;">definitely declining</span></b> areas tend to have lower Zestimates and slightly more volatility, 
+  suggesting how the economics effects of historical redlining can be long-lasting.
+</p>
