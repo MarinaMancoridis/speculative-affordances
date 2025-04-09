@@ -192,12 +192,13 @@
             {#each homes as home}
                 <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
                     <title>
-                        Purchased by: {home.Name}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. Zestimate: ${home.zestimate}.
+                        iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
                     </title>
                 </circle> 
             {/each}
         {/key}
 	</svg>
+    
 </div>
   <div style="border: 1px solid #ccc; border-radius: 8px; padding: 1em; font-size: 0.95em; max-width: 300px; flex-shrink: 0;">
     <strong>HOLC District Categories</strong>
