@@ -8,6 +8,7 @@
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
     import { onMount } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
+    import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
 
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
     
@@ -16,15 +17,68 @@
     let mergedData = [];
     let map = null;
     let mapViewChanged = 0;
-    let hoveredIndex = -1;
+    let timeScale = [0, 0];
+    let valueScale = [0, 0];
+    let timeIndex = 0;
 
     function getHomes (home) {
         let point = new mapboxgl.LngLat(+home.Longitude, +home.Latitude);
         let {x, y} = map.project(point);
         return {cx: x, cy: y};
+    };
+
+    // Sort times and values for faster filtering
+    function parseZestimateHistory (data) {
+        const points = data?.zillowData?.data?.property?.homeValueChartData[0]?.points || [];
+        const times = d3.sort(points.map(({x, y}) => x));
+        const values = d3.sort(points.map(({x, y}) => y));
+        return [times, values];
+    };
+
+    // Cache the lookup for each year
+    function calculateZestimateSince (times, values, scale) {
+        let lookup = new Map();
+        for (let i = scale[0]; i <= scale[1]; i++) {
+            const yearStart = new Date(i, 0, 1).getTime();
+            let value = valueScale[0];
+            if (times) {
+                for (let j = 0; j < times.length; j++) {
+                    if (times[j] >= yearStart) {
+                        value = values[j];
+                        break;
+                    }
+                }
+            }
+            lookup.set(i, value);
+        }
+        return lookup;
+    };
+
+    // We can also cache this if there are performance issues
+    function calculateAddressColor(home) {
+        let color = "white";
+        localData.features.some(f => {
+            if (booleanPointInPolygon([home.Longitude, home.Latitude], f)) {
+                color = f.properties?.fill || "white";
+                return true;
+            }
+            return false;
+        });
+        return color;
     }
 
+    // Establish scale across full history
+    function zestimateHistoryScale ([times, values]) {
+        const time_range = [new Date(d3.min(times)).getFullYear(), new Date(d3.max(times)).getFullYear()];
+        const value_range = [d3.min(values), d3.max(values)];
+        return [time_range, value_range];
+    };
+
     $: map?.on("move", evt => mapViewChanged++);
+
+    $: radiusScale = d3.scaleSqrt()
+            .domain(valueScale)
+            .range([0, 25]);
 
     onMount(async () => {
         
@@ -39,13 +93,36 @@
             Name: String(row.Name)
         }));
 
-       homes = homes.map(item => {
+        let all_times = [];
+        let all_values = [];
+
+        homes = homes.map(item => {
             if (zillowData[item.Address]) {
                 item.zestimate = zillowData[item.Address].zestimate;
                 item.price = zillowData[item.Address].price;
+
+                // color fill
+                item.color = calculateAddressColor(item);
+
+                // zestimate history API structure
+                const [times, values] = parseZestimateHistory(zillowData[item.Address]);
+                item.ztimes = times;
+                item.zvalues = values;
+                all_times = all_times.concat(times);
+                all_values = all_values.concat(values);
             }
             return item;
         });
+
+        // Calculate max range scales
+        [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
+        timeIndex = timeScale[1]; // Initialize to latest
+
+        // One more pass to calculate time cutoffs
+        homes = homes.map(item => {
+            item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale)
+            return item;
+        })
 
         map = new mapboxgl.Map({
             container: 'map', // HTML element ID
@@ -74,7 +151,7 @@
             },
         });
 
-        console.log(mergedData)
+        // console.log(mergedData)
 
     });
 
@@ -82,13 +159,23 @@
 
 <h1>Speculative Affordances: FP2</h1>
 <p>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</p>
+<header>
+    <h1>🚲 BikeWatch</h1>
+    <label style="margin-left:auto">
+        Zestimate since:
+        <input style="width: 20vw" type="range" min="{timeScale[0]}" max="{timeScale[1]}" bind:value={timeIndex} />
+        <time style="display: block; text-align: right">
+            {timeIndex}
+        </time>
+    </label>
+</header>
 <br>
 
 <div id="map">
 	<svg>
         {#key mapViewChanged}
             {#each homes as home}
-                <circle { ...getHomes(home) } r="5" fill="steelblue">
+                <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
                     <title>Address: {home.Address} Purchased by: {home.Name} Sold for: {home.price} Zestimate: {home.zestimate}</title>
                 </circle> 
             {/each}

@@ -26,3 +26,9 @@ body {
 circle {
 	pointer-events: auto
 }
+
+header {
+	display: flex;
+	gap: 1em;
+	align-items: baseline;
+}
