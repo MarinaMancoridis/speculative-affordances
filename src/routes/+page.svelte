@@ -9,6 +9,7 @@
     import { onMount } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
+    import { base } from '$app/paths';
 
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
     
@@ -82,10 +83,10 @@
 
     onMount(async () => {
         
-        const jsonResponse = await fetch('./../src/data/zillow_data.json');
+        const jsonResponse = await fetch(`${base}/data/zillow_data.json`)
         zillowData = await jsonResponse.json();
 
-        homes = await d3.csv("./../src/data/mass_records.csv", row => ({
+        homes = await d3.csv(`${base}/data/mass_records.csv`, row => ({
             ...row,
             Latitude: Number(row.Latitude), 
             Longitude: Number(row.Longitude),
