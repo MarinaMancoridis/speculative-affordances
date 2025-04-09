@@ -201,7 +201,7 @@
     
 </div>
   <div style="border: 1px solid #ccc; border-radius: 8px; padding: 1em; font-size: 0.95em; max-width: 300px; flex-shrink: 0;">
-    <strong>HOLC District Categories</strong>
+    <b>Historic Redlining Map <br> HOLC District Categories</b>
     <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
       <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
       <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
