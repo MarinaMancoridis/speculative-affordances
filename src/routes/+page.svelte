@@ -10,7 +10,7 @@
         background: #ffffff;
         color: #000;
         /* margin: 0em; */
-        /* add horizontal padding so there’s space on both sides */
+        /* add horizontal padding so there's space on both sides */
         padding: 0em 2em;
         font-family: var(--source-serif-font), Georgia, serif;
         align-items: center;
@@ -121,6 +121,61 @@
         align-items: center;
     }
 
+    .scroll-indicator {
+        border: none;
+        outline: none;
+
+
+        /* allow clicks now */
+        pointer-events: auto;
+        cursor: pointer;
+
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        color: #8f4985;
+
+        background: white;
+        padding: 1.2em 1.6em;
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+        font-size: 1rem;
+        z-index: 2;
+    }
+
+    /* remove the second pointer‑events: none you had here */
+
+    .scroll-indicator span,
+    .scroll-indicator .arrow {
+        display: inline-block;
+        animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator .arrow {
+        font-size: 1.5rem;
+        margin-top: 0.2em;
+        animation-delay: 0.1s;
+    }
+
+    /* keyframes for that gentle bounce */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+
 
     /* push the viz well below the last step */
     :global(.scrolly-viz) {
@@ -170,7 +225,7 @@
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(5, 1fr);
-        pointer-events: none;    /* so the grid doesn’t block scrolling or clicks */
+        pointer-events: none;    /* so the grid doesn't block scrolling or clicks */
         opacity: 0.5;           /* adjust overall fade */
         z-index: 0;              /* behind all your steps */
     }
@@ -225,7 +280,7 @@
         display: grid;
         grid-template-columns: repeat(100, 1fr);
         grid-template-rows:    repeat(100, 1fr);
-        /* remove any gap so it’s a solid block of emojis */
+        /* remove any gap so it's a solid block of emojis */
         gap: 0;
     }
 
@@ -234,7 +289,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        /* scale the emoji so it’s legible but not too huge—adjust as you like */
+        /* scale the emoji so it's legible but not too huge—adjust as you like */
         font-size: 0.8vw;
         line-height: 1;
     }
@@ -292,6 +347,10 @@
         let {x, y} = map.project(point);
         return {cx: x, cy: y};
     };
+
+    function scrollToExplore() {
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+    }
 
     // Sort times and values for faster filtering
     function parseZestimateHistory (data) {
@@ -455,7 +514,12 @@
 <div class="title-section">
     <h1>🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>
     <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
-  </div>
+
+    <button class="scroll-indicator" on:click={scrollToExplore} type="button">
+        <span>Explore</span>
+        <div class="arrow">↓</div>
+    </button>
+</div>
 
 <div class="content-section">
     <div class="grid-container">
@@ -463,24 +527,24 @@
          <!-- ■■■ Spacer to drive the grid animation ■■■ -->
         <div class="scrolly-step spacer"></div>
 
-        <!-- ■■■ REAL STEP 1 (will only show after spacer scroll) ■■■ -->
+        <!-- ■■■ REAL STEP 1 (will only show after spacer scroll) ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
             In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts.
             </p>
         </div>
 
-        <!-- ■■■ REAL STEP 2 ■■■ -->
+        <!-- ■■■ REAL STEP 2 ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
             <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase …
             </p>
         </div>
 
-        <!-- ■■■ REAL STEP 3 ■■■ -->
+        <!-- ■■■ REAL STEP 3 ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-            <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, …
+            <b>Zestimate</b> is Zillow's proprietary estimate of a home's market value, …
             </p>
         </div>
 
@@ -491,7 +555,7 @@
             </div>
 
             <div class="todo-box">
-                <strong>TODO 3:</strong>
+                <strong>TODO 3:</strong>
                 <p>Improve geospatial visualization.</p>
                 <ul>
                     <li>Add gentrification measures (Landis, Freeman, Urban Displacement).</li>
@@ -513,7 +577,7 @@
                     font-size: 1.2em;
                 ">
                 
-                <!-- left: all your step‐4 & last‐step text + slider -->
+                <!-- left: all your step-4 & last-step text + slider -->
                 <div class="legend-text-wrapper">
                 <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
                 <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
