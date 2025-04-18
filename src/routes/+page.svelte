@@ -6,15 +6,28 @@
 
     /* page and text background */
     :global(body) {
-        background: #574646;
-        color: #fff;
-        margin: 0;
-        padding: 0;
+        background: #eddddd;
+        color: #000;
+        margin: 0em;
+        /* add horizontal padding so there’s space on both sides */
+        padding: 0em 2em;
+        font-family: var(--source-serif-font), Georgia, serif;
+        align-items: center;
+    }
+
+    /* center & constrain your main content */
+    .content-section {
+        min-height: 100vh;
+        margin: 0 auto;
+        /* max-width prevents over‑stretching on very large screens */
+        max-width: 1200px;
+        /* optional extra inner padding */
+        padding: 1em 1em;
     }
 
     /* keep your existing scrolly gap */
     :global(.scrolly) {
-        --scrolly-gap: 2em;
+        --scrolly-gap: 0em;
     }
 
     /* full‑screen title section */
@@ -26,10 +39,6 @@
         align-items: center;
     }
 
-    /* optional: if you want the scroll container to start just below the fold */
-    .content-section {
-        min-height: 100vh;
-    }
 </style>
 
 <script>
@@ -244,21 +253,33 @@
     </p>
     <svelte:fragment slot="viz">
         <div style="display: flex; gap: 2em; align-items: flex-start; flex-wrap: wrap;">
-        <div style="border: 1px solid #ccc; border-radius: 8px; padding: 1em; font-size: 0.95em; max-width: 300px; flex-shrink: 0;">
-            <b>Historic Redlining Map <br> HOLC District Categories</b>
-            <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffff00; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #d9838d; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #000000; border-radius: 50%; margin-right: 8px;"></span> Industrial/Commercial/Non-Residential</li>
-            <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFFFFF; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Not on Historic Maps</li>
-            </ul>
-            <strong>Features</strong>
-            <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-            <li>Circle = iBought Home</li>
-            <li>Size of circle = Zestimate ($$$)</li>
-        </div>
+            <div
+                style="
+                background-color: #fff;
+                color: #000;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 1em;
+                font-size: 0.95em;
+                max-width: 300px;
+                flex-shrink: 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                "
+            >
+                <b>Historic Redlining Map <br> HOLC District Categories</b>
+                <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffff00; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #d9838d; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #000000; border-radius: 50%; margin-right: 8px;"></span> Industrial/Commercial/Non-Residential</li>
+                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFFFFF; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Not on Historic Maps</li>
+                </ul>
+                <strong>Features</strong>
+                <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+                <li>Circle = iBought Home</li>
+                <li>Size of circle = Zestimate ($$$)</li>
+            </div>
         </div>
 
         <label style="margin-right: auto; color: #333; font-weight: 500;">
