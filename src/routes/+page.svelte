@@ -1,6 +1,7 @@
 <style>
     @import url("$lib/global.css");
     :global(.scrolly) {
+        display: block !important;
         --scrolly-gap: 2em;
     }
 
@@ -13,6 +14,48 @@
         padding: 0em 2em;
         font-family: var(--source-serif-font), Georgia, serif;
         align-items: center;
+    }
+
+    /* each step just lives in the normal document flow */
+    :global(.scrolly-step) {
+        margin-bottom: var(--scrolly-gap);
+    }
+
+    :global(.scrolly-step .step-text) {
+        font-size: 4em;
+        line-height: 2;
+        width: 33.333%;
+        margin: 0 auto;
+        background: #fff7f7;
+        padding: 2em;
+        box-sizing: border-box;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #000;
+        
+        /* disable flex inherited from parent */
+        flex: none;
+        min-width: auto;
+        display: block;
+    }
+
+    /* scrolly paragraphs */
+    :global(.scrolly-step p) {
+        /* confine to middle third */
+        width: 33.333%;
+        margin: 0 auto;
+        
+        /* pink-white background just behind the text */
+        background: #fff7f7;
+        padding: 2em;
+        box-sizing: border-box;
+        
+        /* optional rounded corners and shadow */
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        
+        /* ensure text is dark */
+        color: #000;
     }
 
     /* center & constrain your main content */
@@ -37,6 +80,12 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+
+    /* push the viz well below the last step */
+    :global(.scrolly-viz) {
+        display: block;
+        margin-top: 3em;
     }
 
 </style>
@@ -233,84 +282,111 @@
 
 <div class="content-section">
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
-    <p style="flex: 1; min-width: 250px; font-size: 1.10em;">
-        In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts. 
-        
-        <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase and resell homes, often with minimal human involvement.
+        <!-- STEP 1 -->
+        <div class="scrolly-step">
+            <p style="step-text">
+                In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts.
+            </p>
+        </div>
 
-        <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning. 
+        <!-- STEP 2 -->
+        <div class="scrolly-step">
+            <p style="step-text">
+                <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase and resell homes, often with minimal human involvement.
+            </p>
+        </div>
 
-        <br><br>
-        <i>Hover over any point</i> to see information about the home, selling price, and Zestimate value. 
-        <br>
-        <i>Scroll on the map</i> to explore different parts of the Greater Boston Area. 
-        <br>
-        <i>Use the slider</i> to see how Zestimate values change by year. 
-        
-        <br><br>
-        Notice that homes in <b><span style="color:  #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod;">definitely declining</span></b> areas tend to have lower Zestimates and slightly more volatility, 
-        suggesting how the economics effects of historical redlining can be long-lasting.
-    </p>
-    <svelte:fragment slot="viz">
-        <div style="display: flex; gap: 2em; align-items: flex-start; flex-wrap: wrap;">
-            <div
-                style="
-                background-color: #fff;
-                color: #000;
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                padding: 1em;
-                font-size: 0.95em;
-                max-width: 300px;
-                flex-shrink: 0;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                "
-            >
-                <b>Historic Redlining Map <br> HOLC District Categories</b>
-                <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffff00; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #d9838d; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #000000; border-radius: 50%; margin-right: 8px;"></span> Industrial/Commercial/Non-Residential</li>
-                <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFFFFF; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Not on Historic Maps</li>
-                </ul>
-                <strong>Features</strong>
-                <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-                <li>Circle = iBought Home</li>
-                <li>Size of circle = Zestimate ($$$)</li>
+        <!-- STEP 3 -->
+        <div class="scrolly-step">
+            <p style="step-text">
+                <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning.
+            </p>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="scrolly-step">
+            <p style="step-text">
+                <i>Hover over any point</i> to see information about the home, selling price, and Zestimate value.  
+                <br>
+                <i>Scroll on the map</i> to explore different parts of the Greater Boston Area.  
+                <br>
+                <i>Use the slider</i> to see how Zestimate values change by year.  
+            </p>
+        </div>
+
+        <!-- LAST STEP (still text) -->
+        <div class="scrolly-step">
+            <p style="step-text">
+                Notice that homes in 
+                <b><span style="color:#d9838d;">hazardous</span></b> and 
+                <b><span style="color:goldenrod;">definitely declining</span></b> areas tend 
+                to have lower Zestimates and more volatility, suggesting the long‑lasting effects 
+                of historical redlining.
+            </p>
+        </div>
+
+        <!-- VIZ only shows once you've scrolled through all 5 steps -->
+        <svelte:fragment slot="viz">
+            <div style="display: flex; gap: 2em; align-items: flex-start; flex-wrap: wrap;">
+                <div
+                    style="
+                    background-color: #fff;
+                    color: #000;
+                    border: 1px solid #ccc;
+                    border-radius: 8px;
+                    padding: 1em;
+                    font-size: 0.95em;
+                    max-width: 300px;
+                    flex-shrink: 0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    "
+                >
+                    <b>Historic Redlining Map <br> HOLC District Categories</b>
+                    <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #76a865; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Best</li>
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #74c3e3; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Still Desirable</li>
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #ffff00; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Definitely Declining</li>
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #d9838d; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Hazardous</li>
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #000000; border-radius: 50%; margin-right: 8px;"></span> Industrial/Commercial/Non-Residential</li>
+                    <li><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFFFFF; border: 1px solid #4f5152; border-radius: 50%; margin-right: 8px;"></span> Not on Historic Maps</li>
+                    </ul>
+                    <strong>Features</strong>
+                    <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+                    <li>Circle = iBought Home</li>
+                    <li>Size of circle = Zestimate ($$$)</li>
+                </div>
             </div>
-        </div>
 
-        <label style="margin-right: auto; color: #333; font-weight: 500;">
-        <b>Zestimate Year:<b>
-        <input 
-            type="range" 
-            min="{timeScale[0]}" 
-            max="{timeScale[1]}" 
-            bind:value={timeIndex} 
-            style="width: 20vw; accent-color: #644E8F; margin-top: 0.25em;"
-        />
-        <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
-            {timeIndex}
-        </time>
-        </label>
+            <label style="margin-right: auto; color: #333; font-weight: 500;">
+            <b>Zestimate Year:<b>
+            <input 
+                type="range" 
+                min="{timeScale[0]}" 
+                max="{timeScale[1]}" 
+                bind:value={timeIndex} 
+                style="width: 20vw; accent-color: #644E8F; margin-top: 0.25em;"
+            />
+            <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
+                {timeIndex}
+            </time>
+            </label>
 
-        <div id="map">
-            <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
-            <svg>
-                {#key mapViewChanged}
-                    {#each homes as home}
-                        <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
-                            <title>
-                                iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
-                            </title>
-                        </circle> 
-                    {/each}
-                {/key}
-            </svg>
-            
-        </div>
-    </svelte:fragment>
+            <!-- main redlining map -->
+            <div id="map">
+                <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
+                <svg>
+                    {#key mapViewChanged}
+                        {#each homes as home}
+                            <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
+                                <title>
+                                    iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
+                                </title>
+                            </circle> 
+                        {/each}
+                    {/key}
+                </svg>
+                
+            </div>
+        </svelte:fragment>
     </Scrolly>
 </div>
