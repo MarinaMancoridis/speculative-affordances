@@ -97,6 +97,25 @@
         margin-bottom: 10em;
     }
 
+    :global(.todo-box) {
+        background: #582546;          /* black background */
+        color: #fff;               /* white text */
+        width: 60%;                /* 60% of its container */
+        margin: 2em auto;          /* vertical spacing + center horizontally */
+        padding: 1.5em;            /* inner breathing room */
+        box-sizing: border-box;
+        border-radius: 6px;        /* optional rounded corners */
+        font-size: 1.2em;          /* match your other text size */
+        line-height: 1.5;
+        margin-bottom: 10em;
+        margin-top: 10em;
+    }
+
+    :global(.todo-box strong) {
+        display: block;            /* TODO: on its own line */
+        margin-bottom: 0.5em;
+    }
+
 </style>
 
 <script>
@@ -289,6 +308,11 @@
   <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
 </div>
 
+<div class="todo-box">
+    <strong>TODO 1 (Marina):</strong>
+    Opening animated narrative sequence.
+</div>
+
 <div class="content-section">
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
         <!-- STEP 1 -->
@@ -311,6 +335,21 @@
                 <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning.
             </p>
         </div>
+
+        <div class="todo-box">
+            <strong>TODO 2:</strong>
+            Non-geospatial visualization for aggregated iBuying.
+        </div>
+
+        <div class="todo-box">
+            <strong>TODO 3:</strong>
+            <p>Improve geospatial visualization.</p>
+            <ul>
+              <li>Add gentrification measures (Landis, Freeman, Urban Displacement).</li>
+              <li>Highlight differences between Zestimate and iBought home prices by starting off with a zoom‑in of three different homes.</li>
+              <li>Add a drop‑down menu to our FP2 visualization to add additional layers.</li>
+            </ul>
+          </div>
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
@@ -410,6 +449,12 @@
                 </svg>
                 
             </div>
+
+        <div class="todo-box">
+            <strong>TODO 4:</strong>
+            Visualization for Zestimate information over time.
+        </div>
+        .
         </svelte:fragment>
     </Scrolly>
 </div>
