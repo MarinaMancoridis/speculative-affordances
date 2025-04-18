@@ -138,7 +138,7 @@
         display: inline-flex;
         flex-direction: column;
         align-items: center;
-        color: #8f4985;
+        color: #4f384c;
 
         background: white;
         padding: 1.2em 1.6em;
@@ -610,7 +610,7 @@
                 <!-- right: the legend box -->
                 <div class="legend-side" style="flex: 0 0 300px;">
                     <div style="
-                        background: #fff;
+                        background: #faf7fa;
                         color: #000;
                         border: 1px solid #ccc;
                         border-radius: 8px;
