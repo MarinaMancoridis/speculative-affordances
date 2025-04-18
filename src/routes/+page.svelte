@@ -331,24 +331,86 @@
     const cols = 10;
     const totalCells = rows * cols;
 
-    const originalImgs = Array.from({ length: totalCells }, (_, i) => {
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        // map (row,col) into a 5×5 quadrant
-        const rLocal = row % (rows / 2);
-        const cLocal = col % (cols / 2);
-        const imgNum = rLocal * (cols / 2) + cLocal + 1;  // 1…25
-        return `./../data/house${imgNum}.png`;
-    });
+    // 1) Import all 25 originals and 25 modifieds
+    import house1   from "./../data/house1.png";
+    import house2   from "./../data/house2.png";
+    import house3   from "./../data/house3.png";
+    import house4   from "./../data/house4.png";
+    import house5   from "./../data/house5.png";
+    import house6   from "./../data/house6.png";
+    import house7   from "./../data/house7.png";
+    import house8   from "./../data/house8.png";
+    import house9   from "./../data/house9.png";
+    import house10  from "./../data/house10.png";
+    import house11  from "./../data/house11.png";
+    import house12  from "./../data/house12.png";
+    import house13  from "./../data/house13.png";
+    import house14  from "./../data/house14.png";
+    import house15  from "./../data/house15.png";
+    import house16  from "./../data/house16.png";
+    import house17  from "./../data/house17.png";
+    import house18  from "./../data/house18.png";
+    import house19  from "./../data/house19.png";
+    import house20  from "./../data/house20.png";
+    import house21  from "./../data/house21.png";
+    import house22  from "./../data/house22.png";
+    import house23  from "./../data/house23.png";
+    import house24  from "./../data/house24.png";
+    import house25  from "./../data/house25.png";
 
-    const modifiedImgs = Array.from({ length: totalCells }, (_, i) => {
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        const rLocal = row % (rows / 2);
-        const cLocal = col % (cols / 2);
-        const imgNum = rLocal * (cols / 2) + cLocal + 1;
-        return `./../data/house${imgNum}-modified.png`;
-    });
+    import house1mod  from "./../data/house1-modified.png";
+    import house2mod  from "./../data/house2-modified.png";
+    import house3mod  from "./../data/house3-modified.png";
+    import house4mod  from "./../data/house4-modified.png";
+    import house5mod  from "./../data/house5-modified.png";
+    import house6mod  from "./../data/house6-modified.png";
+    import house7mod  from "./../data/house7-modified.png";
+    import house8mod  from "./../data/house8-modified.png";
+    import house9mod  from "./../data/house9-modified.png";
+    import house10mod from "./../data/house10-modified.png";
+    import house11mod from "./../data/house11-modified.png";
+    import house12mod from "./../data/house12-modified.png";
+    import house13mod from "./../data/house13-modified.png";
+    import house14mod from "./../data/house14-modified.png";
+    import house15mod from "./../data/house15-modified.png";
+    import house16mod from "./../data/house16-modified.png";
+    import house17mod from "./../data/house17-modified.png";
+    import house18mod from "./../data/house18-modified.png";
+    import house19mod from "./../data/house19-modified.png";
+    import house20mod from "./../data/house20-modified.png";
+    import house21mod from "./../data/house21-modified.png";
+    import house22mod from "./../data/house22-modified.png";
+    import house23mod from "./../data/house23-modified.png";
+    import house24mod from "./../data/house24-modified.png";
+    import house25mod from "./../data/house25-modified.png";
+
+    // 2) Pack them into arrays
+    const baseOriginals = [
+        house1, house2, house3, house4, house5,
+        house6, house7, house8, house9, house10,
+        house11, house12, house13, house14, house15,
+        house16, house17, house18, house19, house20,
+        house21, house22, house23, house24, house25
+    ];
+    const baseModifieds = [
+        house1mod, house2mod, house3mod, house4mod, house5mod,
+        house6mod, house7mod, house8mod, house9mod, house10mod,
+        house11mod, house12mod, house13mod, house14mod, house15mod,
+        house16mod, house17mod, house18mod, house19mod, house20mod,
+        house21mod, house22mod, house23mod, house24mod, house25mod
+    ];
+    const originalImgs = [
+        ...baseOriginals,
+        ...baseOriginals,
+        ...baseOriginals,
+        ...baseOriginals
+    ];
+    const modifiedImgs = [
+        ...baseModifieds,
+        ...baseModifieds,
+        ...baseModifieds,
+        ...baseModifieds
+    ];
 
     // start at 33% down, finish at 100%
     const startScroll = 0.2;
