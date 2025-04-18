@@ -7,13 +7,15 @@
 
     /* page and text background */
     :global(body) {
-        background: #eddddd;
+        background: #ffffff;
         color: #000;
         /* margin: 0em; */
         /* add horizontal padding so there’s space on both sides */
         padding: 0em 2em;
         font-family: var(--source-serif-font), Georgia, serif;
         align-items: center;
+        overflow-x: hidden;
+        overscroll-behavior-y: none;
     }
 
     /* each step just lives in the normal document flow */
@@ -24,7 +26,7 @@
     :global(.scrolly-step .step-text) {
         font-size: 1.2em;
         line-height: 2;
-        width: 33.333%;
+        /* width: 33.333%; */
         margin: 0 auto;
         background: #f7fffe;
         padding: 2em;
@@ -42,12 +44,12 @@
     /* scrolly paragraphs */
     :global(.scrolly-step p) {
         /* confine to middle third */
-        width: 33.333%;
+        /* width: 33.333%; */
         margin: 0 auto;
         
         /* pink-white background just behind the text */
         background: #fff7f7;
-        padding: 2em;
+        padding: 0em;
         box-sizing: border-box;
         
         /* optional rounded corners and shadow */
@@ -73,14 +75,52 @@
         --scrolly-gap: 0em;
     }
 
-    /* full‑screen title section */
+    .grid-bg {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        display: grid;
+
+        /* ↓↓↓ now 10 columns & 10 rows, not 100 */
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows:    repeat(10, 1fr);
+
+        gap: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .grid-bg .grid-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* since fewer cells, you can bump the size up if you like */
+        font-size: 2vw;
+        line-height: 1;
+    }
+
+    /* 3) Everything else floats above at z‑index 1+ */
+    .content, .title-section {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 4) Your pink full‑screen title */
     .title-section {
+        /* 1) Make it full viewport width */
+        position: relative;
+        width: 100vw;
+        /* 3) Keep your full‑height + pink BG */
         height: 100vh;
+        background: #eddddd;
+
+        /* 4) Center your text */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
+
 
     /* push the viz well below the last step */
     :global(.scrolly-viz) {
@@ -116,6 +156,110 @@
         margin-bottom: 0.5em;
     }
 
+    .grid-container {
+        position: relative;
+    }
+
+    /* 5×5 grid full‑screen, faded behind */
+    .house-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        pointer-events: none;    /* so the grid doesn’t block scrolling or clicks */
+        opacity: 0.5;           /* adjust overall fade */
+        z-index: 0;              /* behind all your steps */
+    }
+
+    .house-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;          /* emoji size */
+    }
+
+    /* make sure your scrolly content and todo-box sit above the grid */
+    .grid-container :global(.scrolly-step),
+    .grid-container :global(.todo-box) {
+        position: relative;
+        z-index: 1;
+        /* background should be opaque (e.g. #fff7f7 or #582546) so text is legible */
+    }
+
+    :global(.scrolly-step.spacer) {
+        /* height = enough scroll to go from 0→25 houses; you can tweak */
+        height: 250vh;
+    }
+
+    /* ensure container is the stacking context */
+    .grid-container { position: relative; }
+
+    /* overlay only the first three real steps */
+    :global(.scrolly-step.overlay-step) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 60%;              /* or whatever width you like */
+        margin: 0;               /* remove default margins */
+        background: #fff7f7;     /* match your step-text bg */
+        padding: 2em;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .house-grid.hidden {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+        pointer-events: none;
+    }
+
+    .grid-section {
+        height: 100vh;
+        background: white;
+        display: grid;
+        grid-template-columns: repeat(100, 1fr);
+        grid-template-rows:    repeat(100, 1fr);
+        /* remove any gap so it’s a solid block of emojis */
+        gap: 0;
+    }
+
+    /* each cell centers its emoji */
+    .grid-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* scale the emoji so it’s legible but not too huge—adjust as you like */
+        font-size: 0.8vw;
+        line-height: 1;
+    }
+    .after-todo {
+        position: relative;
+        z-index: 1;              /* above the fixed grid-bg */
+        
+        /* full‑width break‑out */
+        width: 100vw;
+        left: 50%;
+        margin-left: -50vw;
+        
+        /* include padding in that 100vw & 100vh */
+        box-sizing: border-box;
+        
+        /* white background */
+        background: white;
+        
+        /* always at least fill the viewport */
+        min-height: 100vh;
+        
+        /* vertical breathing room */
+        padding: 4em 2em;
+    }
+
 </style>
 
 <script>
@@ -131,7 +275,6 @@
     // scroll states
     let scrollProgress = 0;
     const numSteps = 6;
-    $: currentStep = Math.min(numSteps - 1, Math.floor(scrollProgress / 100 * numSteps));
 
     // map and data states
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
@@ -303,56 +446,64 @@
 
 </script>
 
-<div class="title-section">
-  <h1>🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>
-  <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
+<div class="grid-bg">
+    {#each Array(10000) as _, i}
+      <div class="grid-cell">🏠</div>
+    {/each}
 </div>
 
-<div class="todo-box">
-    <strong>TODO 1 (Marina):</strong>
-    Opening animated narrative sequence.
-</div>
+<div class="title-section">
+    <h1>🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>
+    <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
+  </div>
 
 <div class="content-section">
+    <div class="grid-container">
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
-        <!-- STEP 1 -->
-        <div class="scrolly-step">
+         <!-- ■■■ Spacer to drive the grid animation ■■■ -->
+        <div class="scrolly-step spacer"></div>
+
+        <!-- ■■■ REAL STEP 1 (will only show after spacer scroll) ■■■ -->
+        <div class="scrolly-step overlay-step">
             <p class="step-text">
-                In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts.
+            In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts.
             </p>
         </div>
 
-        <!-- STEP 2 -->
-        <div class="scrolly-step">
+        <!-- ■■■ REAL STEP 2 ■■■ -->
+        <div class="scrolly-step overlay-step">
             <p class="step-text">
-                <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase and resell homes, often with minimal human involvement.
+            <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase …
             </p>
         </div>
 
-        <!-- STEP 3 -->
-        <div class="scrolly-step">
+        <!-- ■■■ REAL STEP 3 ■■■ -->
+        <div class="scrolly-step overlay-step">
             <p class="step-text">
-                <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, based on public data and machine learning.
+            <b>Zestimate</b> is Zillow’s proprietary estimate of a home’s market value, …
             </p>
         </div>
 
-        <div class="todo-box">
-            <strong>TODO 2:</strong>
-            Non-geospatial visualization for aggregated iBuying.
-        </div>
+        <div class="after-todo">
+            <div class="todo-box">
+                <strong>TODO 2:</strong>
+                Non-geospatial visualization for aggregated iBuying.
+            </div>
 
-        <div class="todo-box">
-            <strong>TODO 3:</strong>
-            <p>Improve geospatial visualization.</p>
-            <ul>
-              <li>Add gentrification measures (Landis, Freeman, Urban Displacement).</li>
-              <li>Highlight differences between Zestimate and iBought home prices by starting off with a zoom‑in of three different homes.</li>
-              <li>Add a drop‑down menu to our FP2 visualization to add additional layers.</li>
-            </ul>
-          </div>
+            <div class="todo-box">
+                <strong>TODO 3:</strong>
+                <p>Improve geospatial visualization.</p>
+                <ul>
+                    <li>Add gentrification measures (Landis, Freeman, Urban Displacement).</li>
+                    <li>Highlight differences between Zestimate and iBought home prices by starting off with a zoom‑in of three different homes.</li>
+                    <li>Add a drop‑down menu to our FP2 visualization to add additional layers.</li>
+                </ul>
+            </div>
+        </div>
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
+            <div class="after-todo">          
             <!-- wrapper that holds text on the left and legend on the right -->
             <div class="legend-text-wrapper" style="
                     display: flex;
@@ -454,7 +605,8 @@
             <strong>TODO 4:</strong>
             Visualization for Zestimate information over time.
         </div>
-        .
+        </div>
         </svelte:fragment>
     </Scrolly>
+</div>
 </div>
