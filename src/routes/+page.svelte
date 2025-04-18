@@ -7,7 +7,7 @@
 
     /* page and text background */
     :global(body) {
-        background: #ffffff;
+        background: #fff7f7;
         color: #000;
         /* margin: 0em; */
         /* add horizontal padding so there's space on both sides */
@@ -80,23 +80,20 @@
         top: 0; left: 0;
         width: 100vw; height: 100vh;
         display: grid;
-
-        /* ↓↓↓ now 10 columns & 10 rows, not 100 */
         grid-template-columns: repeat(10, 1fr);
         grid-template-rows:    repeat(10, 1fr);
-
         gap: 0;
         pointer-events: none;
         z-index: 0;
     }
 
-    .grid-bg .grid-cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* since fewer cells, you can bump the size up if you like */
-        font-size: 2vw;
-        line-height: 1;
+    .grid-cell {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        transition: background-image 0.1s ease-in;  /* quick cascade */
     }
 
     /* 3) Everything else floats above at z‑index 1+ */
@@ -330,6 +327,53 @@
     // scroll states
     let scrollProgress = 0;
     const numSteps = 6;
+    const rows = 10;
+    const cols = 10;
+    const totalCells = rows * cols;
+
+    const originalImgs = Array.from({ length: totalCells }, (_, i) => {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        // map (row,col) into a 5×5 quadrant
+        const rLocal = row % (rows / 2);
+        const cLocal = col % (cols / 2);
+        const imgNum = rLocal * (cols / 2) + cLocal + 1;  // 1…25
+        return `./../data/house${imgNum}.png`;
+    });
+
+    const modifiedImgs = Array.from({ length: totalCells }, (_, i) => {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        const rLocal = row % (rows / 2);
+        const cLocal = col % (cols / 2);
+        const imgNum = rLocal * (cols / 2) + cLocal + 1;
+        return `./../data/house${imgNum}-modified.png`;
+    });
+
+    // start at 33% down, finish at 100%
+    const startScroll = 0.2;
+    const endScroll   = 0.5;
+
+    // pageProgress: 0 at top, 1 at bottom
+    let pageProgress = 0;
+
+    // compute how many images to replace
+    $: replaceCount =
+        pageProgress <= startScroll ? 0
+    : pageProgress >= endScroll   ? totalCells
+    : Math.floor(
+        (pageProgress - startScroll)
+        / (endScroll - startScroll)
+        * totalCells
+        );
+    
+    // update pageProgress whenever you scroll
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        // total scrollable height = doc height minus viewport
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        pageProgress = Math.min(scrollTop / docHeight, 1);
+    }
 
     // map and data states
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
@@ -419,7 +463,9 @@
             .range([0, 25]);
 
     onMount(async () => {
-        
+        updateProgress();                        // init
+        window.addEventListener('scroll', updateProgress);
+
         // Get Zillow Data
         const jsonResponse = await fetch(`${base}/data/zillow_data.json`)
         zillowData = await jsonResponse.json();
@@ -506,8 +552,12 @@
 </script>
 
 <div class="grid-bg">
-    {#each Array(10000) as _, i}
-      <div class="grid-cell">🏠</div>
+    {#each Array(totalCells) as _, i}
+      <div
+        class="grid-cell"
+        style="background-image:
+          url({ i < replaceCount ? modifiedImgs[i] : originalImgs[i] });"
+      ></div>
     {/each}
 </div>
 
