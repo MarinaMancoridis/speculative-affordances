@@ -32,3 +32,11 @@ header {
 	gap: 1em;
 	align-items: baseline;
 }
+
+#redlining {
+	font-size: 36px;
+}
+
+#title {
+	font-size: 48px;
+}

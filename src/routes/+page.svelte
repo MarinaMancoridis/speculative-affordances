@@ -12,7 +12,7 @@
         /* margin: 0em; */
         /* add horizontal padding so there's space on both sides */
         padding: 0em 2em;
-        font-family: var(--source-serif-font), Georgia, serif;
+        font-family: 'Roboto', sans-serif;
         align-items: center;
         overflow-x: hidden;
         overscroll-behavior-y: none;
@@ -47,7 +47,7 @@
         /* width: 33.333%; */
         margin: 0 auto;
         
-        /* pink-white background just behind the text */
+        /* blue-white background just behind the text */
         background: #fff7f7;
         padding: 0em;
         box-sizing: border-box;
@@ -102,26 +102,26 @@
         z-index: 1;
     }
 
-    /* 4) Your pink full‑screen title */
+    /* 4) Your full‑screen title */
     .title-section {
         /* 1) Make it full viewport width */
         position: relative;
         width: 100vw;
         /* 3) Keep your full‑height + pink BG */
         height: 100vh;
-        background: #eddddd;
+        background: #2d2d2d;
 
         /* 4) Center your text */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        color: #ffffff; 
     }
 
     .scroll-indicator {
         border: none;
         outline: none;
-
 
         /* allow clicks now */
         pointer-events: auto;
@@ -596,18 +596,25 @@
             data: localData
         });
 
-        map.addLayer({
-            id: "grade_color_layer",
-            type: "fill",
-            source: "redlining_data",
-            paint: {
-                "fill-color": ["get", "fill"],
-                "fill-opacity": 0.5,
-                "fill-outline-color": "#ad494e"
-            },
-        });
+        // map.addLayer({
+            // id: "grade_color_layer",
+            // type: "fill",
+            // source: "redlining_data",
+            // paint: {
+                // "fill-color": ["get", "fill"],
+                // "fill-opacity": 0.5,
+                // "fill-outline-color": "#ad494e"
+            // },
+        // });
 
-        // console.log(mergedData)
+        mapFairPrices = new mapboxgl.Map({
+            container: 'map', // HTML element ID
+            style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
+            center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
+            zoom: 11.5,
+            minZoom: 10,
+            maxZoom: 18
+        });
 
     });
 
@@ -624,7 +631,7 @@
 </div>
 
 <div class="title-section">
-    <h1>🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>
+    <h1 id="title">AUTOMATION AND SPECULATION</h1>
     <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
 
     <button class="scroll-indicator" on:click={scrollToExplore} type="button">
@@ -642,44 +649,54 @@
         <!-- ■■■ REAL STEP 1 (will only show after spacer scroll) ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-            In this illustration, we contextualize <b>iBuying practices</b> within historically redlined districts.
+           <b>TO DO: </b> Intro
             </p>
         </div>
 
         <!-- ■■■ REAL STEP 2 ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-            <b>iBuying</b>, or "instant buying," refers to companies using algorithms to quickly purchase …
+            <b>TO DO: iBuying Definition</b> iBuying, or "instant buying," refers to companies using algorithms to quickly purchase …
             </p>
         </div>
 
-        <!-- ■■■ REAL STEP 3 ■■■ -->
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-            <b>Zestimate</b> is Zillow's proprietary estimate of a home's market value, …
+            <b>TO DO: iBuyers</b> Zillow, Opendoor, Redfin, and Offerpad purchased 1% of all U.S. Homes in 2021
             </p>
         </div>
 
-        <div class="after-todo">
-            <div class="todo-box">
-                <strong>TODO 2:</strong>
-                Non-geospatial visualization for aggregated iBuying.
-            </div>
+        <div class="scrolly-step overlay-step">
+            <p class="step-text">
+            <b>TO DO:</b> In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes
+            </p>
+        </div>
 
-            <div class="todo-box">
-                <strong>TODO 3:</strong>
-                <p>Improve geospatial visualization.</p>
-                <ul>
-                    <li>Add gentrification measures (Landis, Freeman, Urban Displacement).</li>
-                    <li>Highlight differences between Zestimate and iBought home prices by starting off with a zoom‑in of three different homes.</li>
-                    <li>Add a drop‑down menu to our FP2 visualization to add additional layers.</li>
-                </ul>
-            </div>
+        <div class="scrolly-step overlay-step">
+            <p class="step-text">
+            <b>TO DO:</b> Opendoor agreed to pay $62 million 
+            </p>
+        </div>
+
+        <div class="scrolly-step overlay-step">
+            <p class="step-text">
+            <b>TO DO:</b> Since then, Opendoor has continued to expand to over 50+ markets, including Boston
+            </p>
         </div>
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
-            <div class="after-todo">          
+
+            <div class="after-todo">    
+
+            <h1>What percent of homes in Boston are iBought?*</h1>
+            <p> TO DO: add interactive question</p>
+            <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be every more iBought homes that we were not able to find</p>
+
+            <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events
+
+            <h1 id="redlining">🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>    
+            
             <!-- wrapper that holds text on the left and legend on the right -->
             <div class="legend-text-wrapper" style="
                     display: flex;
@@ -688,7 +705,7 @@
                     margin-bottom: 2em;
                     font-size: 1.2em;
                 ">
-                
+
                 <!-- left: all your step-4 & last-step text + slider -->
                 <div class="legend-text-wrapper">
                 <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
@@ -774,8 +791,11 @@
                         {/each}
                     {/key}
                 </svg>
-                
             </div>
+
+            <!-- fair prices map -->
+            <h1> Are iBought Homes Bought for Fair Prices? </h1>
+           
 
         <div class="todo-box">
             <strong>TODO 4:</strong>
