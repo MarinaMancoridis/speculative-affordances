@@ -692,10 +692,26 @@
             <h1>What percent of homes in Boston are iBought?*</h1>
             <p> TO DO: add interactive question</p>
             <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be every more iBought homes that we were not able to find</p>
+            <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
+            
+            <br><br>
+            <h1>Which of these homes is iBought?</h1>
+            <p>To Do: Add clickable images and question answer</p>
+            
+            <br><br>
+            <h1>Anatomy of an Average iBought Home</h1>
+             <p>GOAL: add clickable home to learn facts</p>
+            <p>To Do: Add average price</p>
+            <p>To Do: Add average number of bedrooms</p>
+            <p>To Do: Add average number of bathrooms</p>
+            <p>To Do: Add average number of square feet</p>
+            <p>To Do: Add average year built</p>
+            <p>To Do: Add aditional features that are more unique to iBought homes</p>
+            <p>To Do: Add takeaway -> Affordable housing is targeted!</p>
+            <p>To Do: Add info about how iBought homes are typically sold to investors not occupant-owners</p>
+            <br><br>
 
-            <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events
-
-            <h1 id="redlining">🏠 Zestimates for iBought Homes in Historically Redlined Districts 🏠</h1>    
+            <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
             
             <!-- wrapper that holds text on the left and legend on the right -->
             <div class="legend-text-wrapper" style="
@@ -707,6 +723,13 @@
                 ">
 
                 <!-- left: all your step-4 & last-step text + slider -->
+                <div>
+                    <p>TO DO: add slider instead to show where iBought homes are then add redlining map on top as part of slider (see https://rachelblowes.github.io/FP2-Interactive-Map/)</p>
+                    <p>TO DO: eventual goal to add drop down with gentrification measures (i.e., number of Airbnbs, Landis, Freeman) and corporate ownership by <b>census tract</b> to toggle between</p>
+                    <p>TO DO: separate Zestimates into another visualization that is a bar chart changing by time (reuse Zestimate slider) with y-axis (average Zestimate) and x-axis (types of redlined zones)</p>
+                    <p>TO DO: takeaway is that there are historical implications of redlining that still infuence housing pricing and Zestimates</p>
+                </div>
+
                 <div class="legend-text-wrapper">
                 <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
                 <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
@@ -793,14 +816,26 @@
                 </svg>
             </div>
 
+            <br><br>
             <!-- fair prices map -->
             <h1> Are iBought Homes Bought for Fair Prices? </h1>
-           
+            <p> TO DO: add another visualization with iBought homes (highlight homes if were sold for less than market value)</p>
+            <p> TO DO: add more interactive, customized tool tips with image, address, iBuyer, sold for, Zestimate, and potentially other features</p>
+            <p> TO DO: add filter by price difference between sold for and Zestimate (reach goal to filter by features like number of bedrooms)</p>
 
-        <div class="todo-box">
-            <strong>TODO 4:</strong>
-            Visualization for Zestimate information over time.
-        </div>
+            <br><br>
+            <h1>Takeaways</h1>
+            <p> TO DO: iBuying is increasing in Boston</p>
+            <p> TO DO: Historical info affects present and AI models</p>
+            <p> TO DO: iBought homes are not bought for fair prices (more affordable housing is especially vulnerable)</p>
+
+            <br><br>
+            <h1>What can we do?</h1>
+            <p> TO DO: Reconsider selling your home to iBuyers and if you do, make sure you are getting a fair price (see this resource)</p>
+            <p> TO DO: Reach out to FTC (here) if you might qualify for reimbursement from Opendoor</p>
+            <p> TO DO: Advocate for better measures of housing (here)</p>
+            <p> TO DO: Better protections against speculation (peititon here)</p>
+
         </div>
         </svelte:fragment>
     </Scrolly>
