@@ -691,7 +691,7 @@
 
             <h1>What percent of homes in Boston are iBought?*</h1>
             <p> TO DO: add interactive question</p>
-            <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be every more iBought homes that we were not able to find</p>
+            <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
             <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
             
             <br><br>
