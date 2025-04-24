@@ -862,7 +862,7 @@
 
 
         <!-- more content so you can scroll past -->
-        <div class="scrolly-step" style="height:150vh"></div>
+        <div class="scrolly-step" style="height:50vh"></div>
 
 
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
