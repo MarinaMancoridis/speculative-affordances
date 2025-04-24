@@ -1,5 +1,6 @@
 <style>
     @import url("$lib/global.css");
+
     :global(.scrolly) {
         display: block !important;
         --scrolly-gap: 2em;
@@ -312,6 +313,23 @@
         padding: 4em 2em;
     }
 
+    #typewriter {
+        /* font-family: 'Tangerine', serif; */
+        font-family: "Source Code Pro", monospace;
+        font-size: 1.5rem;
+        color: #ffffff;
+        margin-top: 1em;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 2px solid rgba(255,255,255,0.75);
+        animation: blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: rgba(255,255,255,0.75); }
+    }
+
 </style>
 
 <script>
@@ -525,6 +543,21 @@
             .range([0, 25]);
 
     onMount(async () => {
+        const text = "What happens when a machine becomes a buyer?";
+        const el = document.getElementById("typewriter");
+        let index = 0;
+
+        function typeChar() {
+            if (index < text.length) {
+                el.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeChar, 45); // Speed in ms
+            }
+        }
+
+        typeChar();
+
+
         updateProgress();                        // init
         window.addEventListener('scroll', updateProgress);
 
@@ -632,6 +665,7 @@
 
 <div class="title-section">
     <h1 id="title">AUTOMATION AND SPECULATION</h1>
+    <p class="typewriter-line" id="typewriter"></p>
     <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
 
     <button class="scroll-indicator" on:click={scrollToExplore} type="button">
