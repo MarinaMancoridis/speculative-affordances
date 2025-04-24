@@ -826,7 +826,7 @@
                 />
             
                 <div class="zoom-house-text">
-                    <p> Imagine this. You’re about to sell your home. Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—it's a machine. </p>
+                    <p> Imagine this. <strong>You’re about to sell your home.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—<strong>it's a machine.</strong> </p>
 
                     <p class="note">
                         Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
@@ -842,43 +842,25 @@
 
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-                This is not science fiction; it's happening now. That’s the story of iBuying. On the surface, it’s simple: an algorithm looks at your home, makes you an offer, and—just like that—it becomes the new owner. No negotiation. No waiting. Just a transaction at the speed of software.
+                This is not science fiction; it's happening now through <strong>iBuying</strong>. 
+            </p>
+            <p class="step-text">
+                Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Redfin, and Offerpad have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
+            </p>
+            <p class="step-text">
+                On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because this isn’t just about buying houses. <strong>It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
             </p>
         </div>
 
 
         <div class="scrolly-step overlay-step">
             <p class="step-text">
-                But speed obscures something deeper. Because this isn’t just about buying houses. It’s about how AI sees value. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided. It's about how technology, meant to eliminate bias, may quietly inherit it.
+                As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
             </p>
-        </div>
-
-
-        <div class="scrolly-step overlay-step">
             <p class="step-text">
-                Instant buying, or "iBuying," uses sophisticated algorithms to evaluate your home and make a fast, frictionless offer. Companies like Zillow, Opendoor, Redfin, and Offerpad have become major players, snapping up homes across America at scale.
-                
-                In fact, they purchased 1% of all U.S. Homes in 2021.
+                <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
             </p>
         </div>
-
-
-        <div class="scrolly-step overlay-step">
-            <p class="step-text">
-            In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes. Opendoor settled with the FTC for <b>$62 million</b>, a quiet admission of the power—and danger—of automated speculation. Yet, despite this controversy, Opendoor and its competitors haven't slowed down. They've expanded into <b>over 50 markets</b>, including right here in Boston, reshaping our neighborhoods with each automated purchase.
-            </p>
-        </div>
-
-
-        <div class="scrolly-step overlay-step">
-            <p class="step-text">
-                As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; they're reshaping communities. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
-            </p>
-        </div>
-
-
-        <div class="scrolly-step overlay-step"> <p class="step-text"> 
-            <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities. </p> </div>
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
