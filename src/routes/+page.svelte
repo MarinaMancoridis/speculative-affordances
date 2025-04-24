@@ -29,7 +29,7 @@
         line-height: 2;
         /* width: 33.333%; */
         margin: 0 auto;
-        background: #f7fffe;
+        background: #fdfff7;
         padding: 2em;
         box-sizing: border-box;
         border-radius: 4px;
@@ -83,9 +83,8 @@
         display: grid;
         grid-template-columns: repeat(10, 1fr);
         grid-template-rows:    repeat(10, 1fr);
-        gap: 0;
-        pointer-events: none;
         z-index: 0;
+        pointer-events: none;
     }
 
     .grid-cell {
@@ -253,17 +252,13 @@
 
     /* overlay only the first three real steps */
     :global(.scrolly-step.overlay-step) {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-        width: 60%;              /* or whatever width you like */
-        margin: 0;               /* remove default margins */
-        background: #fff7f7;     /* match your step-text bg */
-        padding: 2em;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        /* remove absolute positioning */
+        position: relative;
+        top: auto; left: auto; transform: none;
+
+        /* space them out vertically */
+        margin: 5vh auto;   /* e.g. 5% of viewport height above & below each step */
+        width: 60%;
     }
 
     .house-grid.hidden {
@@ -329,6 +324,84 @@
     @keyframes blink-caret {
     from, to { border-color: transparent; }
     50% { border-color: rgba(255,255,255,0.75); }
+    }
+
+    .zoom-house-container {
+        display: flex;
+        justify-content: space-between;  /* pushes image all the way left, text all the way right */
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .zoom-house-image,
+    .zoom-house-text {
+        flex: 0 0 48%;  /* two equal halves with a little gutter in between */
+    }
+
+    .zoom-house-image {
+        width: 50%;
+        height: 100%;
+        transform: scale(0.1);
+        opacity: 0;
+        transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+    }
+
+    .zoom-house-text {
+        width: 50%;
+        padding: 2em;
+        background: #fff7f7;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Active state for zoomed-in effect */
+    .zoom-house-step.active .zoom-house-image {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .zoom-house-step {
+        /* make the step fill the viewport so it can enter/exit properly */
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        /* now the container children will lay out inside this full-height box */
+    }
+
+    .zoom-panel {
+        position: absolute;
+        /* compute these in the style attribute… */
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+    }
+    .zoom-panel img {
+        width: 100%;
+        height: 100%;
+        transform-origin: center center;
+    }
+
+
+    /* make your text sit on the right half */
+    .text-step {
+        position: relative;
+        z-index: 1;
+        width: 50vw;
+        margin-left: 50vw;
+        padding: 2em;
+        box-sizing: border-box;
+    }
+
+    img#zoom-house {
+        position: fixed;
+        left: 1.5%;
+        top: 45%;
+        transform-origin: left center;
+        /* we'll override transform+opacity inline */
+        pointer-events: none;
+        z-index: 100;          /* on top of your grid & content */
+        width: 50vw;           /* half the screen width */
+        height: auto;
     }
 
 </style>
@@ -438,6 +511,22 @@
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
+    // zooming functionality         // in vh
+    const zoomInStart = 0.2;   // 10% down
+    const zoomPeak    = 0.3;   // 20% down
+    const zoomOutEnd  = 0.4;   // 30% down
+    $: zoomP =
+        pageProgress < zoomInStart ? 0
+    : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
+    : pageProgress < zoomOutEnd  ? 1 - ((pageProgress - zoomPeak) / (zoomOutEnd - zoomPeak))
+    : 0;
+
+    $: scale   = 0.1 + zoomP * 0.9;
+    $: opacity = zoomP + 0.1;
+
+    // DEBUG — show in page to confirm values change
+    $: console.log({ scrollProgress, zoomP, scale, opacity });
+
     // compute how many images to replace
     $: replaceCount =
         pageProgress <= startScroll ? 0
@@ -454,6 +543,17 @@
         // total scrollable height = doc height minus viewport
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         pageProgress = Math.min(scrollTop / docHeight, 1);
+    }
+
+    let zoomActive = false;
+
+    function intersectionObserver(node) {
+        const observer = new IntersectionObserver(
+            ([entry]) => node.classList.toggle('active', entry.isIntersecting),
+            { threshold: 0.1 }   // fire when just 10% is visible
+        );
+        observer.observe(node);
+        return { destroy: () => observer.disconnect() };
     }
 
     // map and data states
@@ -655,12 +755,16 @@
 </script>
 
 <div class="grid-bg">
-    {#each Array(totalCells) as _, i}
+    {#each Array(cols*rows) as _, i}
       <div
         class="grid-cell"
         style="background-image:
-          url({ i < replaceCount ? modifiedImgs[i] : originalImgs[i] });"
-      ></div>
+                 url({ i < replaceCount
+                          ? modifiedImgs[i]
+                          : originalImgs[i]
+                      });
+               ">
+      </div>
     {/each}
 </div>
 
@@ -675,19 +779,42 @@
     </button>
 </div>
 
+
 <div class="content-section">
     <div class="grid-container">
+    
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
          <!-- ■■■ Spacer to drive the grid animation ■■■ -->
         <div class="scrolly-step spacer"></div>
 
-        <div class="scrolly-step overlay-step">
-            <p class="step-text">
-                Imagine this. You’re about to sell your home. Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—it's a machine.
-            </p>
-        </div>
+        <!-- a spacer so you actually scroll past before zoom begins -->
+        <div class="scrolly-step" style="height:150vh"></div>
 
-        
+        <!-- this step holds the “Imagine” text + zooming image -->
+        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
+            <div class="zoom-house-container">
+              <!-- directly render your imported asset, so it actually loads -->
+              <img
+                id="zoom-house"
+                src={house16}
+                alt="Zooming house"
+                style:transform={`translateY(-50%) scale(${scale})`}
+                style:opacity={opacity}
+            />
+          
+              <div class="zoom-house-text">
+                <div class="step-text">
+                  Imagine this. You’re about to sell your home. … your buyer isn't a person—it's a machine.
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        <!-- more content so you can scroll past -->
+        <div class="scrolly-step" style="height:150vh"></div>
+
+
         <div class="scrolly-step overlay-step">
             <p class="step-text">
                 This is not science fiction; it's happening now. That’s the story of iBuying. On the surface, it’s simple: an algorithm looks at your home, makes you an offer, and—just like that—it becomes the new owner. No negotiation. No waiting. Just a transaction at the speed of software.
