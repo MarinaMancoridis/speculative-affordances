@@ -319,18 +319,31 @@
 
     .zoom-house-container {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        width: 100vw;
-        height: 100vh;
+        justify-content: flex-start;
+        width: 100%;
+        height: 100%;
         padding: 2em;
         box-sizing: border-box;
     }
+
+    .zoom-house-container.right {
+        justify-content: flex-end;
+    }
+
+    .zoom-house-container.left {
+        justify-content: flex-start;
+    }
+
+    .zoom-house-container.center {
+        justify-content: center;
+    }
+
+
     .zoom-house-image,
     .zoom-house-step .zoom-house-container .zoom-house-text {
-        flex: 0 0 40%;
-        margin-left: auto;
-        background: #f8f8f8 !important; /* force override */
+        width: 40%;
+        background: #f8f8f8;
         padding: 2em;
         border-radius: 12px;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -338,14 +351,26 @@
         line-height: 1.7;
         color: #333333;
         border: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
     }
 
+    /* Note styling */
     .zoom-house-text .note {
-        margin-top: auto; /* pushes the note to the bottom */
-        font-size: 0.75em; /* smaller font size */
+        margin-top: auto;
+        font-size: 0.75em;
         font-style: italic;
         color: #666;
         padding-top: 1em;
+    }
+
+    /* Remove unwanted background from paragraphs */
+    .zoom-house-text p {
+        background: transparent !important;
+    }
+
+    .zoom-house-text p + p {
+        margin-top: 1em; /* Adjust the value as needed */
     }
 
     .zoom-house-image {
@@ -817,7 +842,7 @@
 
         <!-- this step holds the “Imagine” text + zooming image -->
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
-            <div class="zoom-house-container">
+            <div class="zoom-house-container right">
                 <img
                     id="zoom-house"
                     src={house16}
@@ -840,26 +865,36 @@
         <div class="scrolly-step" style="height:150vh"></div>
 
 
-        <div class="scrolly-step overlay-step">
-            <p class="step-text">
-                This is not science fiction; it's happening now through <strong>iBuying</strong>. 
-            </p>
-            <p class="step-text">
-                Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Redfin, and Offerpad have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
-            </p>
-            <p class="step-text">
-                On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because this isn’t just about buying houses. <strong>It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
-            </p>
+        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
+            <div class="zoom-house-container left">
+                <div class="zoom-house-text">
+                    <p>
+                        This is not science fiction; it's happening now through <strong>iBuying</strong>. 
+                    </p>
+
+                    <p>
+                        Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Redfin, and Offerpad have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
+                    </p>
+
+                    <p>
+                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because this isn’t just about buying houses. <strong>It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
+                    </p>
+                </div>
+            </div>
         </div>
 
 
-        <div class="scrolly-step overlay-step">
-            <p class="step-text">
-                As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
-            </p>
-            <p class="step-text">
-                <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
-            </p>
+        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
+            <div class="zoom-house-container center">
+                <div class="zoom-house-text">
+                    <p>
+                        As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
+                    </p>
+                    <p>
+                        <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
