@@ -328,14 +328,23 @@
 
     .zoom-house-container {
         display: flex;
-        justify-content: space-between;  /* pushes image all the way left, text all the way right */
+        justify-content: space-between;
         align-items: center;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
+        padding: 2em;
+        box-sizing: border-box;
     }
     .zoom-house-image,
     .zoom-house-text {
-        flex: 0 0 48%;  /* two equal halves with a little gutter in between */
+        flex: 0 0 40%;
+        margin-left: auto;
+        background: #fff7f7;
+        padding: 2em;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-size: 1.2em;
+        line-height: 1.6;
     }
 
     .zoom-house-image {
@@ -384,12 +393,16 @@
 
     /* make your text sit on the right half */
     .text-step {
-        position: relative;
-        z-index: 1;
-        width: 50vw;
-        margin-left: 50vw;
-        padding: 2em;
-        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+    }
+
+    /* force the .step-text to take up 40% of its parent,
+    push itself to the right, and leave 1em of breathing room */
+    .text-step .step-text {
+        width: 40%;              
+        margin: 0 1em 0 auto;    /* top/right/bottom/left → right-margin=1em, left-margin=auto */
+        box-sizing: border-box;   /* include any padding inside that 40% */
     }
 
     img#zoom-house {
@@ -402,6 +415,17 @@
         z-index: 100;          /* on top of your grid & content */
         width: 50vw;           /* half the screen width */
         height: auto;
+    }
+
+    #zoom-house {
+        flex: 0 0 50%;
+        transform-origin: left center;
+        pointer-events: none;
+        width: 50vw;
+        height: auto;
+        position: fixed;
+        left: 1.5%;
+        top: 45%;
     }
 
 </style>
@@ -505,15 +529,15 @@
     ];
 
     // start at 33% down, finish at 100%
-    const startScroll = 0.2;
-    const endScroll   = 0.5;
+    const startScroll = 0.5;
+    const endScroll   = 0.9;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
     // zooming functionality         // in vh
     const zoomInStart = 0.2;   // 10% down
-    const zoomPeak    = 0.3;   // 20% down
+    const zoomPeak    = 0.35;   // 20% down
     const zoomOutEnd  = 0.4;   // 30% down
     $: zoomP =
         pageProgress < zoomInStart ? 0
@@ -522,7 +546,7 @@
     : 0;
 
     $: scale   = 0.1 + zoomP * 0.9;
-    $: opacity = zoomP + 0.1;
+    $: opacity = zoomP * 1.3;
 
     // DEBUG — show in page to confirm values change
     $: console.log({ scrollProgress, zoomP, scale, opacity });
@@ -788,25 +812,21 @@
         <div class="scrolly-step spacer"></div>
 
         <!-- a spacer so you actually scroll past before zoom begins -->
-        <div class="scrolly-step" style="height:150vh"></div>
+        <div class="scrolly-step" style="height:0vh"></div>
 
         <!-- this step holds the “Imagine” text + zooming image -->
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
             <div class="zoom-house-container">
-              <!-- directly render your imported asset, so it actually loads -->
-              <img
-                id="zoom-house"
-                src={house16}
-                alt="Zooming house"
-                style:transform={`translateY(-50%) scale(${scale})`}
-                style:opacity={opacity}
-            />
-          
-              <div class="zoom-house-text">
-                <div class="step-text">
-                  Imagine this. You’re about to sell your home. … your buyer isn't a person—it's a machine.
+                <img
+                    id="zoom-house"
+                    src={house16}
+                    alt="Zooming house"
+                    style="transform: translateY(-50%) scale({scale}); opacity: {opacity};"
+                />
+            
+                <div class="zoom-house-text">
+                    Imagine this. You’re about to sell your home. Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—it's a machine.
                 </div>
-              </div>
             </div>
           </div>
 
