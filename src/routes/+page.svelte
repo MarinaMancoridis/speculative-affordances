@@ -8,7 +8,6 @@
 
     /* page and text background */
     :global(body) {
-        background: #fff7f7;
         color: #000;
         /* margin: 0em; */
         /* add horizontal padding so there's space on both sides */
@@ -29,7 +28,7 @@
         line-height: 2;
         /* width: 33.333%; */
         margin: 0 auto;
-        background: #fdfff7;
+        background: #f8f8f8;
         padding: 2em;
         box-sizing: border-box;
         border-radius: 4px;
@@ -47,15 +46,7 @@
         /* confine to middle third */
         /* width: 33.333%; */
         margin: 0 auto;
-        
-        /* blue-white background just behind the text */
-        background: #fff7f7;
         padding: 0em;
-        box-sizing: border-box;
-        
-        /* optional rounded corners and shadow */
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         
         /* ensure text is dark */
         color: #000;
@@ -244,7 +235,7 @@
 
     :global(.scrolly-step.spacer) {
         /* height = enough scroll to go from 0→25 houses; you can tweak */
-        height: 250vh;
+        height: 10vh;
     }
 
     /* ensure container is the stacking context */
@@ -336,15 +327,25 @@
         box-sizing: border-box;
     }
     .zoom-house-image,
-    .zoom-house-text {
+    .zoom-house-step .zoom-house-container .zoom-house-text {
         flex: 0 0 40%;
         margin-left: auto;
-        background: #fff7f7;
+        background: #f8f8f8 !important; /* force override */
         padding: 2em;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        font-size: 1.2em;
-        line-height: 1.6;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        font-size: 1.25em;
+        line-height: 1.7;
+        color: #333333;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .zoom-house-text .note {
+        margin-top: auto; /* pushes the note to the bottom */
+        font-size: 0.75em; /* smaller font size */
+        font-style: italic;
+        color: #666;
+        padding-top: 1em;
     }
 
     .zoom-house-image {
@@ -536,9 +537,9 @@
     let pageProgress = 0;
 
     // zooming functionality         // in vh
-    const zoomInStart = 0.2;   // 10% down
-    const zoomPeak    = 0.35;   // 20% down
-    const zoomOutEnd  = 0.4;   // 30% down
+    const zoomInStart = 0.1;   // 10% down
+    const zoomPeak    = 0.15;   // 20% down
+    const zoomOutEnd  = 0.3;   // 30% down
     $: zoomP =
         pageProgress < zoomInStart ? 0
     : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
@@ -825,7 +826,11 @@
                 />
             
                 <div class="zoom-house-text">
-                    Imagine this. You’re about to sell your home. Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—it's a machine.
+                    <p> Imagine this. You’re about to sell your home. Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—it's a machine. </p>
+
+                    <p class="note">
+                        Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
+                    </p>
                 </div>
             </div>
           </div>
