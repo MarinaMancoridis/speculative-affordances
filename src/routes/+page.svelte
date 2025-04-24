@@ -563,7 +563,7 @@
 
     // zooming functionality         // in vh
     const zoomInStart = 0.1;   // 10% down
-    const zoomPeak    = 0.15;   // 20% down
+    const zoomPeak    = 0.17;   // 20% down
     const zoomOutEnd  = 0.3;   // 30% down
     $: zoomP =
         pageProgress < zoomInStart ? 0
@@ -862,7 +862,7 @@
 
 
         <!-- more content so you can scroll past -->
-        <div class="scrolly-step" style="height:50vh"></div>
+        <div class="scrolly-step" style="height:20vh"></div>
 
 
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
