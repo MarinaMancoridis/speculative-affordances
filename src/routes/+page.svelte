@@ -555,8 +555,8 @@
     ];
 
     // start at 33% down, finish at 100%
-    const startScroll = 0.5;
-    const endScroll   = 0.9;
+    const startScroll = 0.4;
+    const endScroll   = 0.55;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
@@ -882,6 +882,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="scrolly-step" style="height:20vh"></div>
 
 
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
