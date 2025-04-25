@@ -476,7 +476,7 @@
         position: absolute;
         width: 10vw;                /* bigger circle */
         height: 10vw;
-        background: #fffff7;
+        background: #ffffff;
         border-radius: 50%;
         display: flex;
         align-items: center;
