@@ -454,6 +454,14 @@
         top: 45%;
     }
 
+    img.outline {
+        filter:
+            drop-shadow(8px 0 0 rgb(226, 173, 228))
+            drop-shadow(-8px 0 0 rgb(226, 173, 228))
+            drop-shadow(0 8px 0 rgb(226, 173, 228))
+            drop-shadow(0 -8px 0 rgb(226, 173, 228));
+    }
+
 </style>
 
 <script>
@@ -847,6 +855,7 @@
                     id="zoom-house"
                     src={house16}
                     alt="Zooming house"
+                    class = "outline"
                     style="transform: translateY(-50%) scale({scale}); opacity: {opacity};"
                 />
             
