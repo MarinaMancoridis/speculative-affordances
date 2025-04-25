@@ -515,6 +515,14 @@
         margin: 0 0 0.5rem;
     }
 
+    /* wrap just the chart in a sticky container when drawing */
+    #corp-chart-wrapper.sticky {
+        position: sticky;
+        top: 0;
+        z-index: 2;           /* sit above the grid and everything else */
+        background: white;    /* block what's underneath */
+    }
+
 </style>
 
 <script>
@@ -901,14 +909,14 @@
             .call(xAxis)
         .selectAll("text")
             .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "16px");
+            .style("font-size", "19px");
 
         // 6) Draw Y axis
         svg.append("g")
             .call(yAxis)
         .selectAll("text")
             .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "16px");
+            .style("font-size", "19px");
 
         // 7) X‐axis label (bigger, pushed further down)
         svg.append("text")
@@ -916,31 +924,76 @@
             .attr("y", height + margin.bottom - 30)  // farther from axis
             .attr("text-anchor", "middle")
             .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "18px")
-            .style("font-weight", "500")
+            .style("font-size", "20px")
+            // .style("font-weight", "500")
             .text("Year");
 
         // 8) Y‐axis label (bigger, pushed further left)
         svg.append("text")
             .attr("transform", `rotate(-90)`)
             .attr("x", -height / 2)
-            .attr("y", -margin.left + 30)           // more negative = further left
+            .attr("y", -margin.left + 15)           // more negative = further left
             .attr("text-anchor", "middle")
             .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "18px")
-            .style("font-weight", "500")
+            .style("font-size", "20px")
+            // .style("font-weight", "500")
             .text("Average Corporate Ownership Rate (%)");
 
         // 9) Your line (unchanged)
-        svg.append("path")
+        const line = svg.append("path")
             .datum(nested)
             .attr("fill", "none")
             .attr("stroke", "#4f384c")
             .attr("stroke-width", 3)
             .attr("d", d3.line()
-            .x(d => x(d.year))
-            .y(d => y(d.avg))
-            );
+                .x(d => x(d.year))
+                .y(d => y(d.avg))
+        );
+
+        // 10) calculate total length for dash‐array trick
+        const totalLength = line.node().getTotalLength();
+
+        // initialize so it’s completely hidden
+        const L = line.node().getTotalLength();
+        line
+        .attr("stroke-dasharray", L)
+        .attr("stroke-dashoffset", L);
+
+        const wrapper = document.getElementById("corp-chart-wrapper");
+
+        // 2) initialize hidden + sticky
+        line
+        .attr("stroke-dasharray", L)
+        .attr("stroke-dashoffset", L);
+        wrapper.classList.add("sticky");
+
+        // 3) compute scroll positions
+        const freezeStart = wrapper.offsetTop;
+        // draw over exactly one viewport height:
+        const freezeEnd   = wrapper.offsetTop + window.innerHeight;
+
+        // helper
+        function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+        // 4) onScroll
+        function drawOnScroll() {
+        const y = window.scrollY;
+        // progress 0→1 as you scroll from freezeStart→freezeEnd
+        let p = (y - freezeStart) / (freezeEnd - freezeStart);
+        p = clamp01(p);
+
+        // reveal the line
+        line.attr("stroke-dashoffset", L * (1 - p));
+
+        // once fully drawn, drop the sticky
+        if (p >= 1) wrapper.classList.remove("sticky");
+        else        wrapper.classList.add("sticky");
+        }
+
+        // 5) bind & kick off
+        window.addEventListener("scroll", drawOnScroll, { passive: true });
+        drawOnScroll();
+        
         // -------------------------------------------------------------------
 
         // Get Zillow Data
@@ -1146,33 +1199,27 @@
 
             <div class="after-todo">  
                 
-            <!--- THIS IS WHERE THE GRAPH SHOULD GO -->
-            <div class="chart-wrapper" style="max-width:900px; margin:3em auto; text-align:center;">
-                  <!-- 1) Descriptive text block -->
-                <div class="chart-text" style="max-width:700px; margin:0 auto 1.5em; font-size:1rem; line-height:1.6;">
-                    <p>
-                    Over the past two decades, the fraction of homes bought by large corporate “iBuyers” has steadily grown.
-                    This chart shows how the average corporate ownership rate rose from under 0.5% in 2005 to nearly 3% by 2021,
-                    highlighting both the speed and scale at which algorithmic buyers have entered the Boston market.
-                    </p>
-                    <p>
-                    Notice the particularly sharp uptick around 2018, after which several new entrants dramatically increased
-                    their purchasing volume.
-                    </p>
-                </div>
+            <div id="corp-chart-wrapper">
+                <div class="chart-wrapper" style="max-width:900px; margin:3em auto; text-align:center;">
+                    <!-- 1) Descriptive text block -->
+                    <div class="chart-text">
+                        <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
+                        <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
+                    </div>
 
-                <h2 style="chart-title">
-                  Corporate Ownership Rate Over Time
-                </h2>
-                <div
-                  id="corp-own-chart"
-                  style="
-                    width: 100%;
-                    height: 500px;       /* ↑ bump this up for a taller chart */
-                    margin: 0 auto;
-                  ">
+                    <h2 style="chart-title">
+                    Corporate Ownership Rate Over Time
+                    </h2>
+                    <div
+                    id="corp-own-chart"
+                    style="
+                        width: 100%;
+                        height: 500px;       /* ↑ bump this up for a taller chart */
+                        margin: 0 auto;
+                    ">
+                    </div>
                 </div>
-              </div>
+            </div>
 
 
             <h1>What percent of homes in Boston are iBought?*</h1>
