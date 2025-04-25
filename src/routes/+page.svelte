@@ -848,40 +848,69 @@
         }
 
         // 3) set up chart dimensions
-        const margin = { top: 20, right: 30, bottom: 30, left: 50 };
-        const width  = 800  - margin.left - margin.right;
-        const height = 400  - margin.top  - margin.bottom;
+        const margin = { top: 40, right: 40, bottom: 60, left: 70 };
+        const { width: totalW, height: totalH } = container.getBoundingClientRect();
+        const width  = totalW  - margin.left - margin.right;
+        const height = totalH  - margin.top  - margin.bottom;
 
-        // 4) append SVG
+        // 2) Create SVG
         const svg = d3.select("#corp-own-chart")
             .append("svg")
-            .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+            .attr("width", totalW)
+            .attr("height", totalH)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // 5) x and y scales
+        // 3) Scales (same as before)
         const x = d3.scaleLinear()
             .domain(d3.extent(nested, d => d.year))
             .range([0, width]);
-
         const y = d3.scaleLinear()
             .domain([0, d3.max(nested, d => d.avg)]).nice()
             .range([height, 0]);
 
-        // 6) axes
-        svg.append("g")
+        // 4) Draw axes with bigger fonts & strokes
+        const xAxis = svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")))
+            .call(g => g.selectAll(".domain, .tick line")
+                        .attr("stroke-width", 1.5))
+            .call(g => g.selectAll("text")
+                        .style("font-size", "14px")
+                        .attr("dy", "0.6em"));
 
-        svg.append("g")
-            .call(d3.axisLeft(y));
+        const yAxis = svg.append("g")
+            .call(d3.axisLeft(y))
+            .call(g => g.selectAll(".domain, .tick line")
+                        .attr("stroke-width", 1.5))
+            .call(g => g.selectAll("text")
+                        .style("font-size", "14px")
+                        .attr("dx", "-0.4em"));
 
-        // 7) line path
+        // 5) Axis labels
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", height + margin.bottom - 15)
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-weight", "500")
+            .text("Year");
+
+        svg.append("text")
+            .attr("x", -height / 2)
+            .attr("y", -margin.left + 20)
+            .attr("transform", "rotate(-90)")
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-weight", "500")
+            .text("Average Corporate Ownership Rate (%)");
+
+        // 6) The line itself
         svg.append("path")
             .datum(nested)
             .attr("fill", "none")
             .attr("stroke", "#4f384c")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 3)
             .attr("d", d3.line()
                 .x(d => x(d.year))
                 .y(d => y(d.avg))
@@ -1092,7 +1121,19 @@
             <div class="after-todo">  
                 
             <!--- THIS IS WHERE THE GRAPH SHOULD GO -->
-            <div id="corp-own-chart" style="width:100%; max-width:800px; height:400px; margin:0 auto;"></div>
+            <div class="chart-wrapper" style="max-width:900px; margin:3em auto; text-align:center;">
+                <h2 style="font-size:1.8rem; font-weight:600; color:#4f384c; margin-bottom:0.5rem;">
+                  Corporate Ownership Rate Over Time
+                </h2>
+                <div
+                  id="corp-own-chart"
+                  style="
+                    width: 100%;
+                    height: 500px;       /* ↑ bump this up for a taller chart */
+                    margin: 0 auto;
+                  ">
+                </div>
+              </div>
 
 
             <h1>What percent of homes in Boston are iBought?*</h1>
