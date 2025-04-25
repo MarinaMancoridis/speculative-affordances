@@ -503,7 +503,7 @@
     import mapboxgl from "mapbox-gl";
     import * as d3 from "d3";
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
@@ -515,6 +515,8 @@
     const rows = 10;
     const cols = 10;
     const totalCells = rows * cols;
+    console.log("[corp-chart] script loaded");
+
 
     // 1) Import all 25 originals and 25 modifieds
     import house1   from "./../data/house1.png";
@@ -669,8 +671,6 @@
     }
     $: bubblesY = delays.map(d => calcBubbleY(pageProgress - d));
 
-    // DEBUG — show in page to confirm values change
-    $: console.log({ scrollProgress, zoomP, scale, opacity });
 
     // compute how many images to replace
     $: replaceCount =
@@ -789,6 +789,9 @@
             .range([0, 25]);
 
     onMount(async () => {
+        await tick();
+        console.log("[corp-chart] onMount fired");
+
         const text = "What happens when a machine becomes a buyer?";
         const el = document.getElementById("typewriter");
         let index = 0;
@@ -806,6 +809,84 @@
 
         updateProgress();                        // init
         window.addEventListener('scroll', updateProgress);
+
+        // ------------ marina's corporate ownership chart ------------
+        // 1) load & preprocess corporate_ownership.csv
+        const url = `${base}/data/corporate_ownership.csv`;
+        console.log("about to process corporate ownership");
+        console.log("Fetching CSV from:", url);
+
+        let corpData;
+        try {
+            corpData = await d3.csv(url, d => ({
+            year:  +d.Year,
+            corp_own_rate: +d.corp_own_rate
+            }));
+        } catch (e) {
+            console.error("Error loading CSV:", e);
+            return;
+        }
+        console.log("corpData rows:", corpData.length, corpData.slice(0,3));
+
+        // 2) group by year and compute mean corp_own_rate
+        // now compute the grouped averages
+        const nested = d3.rollups(
+            corpData,
+            v => d3.mean(v, d => d.corp_own_rate),
+            d => d.year
+        ).map(([year, avg]) => ({ year, avg }))
+        .sort((a,b) => a.year - b.year);
+        console.log("nested averages:", nested);
+
+        // check chart container
+        const container = document.getElementById("corp-own-chart");
+        console.log("chart container exists?", !!container, container);
+        
+        if (!container) {
+            console.warn("⚠️ couldn’t find #corp-own-chart in the DOM");
+            return;
+        }
+
+        // 3) set up chart dimensions
+        const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+        const width  = 800  - margin.left - margin.right;
+        const height = 400  - margin.top  - margin.bottom;
+
+        // 4) append SVG
+        const svg = d3.select("#corp-own-chart")
+            .append("svg")
+            .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // 5) x and y scales
+        const x = d3.scaleLinear()
+            .domain(d3.extent(nested, d => d.year))
+            .range([0, width]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(nested, d => d.avg)]).nice()
+            .range([height, 0]);
+
+        // 6) axes
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+        svg.append("g")
+            .call(d3.axisLeft(y));
+
+        // 7) line path
+        svg.append("path")
+            .datum(nested)
+            .attr("fill", "none")
+            .attr("stroke", "#4f384c")
+            .attr("stroke-width", 2)
+            .attr("d", d3.line()
+                .x(d => x(d.year))
+                .y(d => y(d.avg))
+            );
+        // -------------------------------------------------------------------
 
         // Get Zillow Data
         const jsonResponse = await fetch(`${base}/data/zillow_data.json`)
@@ -894,7 +975,6 @@
             minZoom: 10,
             maxZoom: 18
         });
-
     });
 
 </script>
@@ -1009,7 +1089,11 @@
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
 
-            <div class="after-todo">    
+            <div class="after-todo">  
+                
+            <!--- THIS IS WHERE THE GRAPH SHOULD GO -->
+            <div id="corp-own-chart" style="width:100%; max-width:800px; height:400px; margin:0 auto;"></div>
+
 
             <h1>What percent of homes in Boston are iBought?*</h1>
             <p> TO DO: add interactive question</p>
