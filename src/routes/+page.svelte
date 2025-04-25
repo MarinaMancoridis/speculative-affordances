@@ -466,7 +466,7 @@
         position: fixed;
         top: 0;
         right: 0;
-        width: 20vw;
+        width: 30vw;     /* wider strip on the right */
         height: 100vh;
         pointer-events: none;
         z-index: 10;
@@ -474,27 +474,27 @@
 
     .bubbles .bubble {
         position: absolute;
-        width: 6vw;               /* make the circles bigger */
-        height: 6vw;              /* keep them square */
-        background: #fff;         /* white circle */
-        border-radius: 50%;       /* make it round */
-        display: flex;            /* center the <img> inside */
+        width: 8vw;      /* bigger circles */
+        height: 8vw;
+        background: #fff;  
+        border-radius: 50%;
+        display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-        /* spread them evenly */
-        .bubbles .bubble:nth-child(1) { left:   0%; }
-        .bubbles .bubble:nth-child(2) { left:  25%; }
-        .bubbles .bubble:nth-child(3) { left:  50%; }
-        .bubbles .bubble:nth-child(4) { left:  75%; }
+    /* spread them out inside that 30vw strip */
+    .bubbles .bubble:nth-child(1) { left:  5%; }
+    .bubbles .bubble:nth-child(2) { left: 30%; }
+    .bubbles .bubble:nth-child(3) { left: 55%; }
+    .bubbles .bubble:nth-child(4) { left: 80%; }
 
-        .bubbles .bubble img {
-            max-width: 80%;
-            max-height: 80%;
-            object-fit: contain;
-        }
+    .bubbles .bubble img {
+        max-width: 80%;
+        max-height: 80%;
+        object-fit: contain;
+    }
 
 </style>
 
@@ -628,6 +628,16 @@
         if (pageProgress < 0.5) return 35 + ((pageProgress - 0.45) / 0.05) * 65;
         return 100;
     })();
+    // “delay” (in page-progress units) for each of the 4 bubbles
+    const delays = [0, 0.02, 0.04, 0.06];
+    function calcBubbleY(p) {
+        if (p < 0.2)    return -10;
+        if (p < 0.4)    return -10 + ((p - 0.2) / 0.2) * 50;
+        if (p < 0.45)   return  40 - ((p - 0.4) / 0.05) * 5;
+        if (p < 0.5)    return  35 + ((p - 0.45) / 0.05) * 65;
+                        return 100;
+    }
+    $: bubblesY = delays.map(d => calcBubbleY(pageProgress - d));
 
     // DEBUG — show in page to confirm values change
     $: console.log({ scrollProgress, zoomP, scale, opacity });
@@ -923,18 +933,11 @@
         <!-- bubble falling -->
         {#if pageProgress >= 0.2 && pageProgress <= 0.5}
             <div class="bubbles">
-                <div class="bubble" style="top: {bubbleY}vh;">
-                <img src={zillowlogo}    alt="Zillow" />
+                {#each [zillowlogo, opendoorlogo, offerpadlogo, redfinlogo] as logo, i}
+                <div class="bubble" style="top: {bubblesY[i]}vh;">
+                    <img src={logo} alt="iBuyer logo" />
                 </div>
-                <div class="bubble" style="top: {bubbleY}vh;">
-                <img src={opendoorlogo}  alt="Opendoor" />
-                </div>
-                <div class="bubble" style="top: {bubbleY}vh;">
-                <img src={offerpadlogo}  alt="Offerpad" />
-                </div>
-                <div class="bubble" style="top: {bubbleY}vh;">
-                <img src={redfinlogo}    alt="Redfin" />
-                </div>
+                {/each}
             </div>
         {/if}
 
