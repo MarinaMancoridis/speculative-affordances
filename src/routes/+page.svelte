@@ -462,6 +462,40 @@
             drop-shadow(0 -8px 0 rgb(226, 173, 228));
     }
 
+    .bubbles {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 20vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .bubbles .bubble {
+        position: absolute;
+        width: 6vw;               /* make the circles bigger */
+        height: 6vw;              /* keep them square */
+        background: #fff;         /* white circle */
+        border-radius: 50%;       /* make it round */
+        display: flex;            /* center the <img> inside */
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+        /* spread them evenly */
+        .bubbles .bubble:nth-child(1) { left:   0%; }
+        .bubbles .bubble:nth-child(2) { left:  25%; }
+        .bubbles .bubble:nth-child(3) { left:  50%; }
+        .bubbles .bubble:nth-child(4) { left:  75%; }
+
+        .bubbles .bubble img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
 </style>
 
 <script>
@@ -533,6 +567,10 @@
     import house23mod from "./../data/house23-modified.png";
     import house24mod from "./../data/house24-modified.png";
     import house25mod from "./../data/house25-modified.png";
+    import redfinlogo from "./../data/redfin.png";
+    import opendoorlogo from "./../data/opendoor.png";
+    import zillowlogo from "./../data/zillow.png";
+    import offerpadlogo from "./../data/offerpad.png";
 
     // 2) Pack them into arrays
     const baseOriginals = [
@@ -581,6 +619,15 @@
 
     $: scale   = 0.1 + zoomP * 0.9;
     $: opacity = zoomP * 1.3;
+
+    // bubble falling functionality
+    $: bubbleY = (() => {
+        if (pageProgress < 0.2) return -10;
+        if (pageProgress < 0.4) return -10 + ((pageProgress - 0.2) / 0.2) * 50;
+        if (pageProgress < 0.45) return 40 - ((pageProgress - 0.4) / 0.05) * 5;
+        if (pageProgress < 0.5) return 35 + ((pageProgress - 0.45) / 0.05) * 65;
+        return 100;
+    })();
 
     // DEBUG — show in page to confirm values change
     $: console.log({ scrollProgress, zoomP, scale, opacity });
@@ -872,6 +919,24 @@
 
         <!-- more content so you can scroll past -->
         <div class="scrolly-step" style="height:20vh"></div>
+
+        <!-- bubble falling -->
+        {#if pageProgress >= 0.2 && pageProgress <= 0.5}
+            <div class="bubbles">
+                <div class="bubble" style="top: {bubbleY}vh;">
+                <img src={zillowlogo}    alt="Zillow" />
+                </div>
+                <div class="bubble" style="top: {bubbleY}vh;">
+                <img src={opendoorlogo}  alt="Opendoor" />
+                </div>
+                <div class="bubble" style="top: {bubbleY}vh;">
+                <img src={offerpadlogo}  alt="Offerpad" />
+                </div>
+                <div class="bubble" style="top: {bubbleY}vh;">
+                <img src={redfinlogo}    alt="Redfin" />
+                </div>
+            </div>
+        {/if}
 
 
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
