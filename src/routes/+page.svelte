@@ -497,6 +497,24 @@
         object-fit: contain;
     }
 
+    .chart-text {
+        font-family: 'Roboto', sans-serif;
+        color: #333333;
+        font-size: 1.25em;
+        line-height: 1.7;
+        max-width: 700px;
+        margin: 0 auto 1.5em;
+    }
+
+    /* match the narrative headings’ font family, but keep your chart-title styling */
+    .chart-title {
+        font-family: 'Roboto', sans-serif;
+        color: #4f384c;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+    }
+
 </style>
 
 <script>
@@ -848,20 +866,21 @@
         }
 
         // 3) set up chart dimensions
-        const margin = { top: 40, right: 40, bottom: 60, left: 70 };
+        // 1) Bigger margins to make room for larger labels
+        const margin = { top: 40, right: 20, bottom: 100, left: 100 };
         const { width: totalW, height: totalH } = container.getBoundingClientRect();
         const width  = totalW  - margin.left - margin.right;
         const height = totalH  - margin.top  - margin.bottom;
 
-        // 2) Create SVG
+        // 2) Build the SVG
         const svg = d3.select("#corp-own-chart")
-            .append("svg")
+        .append("svg")
             .attr("width", totalW)
             .attr("height", totalH)
-            .append("g")
+        .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // 3) Scales (same as before)
+        // 3) Scales
         const x = d3.scaleLinear()
             .domain(d3.extent(nested, d => d.year))
             .range([0, width]);
@@ -869,51 +888,58 @@
             .domain([0, d3.max(nested, d => d.avg)]).nice()
             .range([height, 0]);
 
-        // 4) Draw axes with bigger fonts & strokes
-        const xAxis = svg.append("g")
+        // 4) Axis generators with extra tick‐padding
+        const xAxis = d3.axisBottom(x)
+            .tickFormat(d3.format("d"))
+            .tickPadding(15);
+        const yAxis = d3.axisLeft(y)
+            .tickPadding(15);
+
+        // 5) Draw X axis
+        svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).tickFormat(d3.format("d")))
-            .call(g => g.selectAll(".domain, .tick line")
-                        .attr("stroke-width", 1.5))
-            .call(g => g.selectAll("text")
-                        .style("font-size", "14px")
-                        .attr("dy", "0.6em"));
+            .call(xAxis)
+        .selectAll("text")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "16px");
 
-        const yAxis = svg.append("g")
-            .call(d3.axisLeft(y))
-            .call(g => g.selectAll(".domain, .tick line")
-                        .attr("stroke-width", 1.5))
-            .call(g => g.selectAll("text")
-                        .style("font-size", "14px")
-                        .attr("dx", "-0.4em"));
+        // 6) Draw Y axis
+        svg.append("g")
+            .call(yAxis)
+        .selectAll("text")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "16px");
 
-        // 5) Axis labels
+        // 7) X‐axis label (bigger, pushed further down)
         svg.append("text")
             .attr("x", width / 2)
-            .attr("y", height + margin.bottom - 15)
+            .attr("y", height + margin.bottom - 30)  // farther from axis
             .attr("text-anchor", "middle")
-            .style("font-size", "16px")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "18px")
             .style("font-weight", "500")
             .text("Year");
 
+        // 8) Y‐axis label (bigger, pushed further left)
         svg.append("text")
+            .attr("transform", `rotate(-90)`)
             .attr("x", -height / 2)
-            .attr("y", -margin.left + 20)
-            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left + 30)           // more negative = further left
             .attr("text-anchor", "middle")
-            .style("font-size", "16px")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "18px")
             .style("font-weight", "500")
             .text("Average Corporate Ownership Rate (%)");
 
-        // 6) The line itself
+        // 9) Your line (unchanged)
         svg.append("path")
             .datum(nested)
             .attr("fill", "none")
             .attr("stroke", "#4f384c")
             .attr("stroke-width", 3)
             .attr("d", d3.line()
-                .x(d => x(d.year))
-                .y(d => y(d.avg))
+            .x(d => x(d.year))
+            .y(d => y(d.avg))
             );
         // -------------------------------------------------------------------
 
@@ -1122,7 +1148,20 @@
                 
             <!--- THIS IS WHERE THE GRAPH SHOULD GO -->
             <div class="chart-wrapper" style="max-width:900px; margin:3em auto; text-align:center;">
-                <h2 style="font-size:1.8rem; font-weight:600; color:#4f384c; margin-bottom:0.5rem;">
+                  <!-- 1) Descriptive text block -->
+                <div class="chart-text" style="max-width:700px; margin:0 auto 1.5em; font-size:1rem; line-height:1.6;">
+                    <p>
+                    Over the past two decades, the fraction of homes bought by large corporate “iBuyers” has steadily grown.
+                    This chart shows how the average corporate ownership rate rose from under 0.5% in 2005 to nearly 3% by 2021,
+                    highlighting both the speed and scale at which algorithmic buyers have entered the Boston market.
+                    </p>
+                    <p>
+                    Notice the particularly sharp uptick around 2018, after which several new entrants dramatically increased
+                    their purchasing volume.
+                    </p>
+                </div>
+
+                <h2 style="chart-title">
                   Corporate Ownership Rate Over Time
                 </h2>
                 <div
