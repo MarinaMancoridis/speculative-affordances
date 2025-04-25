@@ -476,13 +476,13 @@
         position: absolute;
         width: 10vw;                /* bigger circle */
         height: 10vw;
-        background: #fff;
+        background: #fffff7;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         /* stronger drop-shadow under each bubble */
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
     }
 
     /* now space them at 30% increments across that 35vw strip */
@@ -622,45 +622,50 @@
     $: opacity = zoomP * 1.3;
 
     // bubble falling functionality
-    // timing control (just edit these!)
-    const fallStart   = 0.7;  // when they begin to drop
-    const fallEnd     = 0.65;  // when they reach the bottom of the first drop
-    const bounceEnd   = 0.70;  // when the bounce finishes
-    const leaveEnd    = 0.9;  // when they exit at the bottom
+    // control points (in page‐progress units)
+    const fallStart = 0.25;
+    const fallEnd   = 0.265;
+    const bounceEnd = 0.280;
+    const leaveEnd  = 0.35;
 
-    // position control (edit to change heights)
-    const startY       = -10;  // vh, start off-screen
-    const peakY        =  40;  // vh, drop destination before bounce
-    const bounceHeight =  55;  // vh, how much they bounce up
-    const endY         = 100;  // vh, exit off-screen bottom
+    // Y positions (vh)
+    const startY       = -20;  // off‐screen top
+    const peakY        =  40;  // bottom of first drop
+    const bounceUp    =  15;    // how much to bounce up
+    const bounceY     =  peakY - bounceUp;  // 25
+    const endY         = 100;  // off‐screen bottom
 
-    $: bubbleY = (() => {
-        if (pageProgress < fallStart) {
+    // small delays to stagger each bubble
+    const delays = [0, 0.015, 0.03, 0.045];
+
+    function clamp01(t) {
+        return t < 0 ? 0 : t > 1 ? 1 : t;
+    }
+
+    function lerp(a, b, t) {
+        return a + (b - a) * clamp01(t);
+    }
+
+    function calcBubbleY(p) {
+        if (p < fallStart) {
         return startY;
         }
-        if (pageProgress < fallEnd) {
-        const t = (pageProgress - fallStart) / (fallEnd - fallStart);
-        return startY + t * (peakY - startY);
+        if (p < fallEnd) {
+        // drop from startY → peakY
+        const t = (p - fallStart) / (fallEnd - fallStart);
+        return lerp(startY, peakY, t);
         }
-        if (pageProgress < bounceEnd) {
-        const t = (pageProgress - fallEnd) / (bounceEnd - fallEnd);
-        return peakY - t * bounceHeight;
+        if (p < bounceEnd) {
+        // bounce from peakY → bounceY
+        const t = (p - fallEnd) / (bounceEnd - fallEnd);
+        return lerp(peakY, bounceY, t);
         }
-        if (pageProgress < leaveEnd) {
-        const t = (pageProgress - bounceEnd) / (leaveEnd - bounceEnd);
-        // after bounce their starting point is (peakY - bounceHeight)
-        return (peakY - bounceHeight) + t * (endY - (peakY - bounceHeight));
+        if (p < leaveEnd) {
+        // exit from bounceY → endY
+        const t = (p - bounceEnd) / (leaveEnd - bounceEnd);
+        return lerp(bounceY, endY, t);
         }
         return endY;
-    })();
-    // “delay” (in page-progress units) for each of the 4 bubbles
-    const delays = [0, 0.05, 0.03, 0.08];
-    function calcBubbleY(p) {
-        if (p < 0.2)    return -10;
-        if (p < 0.4)    return -10 + ((p - 0.2) / 0.2) * 50;
-        if (p < 0.45)   return  40 - ((p - 0.4) / 0.05) * 5;
-        if (p < 0.5)    return  35 + ((p - 0.45) / 0.05) * 65;
-                        return 100;
     }
     $: bubblesY = delays.map(d => calcBubbleY(pageProgress - d));
 
@@ -975,7 +980,7 @@
                     </p>
 
                     <p>
-                        Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Redfin, and Offerpad have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
+                        Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Offerpad, and Redfin have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
                     </p>
 
                     <p>
