@@ -465,8 +465,8 @@
     .bubbles {
         position: fixed;
         top: 0;
-        right: 0;
-        width: 30vw;     /* wider strip on the right */
+        right: 10vw;
+        width: 35vw;
         height: 100vh;
         pointer-events: none;
         z-index: 10;
@@ -474,21 +474,22 @@
 
     .bubbles .bubble {
         position: absolute;
-        width: 8vw;      /* bigger circles */
-        height: 8vw;
-        background: #fff;  
+        width: 10vw;                /* bigger circle */
+        height: 10vw;
+        background: #fff;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        /* stronger drop-shadow under each bubble */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
-    /* spread them out inside that 30vw strip */
-    .bubbles .bubble:nth-child(1) { left:  5%; }
+    /* now space them at 30% increments across that 35vw strip */
+    .bubbles .bubble:nth-child(1) { left: 0%;  }
     .bubbles .bubble:nth-child(2) { left: 30%; }
-    .bubbles .bubble:nth-child(3) { left: 55%; }
-    .bubbles .bubble:nth-child(4) { left: 80%; }
+    .bubbles .bubble:nth-child(3) { left: 60%; }
+    .bubbles .bubble:nth-child(4) { left: 90%; }
 
     .bubbles .bubble img {
         max-width: 80%;
@@ -621,15 +622,39 @@
     $: opacity = zoomP * 1.3;
 
     // bubble falling functionality
+    // timing control (just edit these!)
+    const fallStart   = 0.7;  // when they begin to drop
+    const fallEnd     = 0.65;  // when they reach the bottom of the first drop
+    const bounceEnd   = 0.70;  // when the bounce finishes
+    const leaveEnd    = 0.9;  // when they exit at the bottom
+
+    // position control (edit to change heights)
+    const startY       = -10;  // vh, start off-screen
+    const peakY        =  40;  // vh, drop destination before bounce
+    const bounceHeight =  55;  // vh, how much they bounce up
+    const endY         = 100;  // vh, exit off-screen bottom
+
     $: bubbleY = (() => {
-        if (pageProgress < 0.2) return -10;
-        if (pageProgress < 0.4) return -10 + ((pageProgress - 0.2) / 0.2) * 50;
-        if (pageProgress < 0.45) return 40 - ((pageProgress - 0.4) / 0.05) * 5;
-        if (pageProgress < 0.5) return 35 + ((pageProgress - 0.45) / 0.05) * 65;
-        return 100;
+        if (pageProgress < fallStart) {
+        return startY;
+        }
+        if (pageProgress < fallEnd) {
+        const t = (pageProgress - fallStart) / (fallEnd - fallStart);
+        return startY + t * (peakY - startY);
+        }
+        if (pageProgress < bounceEnd) {
+        const t = (pageProgress - fallEnd) / (bounceEnd - fallEnd);
+        return peakY - t * bounceHeight;
+        }
+        if (pageProgress < leaveEnd) {
+        const t = (pageProgress - bounceEnd) / (leaveEnd - bounceEnd);
+        // after bounce their starting point is (peakY - bounceHeight)
+        return (peakY - bounceHeight) + t * (endY - (peakY - bounceHeight));
+        }
+        return endY;
     })();
     // “delay” (in page-progress units) for each of the 4 bubbles
-    const delays = [0, 0.02, 0.04, 0.06];
+    const delays = [0, 0.05, 0.03, 0.08];
     function calcBubbleY(p) {
         if (p < 0.2)    return -10;
         if (p < 0.4)    return -10 + ((p - 0.2) / 0.2) * 50;
