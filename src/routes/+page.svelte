@@ -594,6 +594,27 @@
         color: #644E8F;
     }
 
+    .dialogue-box {
+        position: absolute;
+        background: #ffffff;
+        color: #333333;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.4;
+        padding: 0.75em 1em;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        max-width: 240px;           /* wrap around 240px */
+        white-space: normal;        /* allow wrapping */
+        pointer-events: none;       /* never block scrolling */
+        transform: translate(-50%, -100%); /* center above point */
+        display: none;              /* hidden until needed */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.2s ease;
+        z-index: 1000;              /* float above everything */
+        text-align: left;
+    }
+
 </style>
 
 <script>
@@ -940,6 +961,17 @@
         .sort((a,b) => a.year - b.year);
         console.log("nested averages:", nested);
 
+        const descriptions = {
+            2011: "Research shows that there was no single institutional investor who owned more than 1,000 single-family homes in America [1].",
+            2014: "Opendoor releases their “iBuyer” model. This model used algorithms to make near-instant, cash offers for home. This formally launched its platform as a direct buyer of homes [4].",
+            2015: "Collectively, institutional investors owned 170,000 to 300,000 homes [1].",
+            2017: "Zillow piloted its “instant offers” program in Orlando and Las Vegas, giving sellers the ability to compare cash bids from select investors with local agent market appraisals [2].",
+            2018: "Zillow shifted from facilitating offers to purchasing homes outright, directly competing with Opendoor; its first acquisition was a four-bedroom bungalow in Arizona, and by quarter’s end it had bought 19 Phoenix-area properties [2].",
+            2020: "Operating in 25 markets, Zillow drew criticism by hiring full-time, salaried agents for its iBuying arm—an initiative Zillow argued improved user experience, but many U.S. realtors viewed as an aggressive market incursion [2].",
+            2022: "The FTC charged Opendoor with misleading homeowners by promising they would receive true market value for their homes [3].",
+            2024: "Following the FTC investigation, nearly 62 million dollars in refunds were issued to sellers who had been misled by Opendoor Labs’ online listing service [3]."
+        };
+
         // check chart container
         const container = document.getElementById("corp-own-chart");
         console.log("chart container exists?", !!container, container);
@@ -1065,10 +1097,40 @@
 
         function drawOnScroll() {
             if (!drawingActive) return;
-
             const delta = window.scrollY - startScrollY;
-            const prog  = Math.max(0, Math.min(1, delta / window.innerHeight));
+            const prog  = clamp01(delta / window.innerHeight);
             path.attr('stroke-dashoffset', L * (1 - prog));
+
+            // show tooltip only while drawing
+            const tooltip = document.getElementById('chart-tooltip');
+            if (prog > 0 && prog < 1) {
+                // 1) compute the exact point on the path
+                const pt = path.node().getPointAtLength(prog * L);
+
+                // 2) position tooltip (accounting for margins)
+                const svgContainer = document.getElementById('corp-own-chart');
+                const { top: svgTop, left: svgLeft } = svgContainer.getBoundingClientRect();
+                const { top: parentTop, left: parentLeft } = stickyContainer.getBoundingClientRect();
+
+                tooltip.style.left = `${parentLeft + (svgLeft - parentLeft) + pt.x + margin.left}px`;
+                tooltip.style.top  = `${parentTop + (svgTop - parentTop) + pt.y + margin.top}px`;
+
+                // 3) pick the nearest year
+                const bisect = d3.bisector(d => d.year).left;
+                const idx = Math.min(nested.length - 1, bisect(nested, x.invert(pt.x)));
+                const year = nested[idx].year;
+                const description  = descriptions[year];
+
+                if (description) {
+                    tooltip.innerText   = `${description}`;
+                    tooltip.style.display = 'block';
+                } else {
+                    
+                }
+                                
+            } else {
+                tooltip.style.display = 'none';
+            }
 
             if (prog >= 1) {
                 drawingActive = false;
@@ -1321,6 +1383,7 @@
                     <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
                 </div>
                 <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
+                    <div id="chart-tooltip" class="dialogue-box"></div>
                     <h2 class="chart-title">Corporate Ownership Rate Over Time</h2>
                     <div id="corp-own-chart" style="width:100%; height:500px;"></div>
                 </div>
