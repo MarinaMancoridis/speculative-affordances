@@ -515,13 +515,23 @@
         margin: 0 0 0.5rem;
     }
 
-    /* wrap just the chart in a sticky container when drawing */
-    #corp-chart-wrapper.sticky {
+   /* the container we’ll flip on/off */
+    #sticky-container {
+        /* locked in place only when we add .sticky */
+        position: relative;
+    }
+
+    #sticky-container.sticky {
         position: sticky;
         top: 0;
-        z-index: 2;           /* sit above the grid and everything else */
-        background: white;    /* block what's underneath */
+        /* optional extras: */
+        z-index: 10;
+        /* if you need full-width: */
+        width: 100%;
+        /* background to cover anything behind it: */
+        background: white;
     }
+
 
 </style>
 
@@ -942,6 +952,7 @@
         // 9) Your line (unchanged)
         const line = svg.append("path")
             .datum(nested)
+            .attr("class", "ownership-line")    // ← add this
             .attr("fill", "none")
             .attr("stroke", "#4f384c")
             .attr("stroke-width", 3)
@@ -951,47 +962,66 @@
         );
 
         // 10) calculate total length for dash‐array trick
-        const totalLength = line.node().getTotalLength();
+        // — get references —'
+        const stickyContainer = document.getElementById('sticky-container');
+        const wrapper = document.getElementById('chart-wrapper');
+        console.log('wrapper is', wrapper);
+        const path            = svg.select('.ownership-line');
+        const L               = path.node().getTotalLength();
 
-        // initialize so it’s completely hidden
-        const L = line.node().getTotalLength();
-        line
-        .attr("stroke-dasharray", L)
-        .attr("stroke-dashoffset", L);
+        // hide the line
+        path
+            .attr('stroke-dasharray', L)
+            .attr('stroke-dashoffset', L);
 
-        const wrapper = document.getElementById("corp-chart-wrapper");
+        let drawingActive = false;
+        const stickObserver = new IntersectionObserver(
+            ([entry]) => {
+                // only fire when the wrapper is 100% inside the viewport
+                if (entry.intersectionRatio === 1 && !drawingActive) {
+                console.log('→ pin and start draw');
+                stickyContainer.classList.add('sticky');
+                drawingActive = true;
+                startScrollY = window.scrollY;
+                window.addEventListener('scroll', drawOnScroll, { passive: true });
+                stickObserver.disconnect();
+                }
+            },
+            {
+                threshold: 1.0   // wait until 100% of the wrapper is visible
+            }
+        );
 
-        // 2) initialize hidden + sticky
-        line
-        .attr("stroke-dasharray", L)
-        .attr("stroke-dashoffset", L);
-        wrapper.classList.add("sticky");
+        stickObserver.observe(wrapper);
 
-        // 3) compute scroll positions
-        const freezeStart = wrapper.offsetTop;
-        // draw over exactly one viewport height:
-        const freezeEnd   = wrapper.offsetTop + window.innerHeight;
+        // 11) scroll event to animate the line
+        function clamp01(t) {
+            return t < 0 ? 0 : t > 1 ? 1 : t;
+        }
+        let startScrollY = window.scrollY;
+        const maxScrollDelta = window.innerHeight;
 
-        // helper
-        function clamp01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-        // 4) onScroll
         function drawOnScroll() {
-        const y = window.scrollY;
-        // progress 0→1 as you scroll from freezeStart→freezeEnd
-        let p = (y - freezeStart) / (freezeEnd - freezeStart);
-        p = clamp01(p);
+        if (!drawingActive) return;
+        const delta = window.scrollY - startScrollY;
+        const prog  = clamp01(delta / maxScrollDelta);
+        path.attr('stroke-dashoffset', L * (1 - prog));
 
-        // reveal the line
-        line.attr("stroke-dashoffset", L * (1 - p));
-
-        // once fully drawn, drop the sticky
-        if (p >= 1) wrapper.classList.remove("sticky");
-        else        wrapper.classList.add("sticky");
+        if (prog >= 1) {
+            console.log('→ done, unpin');
+            drawingActive = false;
+            stickyContainer.classList.remove('sticky');
+            window.removeEventListener('scroll', drawOnScroll);
+        }
         }
 
-        // 5) bind & kick off
-        window.addEventListener("scroll", drawOnScroll, { passive: true });
+// in case you’re already scrolled past when mounting
+drawOnScroll();
+
+
+
+        window.addEventListener('scroll', drawOnScroll, { passive: true });
+        // one initial draw in case you’re already half-way scrolled:
         drawOnScroll();
         
         // -------------------------------------------------------------------
@@ -1199,176 +1229,166 @@
 
             <div class="after-todo">  
                 
-            <div id="corp-chart-wrapper">
-                <div class="chart-wrapper" style="max-width:900px; margin:3em auto; text-align:center;">
-                    <!-- 1) Descriptive text block -->
-                    <div class="chart-text">
-                        <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
-                        <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
-                    </div>
-
-                    <h2 style="chart-title">
-                    Corporate Ownership Rate Over Time
-                    </h2>
-                    <div
-                    id="corp-own-chart"
-                    style="
-                        width: 100%;
-                        height: 500px;       /* ↑ bump this up for a taller chart */
-                        margin: 0 auto;
-                    ">
-                    </div>
+            <div id="sticky-container">
+                <div class="chart-text">
+                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
+                    <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
+                </div>
+                <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
+                    <h2 class="chart-title">Corporate Ownership Rate Over Time</h2>
+                    <div id="corp-own-chart" style="width:100%; height:500px;"></div>
                 </div>
             </div>
 
 
-            <h1>What percent of homes in Boston are iBought?*</h1>
-            <p> TO DO: add interactive question</p>
-            <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
-            <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
-            
-            <br><br>
-            <h1>Which of these homes is iBought?</h1>
-            <p>To Do: Add clickable images and question answer</p>
-            
-            <br><br>
-            <h1>Anatomy of an Average iBought Home</h1>
-             <p>GOAL: add clickable home to learn facts</p>
-            <p>To Do: Add average price</p>
-            <p>To Do: Add average number of bedrooms</p>
-            <p>To Do: Add average number of bathrooms</p>
-            <p>To Do: Add average number of square feet</p>
-            <p>To Do: Add average year built</p>
-            <p>To Do: Add aditional features that are more unique to iBought homes</p>
-            <p>To Do: Add takeaway -> Affordable housing is targeted!</p>
-            <p>To Do: Add info about how iBought homes are typically sold to investors not occupant-owners</p>
-            <br><br>
+            <div class="post-chart">
+                <h1>What percent of homes in Boston are iBought?*</h1>
+                <p> TO DO: add interactive question</p>
+                <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
+                <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
+                
+                <br><br>
+                <h1>Which of these homes is iBought?</h1>
+                <p>To Do: Add clickable images and question answer</p>
+                
+                <br><br>
+                <h1>Anatomy of an Average iBought Home</h1>
+                <p>GOAL: add clickable home to learn facts</p>
+                <p>To Do: Add average price</p>
+                <p>To Do: Add average number of bedrooms</p>
+                <p>To Do: Add average number of bathrooms</p>
+                <p>To Do: Add average number of square feet</p>
+                <p>To Do: Add average year built</p>
+                <p>To Do: Add aditional features that are more unique to iBought homes</p>
+                <p>To Do: Add takeaway -> Affordable housing is targeted!</p>
+                <p>To Do: Add info about how iBought homes are typically sold to investors not occupant-owners</p>
+                <br><br>
 
-            <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
-            
-            <!-- wrapper that holds text on the left and legend on the right -->
-            <div class="legend-text-wrapper" style="
-                    display: flex;
-                    gap: 2em;
-                    align-items: flex-start;
-                    margin-bottom: 2em;
-                    font-size: 1.2em;
-                ">
+                <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
+                
+                <!-- wrapper that holds text on the left and legend on the right -->
+                <div class="legend-text-wrapper" style="
+                        display: flex;
+                        gap: 2em;
+                        align-items: flex-start;
+                        margin-bottom: 2em;
+                        font-size: 1.2em;
+                    ">
 
-                <!-- left: all your step-4 & last-step text + slider -->
-                <div>
-                    <p>TO DO: add slider instead to show where iBought homes are then add redlining map on top as part of slider (see https://rachelblowes.github.io/FP2-Interactive-Map/)</p>
-                    <p>TO DO: eventual goal to add drop down with gentrification measures (i.e., number of Airbnbs, Landis, Freeman) and corporate ownership by <b>census tract</b> to toggle between</p>
-                    <p>TO DO: separate Zestimates into another visualization that is a bar chart changing by time (reuse Zestimate slider) with y-axis (average Zestimate) and x-axis (types of redlined zones)</p>
-                    <p>TO DO: takeaway is that there are historical implications of redlining that still infuence housing pricing and Zestimates</p>
+                    <!-- left: all your step-4 & last-step text + slider -->
+                    <div>
+                        <p>TO DO: add slider instead to show where iBought homes are then add redlining map on top as part of slider (see https://rachelblowes.github.io/FP2-Interactive-Map/)</p>
+                        <p>TO DO: eventual goal to add drop down with gentrification measures (i.e., number of Airbnbs, Landis, Freeman) and corporate ownership by <b>census tract</b> to toggle between</p>
+                        <p>TO DO: separate Zestimates into another visualization that is a bar chart changing by time (reuse Zestimate slider) with y-axis (average Zestimate) and x-axis (types of redlined zones)</p>
+                        <p>TO DO: takeaway is that there are historical implications of redlining that still infuence housing pricing and Zestimates</p>
+                    </div>
+
+                    <div class="legend-text-wrapper">
+                    <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
+                    <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
+                    <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
+                    
+                    <p>
+                        Notice that homes in
+                        <b><span style="color:#d9838d;">hazardous</span></b> and
+                        <b><span style="color:goldenrod;">definitely declining</span></b>
+                        areas tend to have lower Zestimates and more volatility, suggesting the
+                        long‑lasting effects of historical redlining.
+                    </p>
+
+                    <br><br>
+                    <label style="display: block; margin-top: 1em; color: #333; font-weight: 500;">
+                        <b>Zestimate Year:</b>
+                        <input 
+                        type="range" 
+                        min="{timeScale[0]}" 
+                        max="{timeScale[1]}" 
+                        bind:value={timeIndex} 
+                        style="width: 100%; accent-color: #644E8F; margin-top: 0.25em;"
+                        />
+                        <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
+                        {timeIndex}
+                        </time>
+                    </label>
+                    </div>
+
+                    <!-- right: the legend box -->
+                    <div class="legend-side" style="flex: 0 0 300px;">
+                        <div style="
+                            background: #faf7fa;
+                            color: #000;
+                            border: 1px solid #ccc;
+                            border-radius: 8px;
+                            padding: 1em;
+                            font-size: 0.95em;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        ">
+                            <b>Historic Redlining Map<br/>HOLC District Categories</b>
+                            <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #76a865; border: 1px solid #4f5152; 
+                                            border-radius: 50%; margin-right: 8px;"></span>Best</li>
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #74c3e3; border: 1px solid #4f5152; 
+                                            border-radius: 50%; margin-right: 8px;"></span>Still Desirable</li>
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #ffff00; border: 1px solid #4f5152; 
+                                            border-radius: 50%; margin-right: 8px;"></span>Definitely Declining</li>
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #d9838d; border: 1px solid #4f5152; 
+                                            border-radius: 50%; margin-right: 8px;"></span>Hazardous</li>
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #000; border-radius: 50%; 
+                                            margin-right: 8px;"></span>Industrial/Commercial/Non-Residential</li>
+                            <li><span style="display: inline-block; width: 12px; height: 12px;
+                                            background-color: #fff; border: 1px solid #4f5152; 
+                                            border-radius: 50%; margin-right: 8px;"></span>Not on Historic Maps</li>
+                            </ul>
+                            <strong>Features</strong>
+                            <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
+                            <li>Circle = iBought Home</li>
+                            <li>Size of circle = Zestimate ($$$)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="legend-text-wrapper">
-                <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
-                <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
-                <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
-                
-                <p>
-                    Notice that homes in
-                    <b><span style="color:#d9838d;">hazardous</span></b> and
-                    <b><span style="color:goldenrod;">definitely declining</span></b>
-                    areas tend to have lower Zestimates and more volatility, suggesting the
-                    long‑lasting effects of historical redlining.
-                </p>
+                <!-- main redlining map -->
+                <div id="map">
+                    <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
+                    <svg>
+                        {#key mapViewChanged}
+                            {#each homes as home}
+                                <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
+                                    <title>
+                                        iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
+                                    </title>
+                                </circle> 
+                            {/each}
+                        {/key}
+                    </svg>
+                </div>
 
                 <br><br>
-                <label style="display: block; margin-top: 1em; color: #333; font-weight: 500;">
-                    <b>Zestimate Year:</b>
-                    <input 
-                    type="range" 
-                    min="{timeScale[0]}" 
-                    max="{timeScale[1]}" 
-                    bind:value={timeIndex} 
-                    style="width: 100%; accent-color: #644E8F; margin-top: 0.25em;"
-                    />
-                    <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
-                    {timeIndex}
-                    </time>
-                </label>
-                </div>
+                <!-- fair prices map -->
+                <h1> Are iBought Homes Bought for Fair Prices? </h1>
+                <p> TO DO: add another visualization with iBought homes (highlight homes if were sold for less than market value)</p>
+                <p> TO DO: add more interactive, customized tool tips with image, address, iBuyer, sold for, Zestimate, and potentially other features</p>
+                <p> TO DO: add filter by price difference between sold for and Zestimate (reach goal to filter by features like number of bedrooms)</p>
 
-                <!-- right: the legend box -->
-                <div class="legend-side" style="flex: 0 0 300px;">
-                    <div style="
-                        background: #faf7fa;
-                        color: #000;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        padding: 1em;
-                        font-size: 0.95em;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    ">
-                        <b>Historic Redlining Map<br/>HOLC District Categories</b>
-                        <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #76a865; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Best</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #74c3e3; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Still Desirable</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #ffff00; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Definitely Declining</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #d9838d; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Hazardous</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #000; border-radius: 50%; 
-                                        margin-right: 8px;"></span>Industrial/Commercial/Non-Residential</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #fff; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Not on Historic Maps</li>
-                        </ul>
-                        <strong>Features</strong>
-                        <ul style="list-style: none; padding: 0; margin-top: 0.5em;">
-                        <li>Circle = iBought Home</li>
-                        <li>Size of circle = Zestimate ($$$)</li>
-                        </ul>
-                    </div>
-                </div>
+                <br><br>
+                <h1>Takeaways</h1>
+                <p> TO DO: iBuying is increasing in Boston</p>
+                <p> TO DO: Historical info affects present and AI models</p>
+                <p> TO DO: iBought homes are not bought for fair prices (more affordable housing is especially vulnerable)</p>
+
+                <br><br>
+                <h1>What can we do?</h1>
+                <p> TO DO: Reconsider selling your home to iBuyers and if you do, make sure you are getting a fair price (see this resource)</p>
+                <p> TO DO: Reach out to FTC (here) if you might qualify for reimbursement from Opendoor</p>
+                <p> TO DO: Advocate for better measures of housing (here)</p>
+                <p> TO DO: Better protections against speculation (peititon here)</p>
             </div>
-
-            <!-- main redlining map -->
-            <div id="map">
-                <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
-                <svg>
-                    {#key mapViewChanged}
-                        {#each homes as home}
-                            <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
-                                <title>
-                                    iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
-                                </title>
-                            </circle> 
-                        {/each}
-                    {/key}
-                </svg>
-            </div>
-
-            <br><br>
-            <!-- fair prices map -->
-            <h1> Are iBought Homes Bought for Fair Prices? </h1>
-            <p> TO DO: add another visualization with iBought homes (highlight homes if were sold for less than market value)</p>
-            <p> TO DO: add more interactive, customized tool tips with image, address, iBuyer, sold for, Zestimate, and potentially other features</p>
-            <p> TO DO: add filter by price difference between sold for and Zestimate (reach goal to filter by features like number of bedrooms)</p>
-
-            <br><br>
-            <h1>Takeaways</h1>
-            <p> TO DO: iBuying is increasing in Boston</p>
-            <p> TO DO: Historical info affects present and AI models</p>
-            <p> TO DO: iBought homes are not bought for fair prices (more affordable housing is especially vulnerable)</p>
-
-            <br><br>
-            <h1>What can we do?</h1>
-            <p> TO DO: Reconsider selling your home to iBuyers and if you do, make sure you are getting a fair price (see this resource)</p>
-            <p> TO DO: Reach out to FTC (here) if you might qualify for reimbursement from Opendoor</p>
-            <p> TO DO: Advocate for better measures of housing (here)</p>
-            <p> TO DO: Better protections against speculation (peititon here)</p>
-
         </div>
         </svelte:fragment>
     </Scrolly>
