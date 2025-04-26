@@ -516,20 +516,17 @@
     }
 
    /* the container we’ll flip on/off */
-    #sticky-container {
-        /* locked in place only when we add .sticky */
+   #sticky-container {
         position: relative;
     }
 
     #sticky-container.sticky {
         position: sticky;
         top: 0;
-        /* optional extras: */
         z-index: 10;
-        /* if you need full-width: */
         width: 100%;
-        /* background to cover anything behind it: */
         background: white;
+        transition: position 0.3s ease-out;
     }
 
 
@@ -954,7 +951,7 @@
             .datum(nested)
             .attr("class", "ownership-line")    // ← add this
             .attr("fill", "none")
-            .attr("stroke", "#4f384c")
+            .attr("stroke", "#ad2f4c") // red line
             .attr("stroke-width", 3)
             .attr("d", d3.line()
                 .x(d => x(d.year))
@@ -977,22 +974,18 @@
         let drawingActive = false;
         const stickObserver = new IntersectionObserver(
             ([entry]) => {
-                // only fire when the wrapper is 100% inside the viewport
                 if (entry.intersectionRatio === 1 && !drawingActive) {
-                console.log('→ pin and start draw');
-                stickyContainer.classList.add('sticky');
-                drawingActive = true;
-                startScrollY = window.scrollY;
-                window.addEventListener('scroll', drawOnScroll, { passive: true });
-                stickObserver.disconnect();
+                    stickyContainer.classList.add('sticky');
+                    drawingActive = true;
+                    startScrollY = window.scrollY;
+                    window.addEventListener('scroll', drawOnScroll, { passive: true });
+                    stickObserver.disconnect();
                 }
             },
-            {
-                threshold: 1.0   // wait until 100% of the wrapper is visible
-            }
+            { threshold: 1.0 }
         );
-
         stickObserver.observe(wrapper);
+
 
         // 11) scroll event to animate the line
         function clamp01(t) {
@@ -1002,21 +995,23 @@
         const maxScrollDelta = window.innerHeight;
 
         function drawOnScroll() {
-        if (!drawingActive) return;
-        const delta = window.scrollY - startScrollY;
-        const prog  = clamp01(delta / maxScrollDelta);
-        path.attr('stroke-dashoffset', L * (1 - prog));
+            if (!drawingActive) return;
 
-        if (prog >= 1) {
-            console.log('→ done, unpin');
-            drawingActive = false;
-            stickyContainer.classList.remove('sticky');
-            window.removeEventListener('scroll', drawOnScroll);
-        }
+            const delta = window.scrollY - startScrollY;
+            const prog  = Math.max(0, Math.min(1, delta / window.innerHeight));
+            path.attr('stroke-dashoffset', L * (1 - prog));
+
+            if (prog >= 1) {
+                drawingActive = false;
+                window.removeEventListener('scroll', drawOnScroll);
+                stickyContainer.classList.remove('sticky');
+                const h = stickyContainer.getBoundingClientRect().height;
+                window.scrollBy(0, -h);
+            }
         }
 
-// in case you’re already scrolled past when mounting
-drawOnScroll();
+        // in case you’re already scrolled past when mounting
+        drawOnScroll();
 
 
 
