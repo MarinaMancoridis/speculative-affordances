@@ -497,6 +497,71 @@
         object-fit: contain;
     }
 
+    .home-selection {
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+        margin: 2em 0;
+        flex-wrap: wrap;
+    }
+
+    .home-card-wrapper {
+        flex: 1 1 calc(33.333% - 2em);
+        max-width: calc(33.333% - 2em);
+        display: flex;
+        justify-content: center;
+    }
+
+    .home-card {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        transition: transform 0.3s ease, outline 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: none;
+    }
+
+    .image-container {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    .home-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures cropping to center */
+        transition: filter 0.3s ease;
+    }
+
+    .home-card img.grayscale {
+        filter: grayscale(100%);
+    }
+
+    .home-card.selected {
+        outline: 4px solid #644E8F;
+        transform: scale(1.05);
+    }
+
+    .house-details {
+        margin-top: 2em;
+        padding: 1em;
+        background: #f8f8f8;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .house-details h2 {
+        color: #644E8F;
+    }
+
 </style>
 
 <script>
@@ -857,6 +922,7 @@
                 item.bedrooms = zillowData[item.Address].bedrooms;
                 item.bathrooms = zillowData[item.Address].bathrooms;
                 item.livingAreaValue = zillowData[item.Address].livingAreaValue;
+                item.yearBuilt = zillowData[item.Address].yearBuilt;
                 item.photoURL = zillowData[item.Address].responsivePhotos[0]["mixedSources"]["jpeg"].at(-1)["url"];
             }
             return item;
@@ -1073,83 +1139,18 @@
 
             {#if selectedHouse !== null}
                 <div class="house-details">
-                    <h2>iBought!</h2>
-                    <p>{selectedHouse.Address}</p>
-                    <ul>
-                        <li>Price: {"$" + selectedHouse.price || "Unknown"}</li>
-                        <li>Bedrooms: {selectedHouse.bedrooms || "N/A"}</li>
-                        <li>Bathrooms: {selectedHouse.bathrooms || "N/A"}</li>
-                        <li>Square Feet: {selectedHouse.livingAreaValue || "N/A"}</li>
-                    </ul>
+                    <h2>This is <em>{selectedHouse.Address}</em></h2>
+                    <p>
+                        Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
+                    </p>
+                    <p>
+                        The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms.
+                    </p>
+                    <p>
+                        It spans {selectedHouse.livingAreaValue} square feet of living area total.
+                    </p>
                 </div>
             {/if}
-
-            <style>
-                .home-selection {
-                    display: flex;
-                    justify-content: center;
-                    gap: 2em;
-                    margin: 2em 0;
-                    flex-wrap: wrap;
-                }
-
-                .home-card-wrapper {
-                    flex: 1 1 calc(33.333% - 2em);
-                    max-width: calc(33.333% - 2em);
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .home-card {
-                    width: 100%;
-                    aspect-ratio: 1 / 1; /* Ensures square buttons */
-                    transition: transform 0.3s ease, outline 0.3s ease;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: none;
-                    background: none;
-                }
-
-                .image-container {
-                    width: 100%;
-                    height: 100%;
-                    overflow: hidden;
-                    border-radius: 8px;
-                }
-
-                .home-card img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover; /* Ensures cropping to center */
-                    transition: filter 0.3s ease;
-                }
-
-                .home-card img.grayscale {
-                    filter: grayscale(100%);
-                }
-
-                .home-card.selected {
-                    outline: 4px solid #644E8F;
-                    transform: scale(1.05);
-                }
-
-                .house-details {
-                    margin-top: 2em;
-                    padding: 1em;
-                    background: #f8f8f8;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    max-width: 600px;
-                    margin-left: auto;
-                    margin-right: auto;
-                }
-
-                .house-details h2 {
-                    color: #644E8F;
-                }
-            </style>
             <br><br>
             <h1>Anatomy of an Average iBought Home</h1>
              <p>GOAL: add clickable home to learn facts</p>
