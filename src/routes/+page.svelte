@@ -645,7 +645,7 @@
 
     // zooming functionality         // in vh
     const zoomInStart = 0.1;   // 10% down
-    const zoomPeak    = 0.17;   // 20% down
+    const zoomPeak    = 0.15;   // 20% down
     const zoomOutEnd  = 0.3;   // 30% down
     $: zoomP =
         pageProgress < zoomInStart ? 0
@@ -658,10 +658,10 @@
 
     // bubble falling functionality
     // control points (in page‐progress units)
-    const fallStart = 0.25;
-    const fallEnd   = 0.265;
-    const bounceEnd = 0.280;
-    const leaveEnd  = 0.35;
+    const fallStart = 0.24;
+    const fallEnd   = 0.255;
+    const bounceEnd = 0.270;
+    const leaveEnd  = 0.36;
 
     // Y positions (vh)
     const startY       = -20;  // off‐screen top
