@@ -726,17 +726,17 @@
         ...baseModifieds
     ];
 
-    // start at 33% down, finish at 100%
-    const startScroll = 0.4;
-    const endScroll   = 0.55;
+    // images turning from black to white
+    const startScroll = 0.35;
+    const endScroll   = 0.5;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
     // zooming functionality         // in vh
-    const zoomInStart = 0.1;   // 10% down
-    const zoomPeak    = 0.15;   // 20% down
-    const zoomOutEnd  = 0.3;   // 30% down
+    const zoomInStart = 0.08;   
+    const zoomPeak    = 0.13;  
+    const zoomOutEnd  = 0.3;  
     $: zoomP =
         pageProgress < zoomInStart ? 0
     : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
@@ -748,10 +748,10 @@
 
     // bubble falling functionality
     // control points (in page‐progress units)
-    const fallStart = 0.24;
-    const fallEnd   = 0.255;
-    const bounceEnd = 0.270;
-    const leaveEnd  = 0.36;
+    const fallStart = 0.22;
+    const fallEnd   = 0.235;
+    const bounceEnd = 0.250;
+    const leaveEnd  = 0.3;
 
     // Y positions (vh)
     const startY       = -20;  // off‐screen top
