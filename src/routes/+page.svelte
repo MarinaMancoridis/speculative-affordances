@@ -509,6 +509,11 @@
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
 
+    // Reactive variables for hovered and selected house
+    let hoveredHouse = null;
+    let selectedHouse = null;
+    let notiBoughtHomes = [];
+
     // scroll states
     let scrollProgress = 0;
     const numSteps = 6;
@@ -845,9 +850,30 @@
                 item.zvalues = values;
                 all_times = all_times.concat(times);
                 all_values = all_values.concat(values);
+
+                // home attributes
+                // console.log(JSON.stringify(zillowData[item.address])
+                // item.zillowData = zillowData[item.Address];
+                item.bedrooms = zillowData[item.Address].bedrooms;
+                item.bathrooms = zillowData[item.Address].bathrooms;
+                item.livingAreaValue = zillowData[item.Address].livingAreaValue;
+                item.photoURL = zillowData[item.Address].responsivePhotos[0]["mixedSources"]["jpeg"].at(-1)["url"];
             }
             return item;
         });
+
+        homes = Array.from(new Set(homes.map(home => home.Address)))
+            .map(address => homes.find(home => home.Address === address));
+
+        const selectedHomeAddresses = [
+            "2 Front Street, Natick, MA 01760-6019, USA", 
+            "37 Halliday Street, Boston, MA 02131-2210, USA", 
+            "15 Fensmere Road, Boston, MA 02132-6011, USA"
+        ];
+
+        notiBoughtHomes = homes.filter(home => 
+            selectedHomeAddresses.includes(home.Address)
+        );
 
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
@@ -1017,9 +1043,113 @@
             <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
             
             <br><br>
-            <h1>Which of these homes is iBought?</h1>
-            <p>To Do: Add clickable images and question answer</p>
-            
+            <h1>Which of these homes are <em>not</em> iBought?</h1>
+            <p>Click on a home to select it and learn more about it.</p>
+            <div class="home-selection">
+                {#each notiBoughtHomes as home}
+                    <div class="home-card-wrapper">
+                        <button 
+                            class="home-card" 
+                            on:mouseover={() => hoveredHouse = home} 
+                            on:mouseout={() => hoveredHouse = null} 
+                            on:focus={() => hoveredHouse = home} 
+                            on:blur={() => hoveredHouse = null} 
+                            on:click={() => selectedHouse = home}
+                            class:selected={selectedHouse === home}
+                            aria-pressed={selectedHouse === home}
+                            aria-label={`Select House ${home}`}
+                        >
+                            <div class="image-container">
+                                <img 
+                                    src={home.photoURL} 
+                                    alt={`${home}`} 
+                                    class:grayscale={hoveredHouse !== home && selectedHouse !== home}
+                                />
+                            </div>
+                        </button>
+                    </div>
+                {/each}
+            </div>
+
+            {#if selectedHouse !== null}
+                <div class="house-details">
+                    <h2>iBought!</h2>
+                    <p>{selectedHouse.Address}</p>
+                    <ul>
+                        <li>Price: {"$" + selectedHouse.price || "Unknown"}</li>
+                        <li>Bedrooms: {selectedHouse.bedrooms || "N/A"}</li>
+                        <li>Bathrooms: {selectedHouse.bathrooms || "N/A"}</li>
+                        <li>Square Feet: {selectedHouse.livingAreaValue || "N/A"}</li>
+                    </ul>
+                </div>
+            {/if}
+
+            <style>
+                .home-selection {
+                    display: flex;
+                    justify-content: center;
+                    gap: 2em;
+                    margin: 2em 0;
+                    flex-wrap: wrap;
+                }
+
+                .home-card-wrapper {
+                    flex: 1 1 calc(33.333% - 2em);
+                    max-width: calc(33.333% - 2em);
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .home-card {
+                    width: 100%;
+                    aspect-ratio: 1 / 1; /* Ensures square buttons */
+                    transition: transform 0.3s ease, outline 0.3s ease;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: none;
+                    background: none;
+                }
+
+                .image-container {
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                    border-radius: 8px;
+                }
+
+                .home-card img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* Ensures cropping to center */
+                    transition: filter 0.3s ease;
+                }
+
+                .home-card img.grayscale {
+                    filter: grayscale(100%);
+                }
+
+                .home-card.selected {
+                    outline: 4px solid #644E8F;
+                    transform: scale(1.05);
+                }
+
+                .house-details {
+                    margin-top: 2em;
+                    padding: 1em;
+                    background: #f8f8f8;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    max-width: 600px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .house-details h2 {
+                    color: #644E8F;
+                }
+            </style>
             <br><br>
             <h1>Anatomy of an Average iBought Home</h1>
              <p>GOAL: add clickable home to learn facts</p>
