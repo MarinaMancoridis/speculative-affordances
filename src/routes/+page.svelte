@@ -529,6 +529,70 @@
         transition: position 0.3s ease-out;
     }
 
+    .home-selection {
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+        margin: 2em 0;
+        flex-wrap: wrap;
+    }
+
+    .home-card-wrapper {
+        flex: 1 1 calc(33.333% - 2em);
+        max-width: calc(33.333% - 2em);
+        display: flex;
+        justify-content: center;
+    }
+
+    .home-card {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        transition: transform 0.3s ease, outline 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: none;
+    }
+
+    .image-container {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    .home-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures cropping to center */
+        transition: filter 0.3s ease;
+    }
+
+    .home-card img.grayscale {
+        filter: grayscale(100%);
+    }
+
+    .home-card.selected {
+        outline: 4px solid #644E8F;
+        transform: scale(1.05);
+    }
+
+    .house-details {
+        margin-top: 2em;
+        padding: 1em;
+        background: #f8f8f8;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .house-details h2 {
+        color: #644E8F;
+    }
 
 </style>
 
@@ -1270,9 +1334,46 @@
                 <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
                 
                 <br><br>
-                <h1>Which of these homes is iBought?</h1>
-                <p>To Do: Add clickable images and question answer</p>
-                
+                <h1>Which of these homes are <em>not</em> iBought?</h1>
+                <p>Click on a home to select it and learn more about it.</p>
+                <div class="home-selection">
+                    {#each notiBoughtHomes as home}
+                        <div class="home-card-wrapper">
+                            <button 
+                                class="home-card" 
+                                on:mouseover={() => hoveredHouse = home} 
+                                on:mouseout={() => hoveredHouse = null} 
+                                on:focus={() => hoveredHouse = home} 
+                                on:blur={() => hoveredHouse = null} 
+                                on:click={() => selectedHouse = home}
+                                class:selected={selectedHouse === home}
+                                aria-pressed={selectedHouse === home}
+                                aria-label={`Select House ${home}`}
+                            >
+                                <div class="image-container">
+                                    <img 
+                                        src={home.photoURL} 
+                                        alt={`${home}`} 
+                                        class:grayscale={hoveredHouse !== home && selectedHouse !== home}
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+    
+                {#if selectedHouse !== null}
+                    <div class="house-details">
+                        <h2>This is <em>{selectedHouse.Address}</em></h2>
+                        <p>
+                            Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
+                        </p>
+                        <p>
+                            The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms. It spans {selectedHouse.livingAreaValue} square feet of living area total.
+                        </p>
+                    </div>
+                {/if}
+    
                 <br><br>
                 <h1>Anatomy of an Average iBought Home</h1>
                 <p>GOAL: add clickable home to learn facts</p>
