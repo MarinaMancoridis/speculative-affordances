@@ -1311,6 +1311,7 @@
             },
         });
     });
+
 </script>
 
 <div class="grid-bg">
@@ -1487,7 +1488,7 @@
                 <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 
                 <p>
-                iBought homes tend to be in areas that were historically redlined as hazardous and definitely declining areas, suggesting long‑lasting effects of historical redlining.
+                iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.
                 </p>
 
                 <!-- wrapper that holds text on the left and legend on the right -->
@@ -1505,7 +1506,7 @@
                     <svg>
                         {#key mapViewChangedSwipe}
                             {#each homesSwipe as homeSwipe}
-                                <circle { ...getHomesSwipe(homeSwipe) } r="8" fill="#FFA500" fill-opacity="100%" stroke="black" stroke-opacity="60%">
+                                <circle { ...getHomesSwipe(homeSwipe) } r="5" fill="#FFA500" fill-opacity="100%" stroke="black" stroke-opacity="60%">
                                 </circle> 
                             {/each}
                         {/key}
@@ -1553,6 +1554,9 @@
                     </div>
                 </div>
             </div>
+
+            <h1>Zestimates Over Time</h1> 
+            <div id="zesty"></div>
 
 
             <h1>🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1> 
