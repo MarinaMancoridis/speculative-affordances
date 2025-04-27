@@ -18,7 +18,8 @@
 	"dependencies": {
 		"@turf/boolean-point-in-polygon": "^7.2.0",
 		"d3": "^7.9.0",
-		"mapbox-gl": "^3.11.0",
+		"mapbox-gl": "^3.11.1",
+		"mapbox-gl-compare": "^0.4.1",
 		"svelte-scrolly": "^0.0.4",
 		"turf": "^3.0.14"
 	}

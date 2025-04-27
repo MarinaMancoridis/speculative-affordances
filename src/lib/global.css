@@ -12,10 +12,24 @@ body {
 #map {
     flex: 1;
     width: 100%;
-    height: 500px;
+    height: 600px;
 }
 
 #map svg {
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	pointer-events: none
+}
+
+#mapSwipe {
+    flex: 1;
+    width: 100%;
+    height: 500px;
+}
+
+#mapSwipe svg {
 	position: absolute;
 	z-index: 1;
 	width: 100%;
@@ -33,10 +47,35 @@ header {
 	align-items: baseline;
 }
 
-#redlining {
+h1 {
 	font-size: 36px;
+	padding-top: 3em;
 }
 
 #title {
-	font-size: 48px;
+	font-size: 36px;
+}
+
+h2 {
+	text-align: center;
+}
+
+#takeaways {
+	background-color: #644E8F;
+	color: white;
+	padding: 3em;
+}
+
+#action {
+	background-color: steelblue;
+	color: white;
+	padding: 3em;
+}
+
+h3 {
+	font-size: 36px;
+}
+
+a {
+	color: white;
 }
