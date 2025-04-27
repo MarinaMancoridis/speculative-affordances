@@ -496,24 +496,150 @@
         max-height: 80%;
         object-fit: contain;
     }
+
+    .chart-text {
+        font-family: 'Roboto', sans-serif;
+        color: #333333;
+        font-size: 1.25em;
+        line-height: 1.7;
+        max-width: 700px;
+        margin: 0 auto 1.5em;
+    }
+
+    /* match the narrative headings’ font family, but keep your chart-title styling */
+    .chart-title {
+        font-family: 'Roboto', sans-serif;
+        color: #4f384c;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+    }
+
+   /* the container we’ll flip on/off */
+   #sticky-container {
+        position: relative;
+    }
+
+    #sticky-container.sticky {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+        background: white;
+        transition: position 0.3s ease-out;
+    }
+
+    .home-selection {
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+        margin: 2em 0;
+        flex-wrap: wrap;
+    }
+
+    .home-card-wrapper {
+        flex: 1 1 calc(33.333% - 2em);
+        max-width: calc(33.333% - 2em);
+        display: flex;
+        justify-content: center;
+    }
+
+    .home-card {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        transition: transform 0.3s ease, outline 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: none;
+    }
+
+    .image-container {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    .home-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures cropping to center */
+        transition: filter 0.3s ease;
+    }
+
+    .home-card img.grayscale {
+        filter: grayscale(100%);
+    }
+
+    .home-card.selected {
+        outline: 4px solid #644E8F;
+        transform: scale(1.05);
+    }
+
+    .house-details {
+        margin-top: 2em;
+        padding: 1em;
+        background: #f8f8f8;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .house-details h2 {
+        color: #644E8F;
+    }
+
+    .dialogue-box {
+        position: absolute;
+        background: #ffffff;
+        color: #333333;
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.4;
+        padding: 0.75em 1em;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        max-width: 240px;           /* wrap around 240px */
+        white-space: normal;        /* allow wrapping */
+        pointer-events: none;       /* never block scrolling */
+        transform: translate(-50%, -100%); /* center above point */
+        display: none;              /* hidden until needed */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.2s ease;
+        z-index: 1000;              /* float above everything */
+        text-align: left;
+    }
+
 </style>
 
 <script>
     import mapboxgl from "mapbox-gl";
     import * as d3 from "d3";
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
-    
+
+    // Reactive variables for hovered and selected house
+    let hoveredHouse = null;
+    let selectedHouse = null;
+    let notiBoughtHomes = [];
+
     // scroll states
     let scrollProgress = 0;
     const numSteps = 6;
     const rows = 10;
     const cols = 10;
     const totalCells = rows * cols;
+    console.log("[corp-chart] script loaded");
+
 
     // 1) Import all 25 originals and 25 modifieds
     import house1   from "./../data/house1.png";
@@ -600,17 +726,17 @@
         ...baseModifieds
     ];
 
-    // start at 33% down, finish at 100%
-    const startScroll = 0.4;
-    const endScroll   = 0.55;
+    // images turning from black to white
+    const startScroll = 0.35;
+    const endScroll   = 0.5;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
     // zooming functionality         // in vh
-    const zoomInStart = 0.1;   // 10% down
-    const zoomPeak    = 0.17;   // 20% down
-    const zoomOutEnd  = 0.3;   // 30% down
+    const zoomInStart = 0.08;   
+    const zoomPeak    = 0.13;  
+    const zoomOutEnd  = 0.3;  
     $: zoomP =
         pageProgress < zoomInStart ? 0
     : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
@@ -622,10 +748,10 @@
 
     // bubble falling functionality
     // control points (in page‐progress units)
-    const fallStart = 0.25;
-    const fallEnd   = 0.265;
-    const bounceEnd = 0.280;
-    const leaveEnd  = 0.35;
+    const fallStart = 0.22;
+    const fallEnd   = 0.235;
+    const bounceEnd = 0.250;
+    const leaveEnd  = 0.3;
 
     // Y positions (vh)
     const startY       = -20;  // off‐screen top
@@ -668,8 +794,6 @@
     }
     $: bubblesY = delays.map(d => calcBubbleY(pageProgress - d));
 
-    // DEBUG — show in page to confirm values change
-    $: console.log({ scrollProgress, zoomP, scale, opacity });
 
     // compute how many images to replace
     $: replaceCount =
@@ -818,6 +942,9 @@
             .range([0, 25]);
 
     onMount(async () => {
+        await tick();
+        console.log("[corp-chart] onMount fired");
+
         const text = "What happens when a machine becomes a buyer?";
         const el = document.getElementById("typewriter");
         let index = 0;
@@ -834,6 +961,225 @@
 
         updateProgress();                        // init
         window.addEventListener('scroll', updateProgress);
+
+        // ------------ marina's corporate ownership chart ------------
+        // 1) load & preprocess corporate_ownership.csv
+        const url = `${base}/data/corporate_ownership.csv`;
+        console.log("about to process corporate ownership");
+        console.log("Fetching CSV from:", url);
+
+        let corpData;
+        try {
+            corpData = await d3.csv(url, d => ({
+            year:  +d.Year,
+            corp_own_rate: +d.corp_own_rate
+            }));
+        } catch (e) {
+            console.error("Error loading CSV:", e);
+            return;
+        }
+        console.log("corpData rows:", corpData.length, corpData.slice(0,3));
+
+        // 2) group by year and compute mean corp_own_rate
+        // now compute the grouped averages
+        const nested = d3.rollups(
+            corpData,
+            v => d3.mean(v, d => d.corp_own_rate),
+            d => d.year
+        ).map(([year, avg]) => ({ year, avg }))
+        .sort((a,b) => a.year - b.year);
+        console.log("nested averages:", nested);
+
+        const descriptions = {
+            2011: "Research shows that there was no single institutional investor who owned more than 1,000 single-family homes in America [1].",
+            2014: "Opendoor releases their “iBuyer” model. This model used algorithms to make near-instant, cash offers for home. This formally launched its platform as a direct buyer of homes [4].",
+            2015: "Collectively, institutional investors owned 170,000 to 300,000 homes [1].",
+            2017: "Zillow piloted its “instant offers” program in Orlando and Las Vegas, giving sellers the ability to compare cash bids from select investors with local agent market appraisals [2].",
+            2018: "Zillow shifted from facilitating offers to purchasing homes outright, directly competing with Opendoor; its first acquisition was a four-bedroom bungalow in Arizona, and by quarter’s end it had bought 19 Phoenix-area properties [2].",
+            2020: "Operating in 25 markets, Zillow drew criticism by hiring full-time, salaried agents for its iBuying arm—an initiative Zillow argued improved user experience, but many U.S. realtors viewed as an aggressive market incursion [2].",
+            2022: "The FTC charged Opendoor with misleading homeowners by promising they would receive true market value for their homes [3].",
+            2024: "Following the FTC investigation, nearly 62 million dollars in refunds were issued to sellers who had been misled by Opendoor Labs’ online listing service [3]."
+        };
+
+        // check chart container
+        const container = document.getElementById("corp-own-chart");
+        console.log("chart container exists?", !!container, container);
+        
+        if (!container) {
+            console.warn("⚠️ couldn’t find #corp-own-chart in the DOM");
+            return;
+        }
+
+        // 3) set up chart dimensions
+        // 1) Bigger margins to make room for larger labels
+        const margin = { top: 40, right: 20, bottom: 100, left: 100 };
+        const { width: totalW, height: totalH } = container.getBoundingClientRect();
+        const width  = totalW  - margin.left - margin.right;
+        const height = totalH  - margin.top  - margin.bottom;
+
+        // 2) Build the SVG
+        const svg = d3.select("#corp-own-chart")
+        .append("svg")
+            .attr("width", totalW)
+            .attr("height", totalH)
+        .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // 3) Scales
+        const x = d3.scaleLinear()
+            .domain(d3.extent(nested, d => d.year))
+            .range([0, width]);
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(nested, d => d.avg)]).nice()
+            .range([height, 0]);
+
+        // 4) Axis generators with extra tick‐padding
+        const xAxis = d3.axisBottom(x)
+            .tickFormat(d3.format("d"))
+            .tickPadding(15);
+        const yAxis = d3.axisLeft(y)
+            .tickPadding(15);
+
+        // 5) Draw X axis
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(xAxis)
+        .selectAll("text")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "19px");
+
+        // 6) Draw Y axis
+        svg.append("g")
+            .call(yAxis)
+        .selectAll("text")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "19px");
+
+        // 7) X‐axis label (bigger, pushed further down)
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", height + margin.bottom - 30)  // farther from axis
+            .attr("text-anchor", "middle")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "20px")
+            // .style("font-weight", "500")
+            .text("Year");
+
+        // 8) Y‐axis label (bigger, pushed further left)
+        svg.append("text")
+            .attr("transform", `rotate(-90)`)
+            .attr("x", -height / 2)
+            .attr("y", -margin.left + 15)           // more negative = further left
+            .attr("text-anchor", "middle")
+            .style("font-family", "Roboto, sans-serif")
+            .style("font-size", "20px")
+            // .style("font-weight", "500")
+            .text("Average Corporate Ownership Rate (%)");
+
+        // 9) Your line (unchanged)
+        const line = svg.append("path")
+            .datum(nested)
+            .attr("class", "ownership-line")    // ← add this
+            .attr("fill", "none")
+            .attr("stroke", "#ad2f4c") // red line
+            .attr("stroke-width", 3)
+            .attr("d", d3.line()
+                .x(d => x(d.year))
+                .y(d => y(d.avg))
+        );
+
+        // 10) calculate total length for dash‐array trick
+        // — get references —'
+        const stickyContainer = document.getElementById('sticky-container');
+        const wrapper = document.getElementById('chart-wrapper');
+        console.log('wrapper is', wrapper);
+        const path            = svg.select('.ownership-line');
+        const L               = path.node().getTotalLength();
+
+        // hide the line
+        path
+            .attr('stroke-dasharray', L)
+            .attr('stroke-dashoffset', L);
+
+        let drawingActive = false;
+        const stickObserver = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.intersectionRatio === 1 && !drawingActive) {
+                    stickyContainer.classList.add('sticky');
+                    drawingActive = true;
+                    startScrollY = window.scrollY;
+                    window.addEventListener('scroll', drawOnScroll, { passive: true });
+                    stickObserver.disconnect();
+                }
+            },
+            { threshold: 1.0 }
+        );
+        stickObserver.observe(wrapper);
+
+
+        // 11) scroll event to animate the line
+        function clamp01(t) {
+            return t < 0 ? 0 : t > 1 ? 1 : t;
+        }
+        let startScrollY = window.scrollY;
+        const maxScrollDelta = window.innerHeight;
+
+        function drawOnScroll() {
+            if (!drawingActive) return;
+            const delta = window.scrollY - startScrollY;
+            const prog  = clamp01(delta / window.innerHeight);
+            path.attr('stroke-dashoffset', L * (1 - prog));
+
+            // show tooltip only while drawing
+            const tooltip = document.getElementById('chart-tooltip');
+            if (prog > 0 && prog < 1) {
+                // 1) compute the exact point on the path
+                const pt = path.node().getPointAtLength(prog * L);
+
+                // 2) position tooltip (accounting for margins)
+                const svgContainer = document.getElementById('corp-own-chart');
+                const { top: svgTop, left: svgLeft } = svgContainer.getBoundingClientRect();
+                const { top: parentTop, left: parentLeft } = stickyContainer.getBoundingClientRect();
+
+                tooltip.style.left = `${parentLeft + (svgLeft - parentLeft) + pt.x + margin.left}px`;
+                tooltip.style.top  = `${parentTop + (svgTop - parentTop) + pt.y + margin.top}px`;
+
+                // 3) pick the nearest year
+                const bisect = d3.bisector(d => d.year).left;
+                const idx = Math.min(nested.length - 1, bisect(nested, x.invert(pt.x)));
+                const year = nested[idx].year;
+                const description  = descriptions[year];
+
+                if (description) {
+                    tooltip.innerText   = `${description}`;
+                    tooltip.style.display = 'block';
+                } else {
+                    
+                }
+                                
+            } else {
+                tooltip.style.display = 'none';
+            }
+
+            if (prog >= 1) {
+                drawingActive = false;
+                window.removeEventListener('scroll', drawOnScroll);
+                stickyContainer.classList.remove('sticky');
+                const h = stickyContainer.getBoundingClientRect().height;
+                window.scrollBy(0, -h);
+            }
+        }
+
+        // in case you’re already scrolled past when mounting
+        drawOnScroll();
+
+
+
+        window.addEventListener('scroll', drawOnScroll, { passive: true });
+        // one initial draw in case you’re already half-way scrolled:
+        drawOnScroll();
+        
+        // -------------------------------------------------------------------
 
         // Get Zillow Data
         const jsonResponse = await fetch(`${base}/data/zillow_data.json`)
@@ -877,9 +1223,31 @@
                 item.zvalues = values;
                 all_times = all_times.concat(times);
                 all_values = all_values.concat(values);
+
+                // home attributes
+                // console.log(JSON.stringify(zillowData[item.address])
+                // item.zillowData = zillowData[item.Address];
+                item.bedrooms = zillowData[item.Address].bedrooms;
+                item.bathrooms = zillowData[item.Address].bathrooms;
+                item.livingAreaValue = zillowData[item.Address].livingAreaValue;
+                item.yearBuilt = zillowData[item.Address].yearBuilt;
+                item.photoURL = zillowData[item.Address].responsivePhotos[0]["mixedSources"]["jpeg"].at(-1)["url"];
             }
             return item;
         });
+
+        homes = Array.from(new Set(homes.map(home => home.Address)))
+            .map(address => homes.find(home => home.Address === address));
+
+        const selectedHomeAddresses = [
+            "2 Front Street, Natick, MA 01760-6019, USA", 
+            "37 Halliday Street, Boston, MA 02131-2210, USA", 
+            "15 Fensmere Road, Boston, MA 02132-6011, USA"
+        ];
+
+        notiBoughtHomes = homes.filter(home => 
+            selectedHomeAddresses.includes(home.Address)
+        );
 
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
@@ -1055,35 +1423,91 @@
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
 
-            <div class="after-todo">    
-
-            <h1>What percent of homes in Boston are iBought?*</h1>
-            <p> TO DO: add interactive question</p>
-            <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
-            <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
-            
-            <br><br>
-            <h1>Which of these homes is iBought?</h1>
-            <p>To Do: Add clickable images and question answer</p>
-            
-            <h1>🏠 iBought Homes Contextualized with Historically Redlined Districts 🏠</h1>    
-            <p>
-                    Many of the iBought homes are located in areas historically redlined as
-                    <b><span style="color:goldenrod;">definitely declining</span></b> and 
-                    <b><span style="color:#d9838d;">hazardous</span></b>.
-                </p> 
-            <div>
-                <p>TO DO: add slider instead to show where iBought homes are then add redlining map on top as part of slider (see https://rachelblowes.github.io/FP2-Interactive-Map/)</p>
+            <div class="after-todo">  
+                
+            <div id="sticky-container">
+                <div class="chart-text">
+                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
+                    <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
+                </div>
+                <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
+                    <div id="chart-tooltip" class="dialogue-box"></div>
+                    <h2 class="chart-title">Corporate Ownership Rate Over Time</h2>
+                    <div id="corp-own-chart" style="width:100%; height:500px;"></div>
+                </div>
             </div>
-            
-            <!-- wrapper that holds text on the left and legend on the right -->
-            <div class="legend-text-wrapper" style="
-                    display: flex;
-                    gap: 2em;
-                    align-items: flex-start;
-                    margin-bottom: 2em;
-                    font-size: 1.2em;
-                ">
+
+
+            <div class="post-chart">
+                <h1>What percent of homes in Boston are iBought?*</h1>
+                <p> TO DO: add interactive question</p>
+                <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
+                <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
+                
+                <br><br>
+                <h1>Which of these homes are <em>not</em> iBought?</h1>
+                <p>Click on a home to select it and learn more about it.</p>
+                <div class="home-selection">
+                    {#each notiBoughtHomes as home}
+                        <div class="home-card-wrapper">
+                            <button 
+                                class="home-card" 
+                                on:mouseover={() => hoveredHouse = home} 
+                                on:mouseout={() => hoveredHouse = null} 
+                                on:focus={() => hoveredHouse = home} 
+                                on:blur={() => hoveredHouse = null} 
+                                on:click={() => selectedHouse = home}
+                                class:selected={selectedHouse === home}
+                                aria-pressed={selectedHouse === home}
+                                aria-label={`Select House ${home}`}
+                            >
+                                <div class="image-container">
+                                    <img 
+                                        src={home.photoURL} 
+                                        alt={`${home}`} 
+                                        class:grayscale={hoveredHouse !== home && selectedHouse !== home}
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+    
+                {#if selectedHouse !== null}
+                    <div class="house-details">
+                        <h2>This is <em>{selectedHouse.Address}</em></h2>
+                        <p>
+                            Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
+                        </p>
+                        <p>
+                            The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms. It spans {selectedHouse.livingAreaValue} square feet of living area total.
+                        </p>
+                    </div>
+                {/if}
+    
+                <br><br>
+                <h1>Anatomy of an Average iBought Home</h1>
+                <p>GOAL: add clickable home to learn facts</p>
+                <p>To Do: Add average price</p>
+                <p>To Do: Add average number of bedrooms</p>
+                <p>To Do: Add average number of bathrooms</p>
+                <p>To Do: Add average number of square feet</p>
+                <p>To Do: Add average year built</p>
+                <p>To Do: Add aditional features that are more unique to iBought homes</p>
+                <p>To Do: Add takeaway -> Affordable housing is targeted!</p>
+                <p>To Do: Add info about how iBought homes are typically sold to investors not occupant-owners</p>
+                <br><br>
+
+                <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
+                
+                <!-- wrapper that holds text on the left and legend on the right -->
+                <div class="legend-text-wrapper" style="
+                        display: flex;
+                        gap: 2em;
+                        align-items: flex-start;
+                        margin-bottom: 2em;
+                        font-size: 1.2em;
+                    ">
 
                 <!-- left: all your step-4 & last-step text + slider -->
                 <!-- iBuying and redlining map -->
@@ -1239,6 +1663,28 @@
             <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
             <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
             <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
+                <!-- main redlining map -->
+                <div id="map">
+                    <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
+                    <svg>
+                        {#key mapViewChanged}
+                            {#each homes as home}
+                                <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
+                                    <title>
+                                        iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
+                                    </title>
+                                </circle> 
+                            {/each}
+                        {/key}
+                    </svg>
+                </div>
+
+                <br><br>
+                <!-- fair prices map -->
+                <h1> Are iBought Homes Bought for Fair Prices? </h1>
+                <p> TO DO: add another visualization with iBought homes (highlight homes if were sold for less than market value)</p>
+                <p> TO DO: add more interactive, customized tool tips with image, address, iBuyer, sold for, Zestimate, and potentially other features</p>
+                <p> TO DO: add filter by price difference between sold for and Zestimate (reach goal to filter by features like number of bedrooms)</p>
 
             <br><br>
             <div id="takeaways">
