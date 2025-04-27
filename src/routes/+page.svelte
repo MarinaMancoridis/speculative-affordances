@@ -1439,12 +1439,10 @@
 
 
             <div class="post-chart">
-                <h1>What percent of homes in Boston are iBought?*</h1>
-                <p> TO DO: add interactive question</p>
-                <p> TO DO: *Note: we searched for iBought homes using (cite sources), but there may be even iBought homes that we were not able to find</p>
-                <p> TO DO: add visualization for iBuying over time with number of homes (y-axis) and year (x-axis) with annotations of Zillow, Opendoor, Redfin, and Offerpad events</p>
+                <br><br><br><br>
+                <h1>iBuying is happening in Boston!</h1>
+                <p> We found <b>407</b> homes iBought between 2019 to 2025 by searching for known iBuyers like Opendoor, Zillow, Redfin, and Offerpad on <a href="https://www.masslandrecords.com/">Mass Land Records</a> based on <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a> on iBuying. However, there may be even more iBought homes that were not found through this search.</p>
                 
-                <br><br>
                 <h1>Which of these homes are <em>not</em> iBought?</h1>
                 <p>Click on a home to select it and learn more about it.</p>
                 <div class="home-selection">
@@ -1476,6 +1474,7 @@
                 {#if selectedHouse !== null}
                     <div class="house-details">
                         <h2>This is <em>{selectedHouse.Address}</em></h2>
+                        <p>This is an iBought home!</p>
                         <p>
                             Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
                         </p>
@@ -1484,22 +1483,13 @@
                         </p>
                     </div>
                 {/if}
-    
-                <br><br>
-                <h1>Anatomy of an Average iBought Home</h1>
-                <p>GOAL: add clickable home to learn facts</p>
-                <p>To Do: Add average price</p>
-                <p>To Do: Add average number of bedrooms</p>
-                <p>To Do: Add average number of bathrooms</p>
-                <p>To Do: Add average number of square feet</p>
-                <p>To Do: Add average year built</p>
-                <p>To Do: Add aditional features that are more unique to iBought homes</p>
-                <p>To Do: Add takeaway -> Affordable housing is targeted!</p>
-                <p>To Do: Add info about how iBought homes are typically sold to investors not occupant-owners</p>
-                <br><br>
 
                 <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 
+                <p>
+                iBought homes tend to be in areas that were historically redlined as hazardous and definitely declining areas, suggesting long‑lasting effects of historical redlining.
+                </p>
+
                 <!-- wrapper that holds text on the left and legend on the right -->
                 <div class="legend-text-wrapper" style="
                         display: flex;
@@ -1663,34 +1653,12 @@
             <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
             <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
             <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
-                <!-- main redlining map -->
-                <div id="map">
-                    <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
-                    <svg>
-                        {#key mapViewChanged}
-                            {#each homes as home}
-                                <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill="{home.color}" fill-opacity="60%" stroke="black" stroke-opacity="60%">
-                                    <title>
-                                        iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
-                                    </title>
-                                </circle> 
-                            {/each}
-                        {/key}
-                    </svg>
-                </div>
-
-                <br><br>
-                <!-- fair prices map -->
-                <h1> Are iBought Homes Bought for Fair Prices? </h1>
-                <p> TO DO: add another visualization with iBought homes (highlight homes if were sold for less than market value)</p>
-                <p> TO DO: add more interactive, customized tool tips with image, address, iBuyer, sold for, Zestimate, and potentially other features</p>
-                <p> TO DO: add filter by price difference between sold for and Zestimate (reach goal to filter by features like number of bedrooms)</p>
-
-            <br><br>
+              
+            <br><br><br><br>
             <div id="takeaways">
                 <h3>Takeaways</h3>
                 <ul>
-                <li>iBuying is increasing in Boston, especially for more afforadble housing.</li>
+                <li>iBuying is prevalent in Boston, especially for more afforadble housing.</li>
                 <li>Redlining and discriminatory housing practices in the past continue to affect present housing and consquently AI real estate pricing models.</li>
                 <li>iBought homes are not bought for fair prices.</li>
             </div>
@@ -1699,8 +1667,8 @@
             <div id="action">
                 <h3>What can we do?</h3>
                 <ul>
-                <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
-                <li> Reach out to <a href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
+                <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
+                <li> Reach out to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
                 <li> Advocate for protections against automated speculation practices.</li>
             </div>
 
