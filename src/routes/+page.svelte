@@ -1555,9 +1555,6 @@
                 </div>
             </div>
 
-            <h1>Zestimates Over Time</h1> 
-            <div id="zesty"></div>
-
 
             <h1>🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1> 
             <p>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
