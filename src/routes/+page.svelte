@@ -1791,7 +1791,7 @@
                 </div>
                 <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
                     <div id="chart-tooltip" class="dialogue-box"></div>
-                    <h2 class="chart-title">Average Zestimate Trends by HOLC District</h2>
+                    <h2 class="chart-title">Average Zestimate Trends by HOLC District.</h2>
                     <div id="zestimate-chart" style="width:100%; height:500px;"></div>
                     <div id="legend"></div>
                 </div>
