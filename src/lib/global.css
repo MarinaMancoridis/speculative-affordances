@@ -23,6 +23,10 @@ body {
 	pointer-events: none
 }
 
+#map svg circle {
+	cursor: pointer
+}
+
 #mapSwipe {
     flex: 1;
     width: 100%;

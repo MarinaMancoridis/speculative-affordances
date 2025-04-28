@@ -626,6 +626,7 @@
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
+    import popupHome from "$lib/popup.js"
 
     // Reactive variables for hovered and selected house
     let hoveredHouse = null;
@@ -839,6 +840,9 @@
     let timeIndex = 0;
     let sliderValue = 0;
 
+    // Config for threshold between sale to nearest zestimate
+    const saleToZestimateDateThreshold = 4e9; // Roughly 45 days
+
     // Swiping between maps
     let beforeMap;
     let afterMap;
@@ -940,6 +944,8 @@
     $: radiusScale = d3.scaleSqrt()
             .domain(valueScale)
             .range([0, 25]);
+
+    
 
     onMount(async () => {
         await tick();
@@ -1201,11 +1207,64 @@
         homes = homes.map(item => {
             if (zillowData[item.Address]) {
                 item.zestimate = zillowData[item.Address].zestimate;
+
+                // zestimate history API structure
+                const [times, values] = parseZestimateHistory(zillowData[item.Address]);
+                item.ztimes = times;
+                item.zvalues = values;
+                all_times = all_times.concat(times);
+                all_values = all_values.concat(values);
+
+                function matchSoldZestimate(e, [times, values]) {
+                    const d = (new Date(e["date"])).getTime()
+                    const time = times[0]
+                    if (!time) {
+                        // console.log("No zestimates available")
+                        return
+                    }
+                    const diff = d-time
+                    if (diff<0) {
+                        // console.log("Zestimate not recent enough"); 
+                        return
+                    }
+                    let idx = 0;
+                    for (let i=0; i<times.length; i++) {
+                        const diff = d-times[i]
+                        if (diff<0) {
+                            idx = i
+                            function msToTime(ms) {
+                                let seconds = (ms / 1000).toFixed(1);
+                                let minutes = (ms / (1000 * 60)).toFixed(1);
+                                let hours = (ms / (1000 * 60 * 60)).toFixed(1);
+                                let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+                                if (seconds < 60) return seconds + " Sec";
+                                else if (minutes < 60) return minutes + " Min";
+                                else if (hours < 24) return hours + " Hrs";
+                                else return days + " Days"
+                            }
+                            if (Math.abs(diff)>saleToZestimateDateThreshold) return
+                            // console.log("diff; ", msToTime(-diff))
+                            break
+                        }
+                    }
+                    return values[idx]
+                    // console.log("date", d)
+                }
+
+                // recent sold event
                 const recentSoldEvent = getLastSoldEvent(zillowData[item.Address]);
                 if (recentSoldEvent) {
                     item.price = recentSoldEvent["price"];
                     item.dateLastSold = recentSoldEvent["date"];
-                    item.difference = parseFloat(item.price) - parseFloat(item.zestimate);
+                    const matchedZestimate = matchSoldZestimate(recentSoldEvent, [times, values])
+                    if (!matchedZestimate) {
+                        item.difference = undefined
+                    }
+                    else {
+                        item.matchedZestimate = matchedZestimate
+                        item.difference = parseFloat(item.price) - parseFloat(item.matchedZestimate)
+                    }
+                    // item.difference = parseFloat(item.price) - parseFloat(item.zestimate);
                 } else {
                     item.price = undefined;
                     item.dateLastSold = undefined;
@@ -1217,12 +1276,6 @@
                 // color fill for fair prices 
                 item.color = calculateFairPrice(item);
 
-                // zestimate history API structure
-                const [times, values] = parseZestimateHistory(zillowData[item.Address]);
-                item.ztimes = times;
-                item.zvalues = values;
-                all_times = all_times.concat(times);
-                all_values = all_values.concat(values);
 
                 // home attributes
                 // console.log(JSON.stringify(zillowData[item.address])
@@ -1574,9 +1627,9 @@
                 <svg>
                     {#key mapViewChanged}
                         {#each homes as home}
-                            <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill={home.color} stroke="black" stroke-opacity="60%">
+                            <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill={home.color} stroke="black" stroke-opacity="60%" on:click={()=>{popupHome(home, map)}}>
                                 <title>
-                                    iBuyer: {home.Name}. Zestimate: ${home.zestimate}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
+                                    iBuyer: {home.Name}. Zestimate: ${home.zestimate}. Zestimate at sale time: {home.matchedZestimate?`$${home.matchedZestimate}`:"unknown"}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
                                 </title>
                             </circle> 
                         {/each}
