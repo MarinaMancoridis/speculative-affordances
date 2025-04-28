@@ -1745,6 +1745,23 @@
                 <li> Advocate for protections against automated speculation practices.</li>
             </div>
 
+            <br><br>
+            <div id="acks">
+                <h3>Acknowledgements</h3>
+                <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
+            </div>
+
+            <br><br>
+            <div id="references">
+                <h3>References</h3>
+                <ul>
+                <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
+                <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
+                <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
+                <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
+                <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
+            </div>
+
         </div>
         </svelte:fragment>
     </Scrolly>

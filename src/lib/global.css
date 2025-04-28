@@ -65,15 +65,31 @@ h2 {
 }
 
 #takeaways {
-	background-color: #644E8F;
+	background-color: #3E2F5B;
 	color: white;
 	padding: 3em;
 }
 
 #action {
+	background-color: #E01A4F;
+	color: white;
+	padding: 3em;
+}
+
+#references {
 	background-color: steelblue;
 	color: white;
 	padding: 3em;
+}
+
+#acks {
+	background-color: #70A288;
+	color: white;
+	padding: 3em;
+}
+
+.ref {
+	color: white;
 }
 
 h3 {
@@ -82,4 +98,12 @@ h3 {
 
 #action-links {
 	color: white;
+}
+
+p {
+	font-size: 24px;
+}
+
+li {
+	font-size: 24px;
 }
