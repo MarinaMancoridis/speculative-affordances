@@ -1643,14 +1643,6 @@
                         <br>
                         <label><b>Redlining Map Opacity: <b></label>
                         <input id="slider" type="range" min="0" max="75" step="1" value="50">
-
-                        <br><br>
-                        <b>Features</b>
-                        <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #FFA500; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>iBought Home</li>
-                        
                     </div>
                 </div>
             </div>
