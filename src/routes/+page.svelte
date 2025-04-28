@@ -1705,11 +1705,6 @@
                     </div>
                 {/if}
 
-                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <br><br><br><br><br><br><br><br>
-                    <p>In this qualitative analysis, the message is clear: <b>iBuying is not a single, monolithic strategy</b>. There is no typical mold for an iBought home. This diversity reminds us that while the term "iBuying" suggests a single model, in practice it covers a range of strategies.</p>
-                </div>
-
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
                     <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br>
