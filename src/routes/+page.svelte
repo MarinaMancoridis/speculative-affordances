@@ -137,6 +137,11 @@
         z-index: 2;
     }
 
+    .post-chart {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.25em;
+    }
+
     /* remove the second pointer‑events: none you had here */
 
     .scroll-indicator span,
@@ -456,10 +461,10 @@
 
     img.outline {
         filter:
-            drop-shadow(10px 0 0 #2d2d2d)
-            drop-shadow(-10px 0 0 #2d2d2d)
-            drop-shadow(0 10px 0 #2d2d2d)
-            drop-shadow(0 -10px 0 #2d2d2d);
+            drop-shadow(10px 0 0 #d3a3a3)
+            drop-shadow(-10px 0 0 #d3a3a3)
+            drop-shadow(0 10px 0 #d3a3a3)
+            drop-shadow(0 -10px 0 #d3a3a3);
     }
 
     .bubbles {
@@ -728,16 +733,16 @@
     ];
 
     // images turning from black to white
-    const startScroll = 0.35;
-    const endScroll   = 0.5;
+    const startScroll = 0.25;
+    const endScroll   = 0.4;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
     // zooming functionality         // in vh
-    const zoomInStart = 0.08;   
-    const zoomPeak    = 0.13;  
-    const zoomOutEnd  = 0.3;  
+    const zoomInStart = 0.06;   
+    const zoomPeak    = 0.11;  
+    const zoomOutEnd  = 0.18;  
     $: zoomP =
         pageProgress < zoomInStart ? 0
     : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
@@ -749,13 +754,13 @@
 
     // bubble falling functionality
     // control points (in page‐progress units)
-    const fallStart = 0.22;
-    const fallEnd   = 0.235;
-    const bounceEnd = 0.250;
-    const leaveEnd  = 0.3;
+    const fallStart = 0.14;
+    const fallEnd   = 0.215;
+    const bounceEnd = 0.230;
+    const leaveEnd  = 0.28;
 
     // Y positions (vh)
-    const startY       = -20;  // off‐screen top
+    const startY       = -40;  // off‐screen top
     const peakY        =  40;  // bottom of first drop
     const bounceUp    =  15;    // how much to bounce up
     const bounceY     =  peakY - bounceUp;  // 25
@@ -1494,11 +1499,16 @@
 
             <div class="post-chart">
                 <br><br><br><br>
-                <h1>iBuying is happening in Boston!</h1>
-                <p> We found <b>407</b> homes iBought between 2019 to 2025 by searching for known iBuyers like Opendoor, Zillow, Redfin, and Offerpad on <a href="https://www.masslandrecords.com/">Mass Land Records</a> based on <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a> on iBuying. However, there may be even more iBought homes that were not found through this search.</p>
+                <h1 style="text-align: center;">Data Collection— The Presence of iBuying in Boston</h1>
+                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <p>How do you find a hidden market? While the previous chart focused broadly on corporate speculation in Boston, our analysis wishes to look at iBuying in particular. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players identified in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
+                    </p> 
+                    <p>Using this simple but powerful method, we uncovered <b>407</b> homes purchased by iBuyers between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
+                </div>
+
                 
-                <h1>Which of these homes are <em>not</em> iBought?</h1>
-                <p>Click on a home to select it and learn more about it.</p>
+                <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
+                <p style="text-align: center;">Click on a home to select it and learn more about it.</p>
                 <div class="home-selection">
                     {#each notiBoughtHomes as home}
                         <div class="home-card-wrapper">
@@ -1538,11 +1548,16 @@
                     </div>
                 {/if}
 
-                <h1 id="redlining">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
-                
-                <p>
-                iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.
-                </p>
+                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <br><br><br><br><br><br><br><br>
+                    <p>In this qualitative analysis, the message is clear: <b>iBuying is not a single, monolithic strategy</b>. There is no typical mold for an iBought home. This diversity reminds us that while the term "iBuying" suggests a single model, in practice it covers a range of strategies.</p>
+                </div>
+
+                <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
+                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br>
+                    </p>
+                </div>
 
                 <!-- wrapper that holds text on the left and legend on the right -->
                 <div class="legend-text-wrapper" style="
@@ -1609,9 +1624,11 @@
             </div>
 
 
-            <h1>🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1> 
-            <p>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
-            <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time.</p>
+            <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
+            <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
+                <p><b>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth</b>. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
+                <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time.</p>
+            </div>
 
             <div class="legend-text-wrapper" style="
                     display: flex;
@@ -1703,10 +1720,12 @@
             </div>
             </div>
 
-            <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
-            <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
-            <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
-            <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
+            <div style="max-width: 900px; margin: 0 auto; text-align: left;">
+                <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
+                <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
+                <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
+                <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
+            </div>
               
             <br><br><br><br>
             <div id="takeaways">
