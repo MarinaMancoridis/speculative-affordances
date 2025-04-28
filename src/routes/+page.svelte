@@ -1754,7 +1754,7 @@
             <div id="takeaways">
                 <h3>Takeaways</h3>
                 <ul>
-                <li>iBuying is prevalent in Boston, especially for more afforadble housing.</li>
+                <li>iBuying is prevalent in Boston, especially for more affordable housing.</li>
                 <li>Redlining and discriminatory housing practices in the past continue to affect present housing and consquently AI real estate pricing models.</li>
                 <li>iBought homes are not bought for fair prices.</li>
             </div>
