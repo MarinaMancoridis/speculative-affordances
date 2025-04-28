@@ -838,7 +838,6 @@
     let timeScale = [0, 0];
     let valueScale = [0, 0];
     let timeIndex = 0;
-    let sliderValue = 0;
 
     // Config for threshold between sale to nearest zestimate
     const saleToZestimateDateThreshold = 4e9; // Roughly 45 days
@@ -945,7 +944,6 @@
             .domain(valueScale)
             .range([0, 25]);
 
-    
 
     onMount(async () => {
         await tick();
@@ -1337,6 +1335,15 @@
             Name: String(row.Name)
         }));
 
+         mapSwipe = new mapboxgl.Map({
+            container: 'mapSwipe', // HTML element ID
+            style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
+            center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
+            zoom: 11.5,
+            minZoom: 10,
+            maxZoom: 18
+        });
+
         mapSwipe = new mapboxgl.Map({
             container: 'mapSwipe', // HTML element ID
             style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
@@ -1363,8 +1370,29 @@
                 "fill-outline-color": "#ad494e"
             },
         });
-    });
 
+        // const slider = document.getElementById("slider");
+        //const sliderValue = document.getElementById("slider-value");
+
+       // slider.addEventListener("input", function () {
+            //const value = parseInt(slider.value, 10);
+            //const opacity = value / 100;
+
+            // Update Mapbox layer opacity
+            //mapSwipe.setPaintProperty("grade_color_layer", "fill-opacity", opacity);
+
+            // Update visible label
+            //sliderValue.textContent = `${value}%`;
+       // });
+
+        const swipe = document.getElementById('swipe');
+        const mapSwipeContainer = document.getElementById('mapSwipe');
+
+        swipe.addEventListener('input', (e) => {
+	        const value = +e.target.value;
+	        mapSwipeContainer.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
+        });
+    });
 </script>
 
 <div class="grid-bg">
@@ -1597,7 +1625,11 @@
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: #fff; border: 1px solid #4f5152; 
                                         border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
+                        
                         <br>
+                        <!-- <label><b>Redlining Map Opacity: <b><span id="slider-value"></span></label> -->
+                        <!-- <input id="slider" type="range" min="0" max="100" step="1" value="50"> -->
+
                         <b>Features</b>
                         <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
                         <li><span style="display: inline-block; width: 12px; height: 12px;
@@ -1605,6 +1637,22 @@
                                         border-radius: 50%; margin-right: 8px;"></span>iBought Home</li>
                         
                     </div>
+                </div>
+            </div>
+
+            <div id="swipe-container" style="position: relative; width: 100%; height: 100%;">
+                    <div id="map-base" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+                    <div id="map-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: inset(0 50% 0 0);"></div>
+                    <input
+                        id="swipe"
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value="50"
+                        style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+                        z-index: 1000; width: 300px;"
+                    />
                 </div>
             </div>
 
@@ -1677,12 +1725,12 @@
                                         background-color: white; border: 1px solid #4f5152; 
                                         border-radius: 50%; margin-right: 8px;"></span>$2,000,000</li>
                 
-                <br><br>
+                <!-- <br><br> -->
                 <!-- Slider to filter by difference -->
-                 <label style="display: block; color: #333; font-weight: 500;">
-                    <b>Price Difference:</b>
-                    <input type="range" id="difference-slider" min="0" max="2000000" value="0" step="50000" style="width: 100%; accent-color: steelblue;"/>
-                </label>
+                <!-- <label style="display: block; color: #333; font-weight: 500;">  -->
+                <!--    <b>Price Difference:</b>  -->
+                <!--    <input type="range" id="difference-slider" min="0" max="2000000" value="0" step="50000" style="width: 100%; accent-color: steelblue;"/>  -->
+                <!-- </label>  -->
 
                 <br>
                 <b>Was the selling price of the iBought Home <br> less than its Zestimate?</b> 
@@ -1703,10 +1751,9 @@
             </div>
             </div>
 
-            <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
+            <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
             <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
             <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
-            <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
               
             <br><br><br><br>
             <div id="takeaways">
