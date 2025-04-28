@@ -1,0 +1,254 @@
+{
+    "Definitely Declining": {
+        "2016": {
+            "average_zestimate": 507867.83928571426,
+            "count": 56
+        },
+        "2017": {
+            "average_zestimate": 541684.6071428572,
+            "count": 56
+        },
+        "2018": {
+            "average_zestimate": 595869.5714285715,
+            "count": 56
+        },
+        "2019": {
+            "average_zestimate": 624091.4107142857,
+            "count": 56
+        },
+        "2020": {
+            "average_zestimate": 645363.0892857143,
+            "count": 56
+        },
+        "2021": {
+            "average_zestimate": 687576.3518518518,
+            "count": 54
+        },
+        "2022": {
+            "average_zestimate": 741443.6363636364,
+            "count": 55
+        },
+        "2023": {
+            "average_zestimate": 739380.701754386,
+            "count": 57
+        },
+        "2024": {
+            "average_zestimate": 787564.5161290322,
+            "count": 62
+        },
+        "2025": {
+            "average_zestimate": 822904.8387096775,
+            "count": 62
+        }
+    },
+    "Still Desirable": {
+        "2016": {
+            "average_zestimate": 720298.0588235294,
+            "count": 17
+        },
+        "2017": {
+            "average_zestimate": 806225.5294117647,
+            "count": 17
+        },
+        "2018": {
+            "average_zestimate": 889342.3529411765,
+            "count": 17
+        },
+        "2019": {
+            "average_zestimate": 1005596.6666666666,
+            "count": 18
+        },
+        "2020": {
+            "average_zestimate": 1011227.6666666666,
+            "count": 18
+        },
+        "2021": {
+            "average_zestimate": 1062022.105263158,
+            "count": 19
+        },
+        "2022": {
+            "average_zestimate": 1151616.6666666667,
+            "count": 18
+        },
+        "2023": {
+            "average_zestimate": 1161094.4444444445,
+            "count": 18
+        },
+        "2024": {
+            "average_zestimate": 1245242.105263158,
+            "count": 19
+        },
+        "2025": {
+            "average_zestimate": 1309852.6315789474,
+            "count": 19
+        }
+    },
+    "Hazardous": {
+        "2024": {
+            "average_zestimate": 871129.1666666666,
+            "count": 24
+        },
+        "2025": {
+            "average_zestimate": 916295.8333333334,
+            "count": 24
+        },
+        "2016": {
+            "average_zestimate": 692940.2352941176,
+            "count": 17
+        },
+        "2017": {
+            "average_zestimate": 736195.5294117647,
+            "count": 17
+        },
+        "2018": {
+            "average_zestimate": 828655.5294117647,
+            "count": 17
+        },
+        "2019": {
+            "average_zestimate": 840708.0555555555,
+            "count": 18
+        },
+        "2020": {
+            "average_zestimate": 837535.8888888889,
+            "count": 18
+        },
+        "2021": {
+            "average_zestimate": 839225.85,
+            "count": 20
+        },
+        "2022": {
+            "average_zestimate": 879968.4210526316,
+            "count": 19
+        },
+        "2023": {
+            "average_zestimate": 861055.0,
+            "count": 20
+        }
+    },
+    "N/A": {
+        "2016": {
+            "average_zestimate": 456430.4591836735,
+            "count": 196
+        },
+        "2017": {
+            "average_zestimate": 492203.9183673469,
+            "count": 196
+        },
+        "2018": {
+            "average_zestimate": 524774.995,
+            "count": 200
+        },
+        "2019": {
+            "average_zestimate": 536522.3613861386,
+            "count": 202
+        },
+        "2021": {
+            "average_zestimate": 606171.6601941747,
+            "count": 206
+        },
+        "2022": {
+            "average_zestimate": 695143.2038834952,
+            "count": 206
+        },
+        "2023": {
+            "average_zestimate": 703892.7536231884,
+            "count": 207
+        },
+        "2024": {
+            "average_zestimate": 776787.8504672897,
+            "count": 214
+        },
+        "2025": {
+            "average_zestimate": 826879.8122065727,
+            "count": 213
+        },
+        "2020": {
+            "average_zestimate": 552495.0495049505,
+            "count": 202
+        }
+    },
+    "Industrial": {
+        "2016": {
+            "average_zestimate": 878578.0,
+            "count": 2
+        },
+        "2017": {
+            "average_zestimate": 961197.0,
+            "count": 2
+        },
+        "2018": {
+            "average_zestimate": 1007999.0,
+            "count": 2
+        },
+        "2019": {
+            "average_zestimate": 1102873.0,
+            "count": 2
+        },
+        "2020": {
+            "average_zestimate": 1150976.0,
+            "count": 2
+        },
+        "2021": {
+            "average_zestimate": 995285.0,
+            "count": 3
+        },
+        "2022": {
+            "average_zestimate": 1127866.6666666667,
+            "count": 3
+        },
+        "2023": {
+            "average_zestimate": 850900.0,
+            "count": 3
+        },
+        "2024": {
+            "average_zestimate": 944566.6666666666,
+            "count": 3
+        },
+        "2025": {
+            "average_zestimate": 989966.6666666666,
+            "count": 3
+        }
+    },
+    "Best": {
+        "2016": {
+            "average_zestimate": 868831.0,
+            "count": 3
+        },
+        "2017": {
+            "average_zestimate": 879093.3333333334,
+            "count": 3
+        },
+        "2018": {
+            "average_zestimate": 983130.3333333334,
+            "count": 3
+        },
+        "2019": {
+            "average_zestimate": 917809.3333333334,
+            "count": 3
+        },
+        "2020": {
+            "average_zestimate": 938030.0,
+            "count": 3
+        },
+        "2021": {
+            "average_zestimate": 938448.0,
+            "count": 3
+        },
+        "2022": {
+            "average_zestimate": 1034000.0,
+            "count": 3
+        },
+        "2023": {
+            "average_zestimate": 1119466.6666666667,
+            "count": 3
+        },
+        "2024": {
+            "average_zestimate": 1202166.6666666667,
+            "count": 3
+        },
+        "2025": {
+            "average_zestimate": 1239700.0,
+            "count": 3
+        }
+    }
+}
