@@ -843,7 +843,6 @@
     let timeScale = [0, 0];
     let valueScale = [0, 0];
     let timeIndex = 0;
-    let sliderValue = 0;
 
     // Config for threshold between sale to nearest zestimate
     const saleToZestimateDateThreshold = 4e9; // Roughly 45 days
@@ -950,7 +949,6 @@
             .domain(valueScale)
             .range([0, 25]);
 
-    
 
     onMount(async () => {
         await tick();
@@ -1479,6 +1477,15 @@
             Name: String(row.Name)
         }));
 
+         mapSwipe = new mapboxgl.Map({
+            container: 'mapSwipe', // HTML element ID
+            style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
+            center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
+            zoom: 11.5,
+            minZoom: 10,
+            maxZoom: 18
+        });
+
         mapSwipe = new mapboxgl.Map({
             container: 'mapSwipe', // HTML element ID
             style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
@@ -1505,8 +1512,21 @@
                 "fill-outline-color": "#ad494e"
             },
         });
-    });
 
+        const slider = document.getElementById("slider");
+        const sliderValue = document.getElementById("slider-value");
+
+        slider.addEventListener("input", function () {
+            const value = parseInt(slider.value, 10);
+            const opacity = value / 100;
+
+            // Update Mapbox layer opacity
+            mapSwipe.setPaintProperty("grade_color_layer", "fill-opacity", opacity);
+
+            // Update visible label
+            sliderValue.textContent = `${value}%`;
+       });
+    });
 </script>
 
 <div class="grid-bg">
@@ -1711,8 +1731,15 @@
                     <svg>
                         {#key mapViewChangedSwipe}
                             {#each homesSwipe as homeSwipe}
-                                <circle { ...getHomesSwipe(homeSwipe) } r="5" fill="#FFA500" fill-opacity="100%" stroke="black" stroke-opacity="60%">
+                                <circle { ...getHomesSwipe(homeSwipe) } r="12" fill="#F2F2F2" fill-opacity="100%" stroke="black" stroke-opacity="60%">
                                 </circle> 
+                                <text
+                                    x={getHomesSwipe(homeSwipe).cx}
+                                    y={getHomesSwipe(homeSwipe).cy}
+                                    font-size="12"
+                                    text-anchor="middle"
+                                    dominant-baseline="middle"
+                                > 🏠 </text>
                             {/each}
                         {/key}
                     </svg>
@@ -1745,17 +1772,14 @@
                                         border-radius: 0%; margin-right: 8px;"></span>Hazardous</li>
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: #000; border-radius: 0%; 
-                                        margin-right: 8px;"></span>Industrial/Commercial/Non-Residential</li>
+                                        margin-right: 8px;"></span>Industrial/Commercial</li>
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: #fff; border: 1px solid #4f5152; 
                                         border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
-                        <br>
-                        <b>Features</b>
-                        <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #FFA500; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>iBought Home</li>
                         
+                        <br>
+                        <label><b>Redlining Map Opacity: <b></label>
+                        <input id="slider" type="range" min="0" max="75" step="1" value="50">
                     </div>
                 </div>
             </div>
@@ -1843,12 +1867,12 @@
                                         background-color: white; border: 1px solid #4f5152; 
                                         border-radius: 50%; margin-right: 8px;"></span>$2,000,000</li>
                 
-                <br><br>
+                <!-- <br><br> -->
                 <!-- Slider to filter by difference -->
-                 <label style="display: block; color: #333; font-weight: 500;">
-                    <b>Price Difference:</b>
-                    <input type="range" id="difference-slider" min="0" max="2000000" value="0" step="50000" style="width: 100%; accent-color: steelblue;"/>
-                </label>
+                <!-- <label style="display: block; color: #333; font-weight: 500;">  -->
+                <!--    <b>Price Difference:</b>  -->
+                <!--    <input type="range" id="difference-slider" min="0" max="2000000" value="0" step="50000" style="width: 100%; accent-color: steelblue;"/>  -->
+                <!-- </label>  -->
 
                 <br>
                 <b>Was the selling price of the iBought Home <br> less than its Zestimate?</b> 
@@ -1870,10 +1894,9 @@
             </div>
 
             <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
+                <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
                 <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
                 <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
-                <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
             </div>
               
             <br><br><br><br>

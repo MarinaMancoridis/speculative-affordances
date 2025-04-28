@@ -27,20 +27,6 @@ body {
 	cursor: pointer
 }
 
-#mapSwipe {
-    flex: 1;
-    width: 100%;
-    height: 600px;
-}
-
-#mapSwipe svg {
-	position: absolute;
-	z-index: 1;
-	width: 100%;
-	height: 100%;
-	pointer-events: none
-}
-
 circle {
 	pointer-events: auto
 }
@@ -75,23 +61,35 @@ h2 {
 
 /* Different subtle background tint for each */
 #takeaways {
-    background: linear-gradient(135deg, #d0baf2, #d0baf2); /* very soft purple */
+	background-color: #3E2F5B;
+	color: white;
+	padding: 3em;
+	font-size: 24px;
 }
 
 #action {
-    background: linear-gradient(135deg, #f1c8d6, #f1c8d6); /* very soft muted pink */
+	background-color: #E01A4F;
+	color: white;
+	padding: 3em;
+	font-size: 24px;
 }
 
 #references {
-    background: linear-gradient(135deg, #c9e7f5, #c9e7f5); /* soft steel blue */
+	background-color: steelblue;
+	color: white;
+	padding: 3em;
+	font-size: 20px;
 }
 
 #acks {
-    background: linear-gradient(135deg, #b8ecd9, #b8ecd9); /* soft muted green */
+	background-color: #70A288;
+	color: white;
+	padding: 3em;
+	font-size: 24px;
 }
 
 .ref {
-	color: rgb(126, 152, 231);
+	color: white;
 }
 
 h3 {
@@ -106,6 +104,21 @@ p {
 	font-size: 20px;
 }
 
-li {
-	font-size: 20px;
+#mapSwipe {
+    flex: 1;
+    width: 100%;
+    height: 600px;
+}
+
+#mapSwipe svg {
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	pointer-events: none
+}
+
+#slider {
+	width: 100%;
+	accent-color: steelblue;
 }
