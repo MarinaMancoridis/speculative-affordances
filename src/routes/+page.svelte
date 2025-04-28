@@ -139,7 +139,7 @@
 
     .post-chart {
         font-family: 'Roboto', sans-serif;
-        font-size: 1.25em;
+        font-size:1.0em;
     }
 
     /* remove the second pointer‑events: none you had here */
@@ -741,7 +741,7 @@
 
     // zooming functionality         // in vh
     const zoomInStart = 0.06;   
-    const zoomPeak    = 0.11;  
+    const zoomPeak    = 0.105;  
     const zoomOutEnd  = 0.18;  
     $: zoomP =
         pageProgress < zoomInStart ? 0

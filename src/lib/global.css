@@ -52,7 +52,7 @@ header {
 }
 
 h1 {
-	font-size: 36px;
+	font-size: 30px;
 	padding-top: 3em;
 }
 
@@ -64,32 +64,34 @@ h2 {
 	text-align: center;
 }
 
+#takeaways, #action, #references, #acks {
+    background-color: white;
+    padding: 3em;
+    border-radius: 16px; /* Rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Soft, modern shadow */
+    margin: 3em 0; /* Space between sections */
+    color: #333; /* Softer text color */
+}
+
+/* Different subtle background tint for each */
 #takeaways {
-	background-color: #3E2F5B;
-	color: white;
-	padding: 3em;
+    background: linear-gradient(135deg, #d0baf2, #d0baf2); /* very soft purple */
 }
 
 #action {
-	background-color: #E01A4F;
-	color: white;
-	padding: 3em;
+    background: linear-gradient(135deg, #f1c8d6, #f1c8d6); /* very soft muted pink */
 }
 
 #references {
-	background-color: steelblue;
-	color: white;
-	padding: 3em;
+    background: linear-gradient(135deg, #c9e7f5, #c9e7f5); /* soft steel blue */
 }
 
 #acks {
-	background-color: #70A288;
-	color: white;
-	padding: 3em;
+    background: linear-gradient(135deg, #b8ecd9, #b8ecd9); /* soft muted green */
 }
 
 .ref {
-	color: white;
+	color: rgb(126, 152, 231);
 }
 
 h3 {
@@ -101,9 +103,9 @@ h3 {
 }
 
 p {
-	font-size: 24px;
+	font-size: 20px;
 }
 
 li {
-	font-size: 24px;
+	font-size: 20px;
 }
