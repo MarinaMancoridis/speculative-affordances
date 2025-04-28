@@ -1294,7 +1294,7 @@
 
 
         async function loadHOLCZestimates() {
-            const raw = await d3.json(`${base}/src/data/category_zestimate_averages.json`);
+            const raw = await d3.json(`${base}/data/category_zestimate_averages.json`);
 
             const colorMap = {
                 'Best': '#76a865',
