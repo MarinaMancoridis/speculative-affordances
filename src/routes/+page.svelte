@@ -1376,27 +1376,19 @@
             },
         });
 
-        // const slider = document.getElementById("slider");
-        //const sliderValue = document.getElementById("slider-value");
+        const slider = document.getElementById("slider");
+        const sliderValue = document.getElementById("slider-value");
 
-       // slider.addEventListener("input", function () {
-            //const value = parseInt(slider.value, 10);
-            //const opacity = value / 100;
+        slider.addEventListener("input", function () {
+            const value = parseInt(slider.value, 10);
+            const opacity = value / 100;
 
             // Update Mapbox layer opacity
-            //mapSwipe.setPaintProperty("grade_color_layer", "fill-opacity", opacity);
+            mapSwipe.setPaintProperty("grade_color_layer", "fill-opacity", opacity);
 
             // Update visible label
-            //sliderValue.textContent = `${value}%`;
-       // });
-
-        const swipe = document.getElementById('swipe');
-        const mapSwipeContainer = document.getElementById('mapSwipe');
-
-        swipe.addEventListener('input', (e) => {
-	        const value = +e.target.value;
-	        mapSwipeContainer.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
-        });
+            sliderValue.textContent = `${value}%`;
+       });
     });
 </script>
 
@@ -1602,8 +1594,15 @@
                     <svg>
                         {#key mapViewChangedSwipe}
                             {#each homesSwipe as homeSwipe}
-                                <circle { ...getHomesSwipe(homeSwipe) } r="5" fill="#FFA500" fill-opacity="100%" stroke="black" stroke-opacity="60%">
+                                <circle { ...getHomesSwipe(homeSwipe) } r="15" fill="#F2F2F2" fill-opacity="100%" stroke="black" stroke-opacity="60%">
                                 </circle> 
+                                <text
+                                    x={getHomesSwipe(homeSwipe).cx}
+                                    y={getHomesSwipe(homeSwipe).cy}
+                                    font-size="16"
+                                    text-anchor="middle"
+                                    dominant-baseline="middle"
+                                > 🏠 </text>
                             {/each}
                         {/key}
                     </svg>
@@ -1636,15 +1635,16 @@
                                         border-radius: 0%; margin-right: 8px;"></span>Hazardous</li>
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: #000; border-radius: 0%; 
-                                        margin-right: 8px;"></span>Industrial/Commercial/Non-Residential</li>
+                                        margin-right: 8px;"></span>Industrial/Commercial</li>
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: #fff; border: 1px solid #4f5152; 
                                         border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
                         
                         <br>
-                        <!-- <label><b>Redlining Map Opacity: <b><span id="slider-value"></span></label> -->
-                        <!-- <input id="slider" type="range" min="0" max="100" step="1" value="50"> -->
+                        <label><b>Redlining Map Opacity: <b></label>
+                        <input id="slider" type="range" min="0" max="75" step="1" value="50">
 
+                        <br><br>
                         <b>Features</b>
                         <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
                         <li><span style="display: inline-block; width: 12px; height: 12px;
@@ -1652,22 +1652,6 @@
                                         border-radius: 50%; margin-right: 8px;"></span>iBought Home</li>
                         
                     </div>
-                </div>
-            </div>
-
-            <div id="swipe-container" style="position: relative; width: 100%; height: 100%;">
-                    <div id="map-base" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
-                    <div id="map-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: inset(0 50% 0 0);"></div>
-                    <input
-                        id="swipe"
-                        type="range"
-                        min="0"
-                        max="100"
-                        step="1"
-                        value="50"
-                        style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-                        z-index: 1000; width: 300px;"
-                    />
                 </div>
             </div>
 
@@ -1768,14 +1752,10 @@
             </div>
             </div>
 
-            <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
-            <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
-            <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
             <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                <p><i><b>Hover over any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
+                <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
                 <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
                 <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
-                <p><i><b>Filter by price difference</b></i> to see how Zestimate values compare to home selling price.</p>
             </div>
               
             <br><br><br><br>

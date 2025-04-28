@@ -61,7 +61,6 @@ h2 {
 
 /* Different subtle background tint for each */
 #takeaways {
-<<<<<<< HEAD
 	background-color: #3E2F5B;
 	color: white;
 	padding: 3em;
@@ -87,25 +86,10 @@ h2 {
 	color: white;
 	padding: 3em;
 	font-size: 24px;
-=======
-    background: linear-gradient(135deg, #d0baf2, #d0baf2); /* very soft purple */
-}
-
-#action {
-    background: linear-gradient(135deg, #f1c8d6, #f1c8d6); /* very soft muted pink */
-}
-
-#references {
-    background: linear-gradient(135deg, #c9e7f5, #c9e7f5); /* soft steel blue */
-}
-
-#acks {
-    background: linear-gradient(135deg, #b8ecd9, #b8ecd9); /* soft muted green */
->>>>>>> 935a85258f6a7117eca6a4cbc5a44dd07a87c7e6
 }
 
 .ref {
-	color: rgb(126, 152, 231);
+	color: white;
 }
 
 h3 {
@@ -118,21 +102,6 @@ h3 {
 
 p {
 	font-size: 20px;
-}
-
-<<<<<<< HEAD
-#mapBase {
-    flex: 1;
-    width: 100%;
-    height: 600px;
-}
-
-#mapBase svg {
-	position: absolute;
-	z-index: 1;
-	width: 100%;
-	height: 100%;
-	pointer-events: none
 }
 
 #mapSwipe {
@@ -153,8 +122,3 @@ p {
 	width: 100%;
 	accent-color: steelblue;
 }
-=======
-li {
-	font-size: 20px;
-}
->>>>>>> 935a85258f6a7117eca6a4cbc5a44dd07a87c7e6
