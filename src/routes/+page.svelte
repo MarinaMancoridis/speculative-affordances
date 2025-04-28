@@ -1495,7 +1495,7 @@
             <div class="post-chart">
                 <br><br><br><br>
                 <h1>iBuying is happening in Boston!</h1>
-                <p> We found <b>407</b> homes iBought between 2019 to 2025 by searching for known iBuyers like Opendoor, Zillow, Redfin, and Offerpad on <a href="https://www.masslandrecords.com/">Mass Land Records</a> based on <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a> on iBuying. However, there may be even more iBought homes that were not found through this search.</p>
+                <p> We found <b>407</b> homes iBought between 2019 to 2025 by searching for known iBuyers like Opendoor, Zillow, Redfin, and Offerpad on <a href="https://www.masslandrecords.com/">Mass Land Records</a> based on prior research on iBuying [5]. However, there may be even more iBought homes that were not found through this search.</p>
                 
                 <h1>Which of these homes are <em>not</em> iBought?</h1>
                 <p>Click on a home to select it and learn more about it.</p>
@@ -1724,6 +1724,23 @@
                 <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
                 <li> Reach out to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
                 <li> Advocate for protections against automated speculation practices.</li>
+            </div>
+
+            <br><br>
+            <div id="acks">
+                <h3>Acknowledgements</h3>
+                <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
+            </div>
+
+            <br><br>
+            <div id="references">
+                <h3>References</h3>
+                <ul>
+                <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
+                <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
+                <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
+                <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
+                <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
             </div>
 
         </div>
