@@ -1,43 +1,48 @@
-export const fallStart = 0.14;
-export const fallEnd   = 0.215;
-export const bounceEnd = 0.230;
-export const leaveEnd  = 0.28;
+// bubbleFall.js
 
-export const startY    = -40;  // off‐screen top
-export const peakY     =  40;  // bottom of first drop
-export const bounceUp  =  15;  
-export const bounceY   =  peakY - bounceUp;  
-export const endY      = 100;  // off‐screen bottom
+// Control points (normalized 0 to 1 animation progress)
+export const fallStart = 0.2;
+export const fallEnd   = 0.25;
+export const bounceEnd = 0.30;
+export const leaveEnd  = 0.35;
 
-export const delays = [0, 0.015, 0.03, 0.045];
+// Y positions (vh units)
+export const startY    = -40;  // off-screen top
+export const peakY     = 40;   // lowest point of initial drop
+export const bounceUp  = 15;  
+export const bounceY   = peakY - bounceUp;  
+export const endY      = 100;  // off-screen bottom
+
+// Delays for each bubble to stagger drops
+export const delays = [0, 0.03, 0.06, 0.09];
 
 export function clamp01(t) {
-    return t < 0 ? 0 : t > 1 ? 1 : t;
+    return Math.min(Math.max(t, 0), 1);
 }
 
 export function lerp(a, b, t) {
     return a + (b - a) * clamp01(t);
 }
 
-export function calcBubbleY(p) {
-    if (p < fallStart) {
+export function calcBubbleY(progress) {
+    if (progress < fallStart) {
         return startY;
     }
-    if (p < fallEnd) {
-        const t = (p - fallStart) / (fallEnd - fallStart);
+    if (progress < fallEnd) {
+        const t = (progress - fallStart) / (fallEnd - fallStart);
         return lerp(startY, peakY, t);
     }
-    if (p < bounceEnd) {
-        const t = (p - fallEnd) / (bounceEnd - fallEnd);
+    if (progress < bounceEnd) {
+        const t = (progress - fallEnd) / (bounceEnd - fallEnd);
         return lerp(peakY, bounceY, t);
     }
-    if (p < leaveEnd) {
-        const t = (p - bounceEnd) / (leaveEnd - bounceEnd);
+    if (progress < leaveEnd) {
+        const t = (progress - bounceEnd) / (leaveEnd - bounceEnd);
         return lerp(bounceY, endY, t);
     }
     return endY;
 }
 
-export function getBubblesY(pageProgress) {
-    return delays.map(d => calcBubbleY(pageProgress - d));
+export function getBubblesY(animationProgress) {
+    return delays.map(d => calcBubbleY(animationProgress - d));
 }

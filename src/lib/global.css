@@ -70,11 +70,7 @@ header {
 
 h1 {
 	font-size: 30px;
-	padding-top: 3em;
-}
-
-#title {
-	font-size: 36px;
+	padding-top: 0em;
 }
 
 h2 {
@@ -162,6 +158,7 @@ p {
 	max-width: 1200px;
 	/* optional extra inner padding */
 	padding: 1em 1em;
+	padding-top: 0;
 }
 
 /* keep your existing scrolly gap */
@@ -262,6 +259,7 @@ p {
 	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 	position: relative;
 	z-index: 1;
+	font-size: 45px;
   }
   
   /* center the Explore button at the bottom */
@@ -758,4 +756,36 @@ img.outline {
 	transition: opacity 0.2s ease;
 	z-index: 1000;              /* float above everything */
 	text-align: left;
+}
+
+.scrolly-step.ibuying {
+	position: relative;
+	/* shift its left edge to the center of the page, then pull back half a viewport */
+	left: 50%;
+	margin-left: -50vw;
+	/* now span the full viewport width */
+	width: 100vw;
+	max-width: none;
+	box-sizing: border-box;
+  
+	/* your styling */
+	background: #fff;
+	display: flex;
+	align-items: center;
+	gap: 80em;
+	padding: 10em 20em; /* vertical 8em, horizontal matches body padding */
+  }
+  
+  /* left side text takes half the space */
+  .scrolly-step.ibuying .ibuying__text {
+	flex: 1;
+  }
+
+
+.ibuying__sidebar {
+    flex: 1;
+    font-size: 1.1em;
+    color: #333;
+    text-align: left;
+    max-width: 300px; /* Adjust width as needed */
 }

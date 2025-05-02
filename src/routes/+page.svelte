@@ -24,7 +24,7 @@
     import Scrolly from "svelte-scrolly";
     import popupHome from "$lib/popup.js";
     import { getZoomParams, packHouseImages } from '$lib/houseZoom.js';
-    import { getBubblesY } from "$lib/bubbleFall.js";
+    import { getBubblesY, clamp01 } from "$lib/bubbleFall.js";
     import { computeReplaceCount } from "$lib/backgroundHouses.js";
     import { startTypewriter } from "$lib/typewriter.js";
     import { renderCorporateOwnershipChart } from "$lib/corporateOwnershipChart.js";
@@ -125,18 +125,40 @@
     $: ({ scale, opacity } = getZoomParams(pageProgress));
 
     // bubble falling functionality
-    $: bubblesY = getBubblesY(pageProgress);
+    let bubblesVisible = false;
+    let bubblesY = [];
+    const bubbleStart  = 0.0;  // don’t start moving until scrollProgress ≥ 0.4
+    const bubbleEnd    = 0.4;  // reach "end" by scrollProgress = 0.6
 
-    // compute how many images to replace
-    $: replaceCount = computeReplaceCount(pageProgress, totalCells);
-    
-    // update pageProgress whenever you scroll
+
+    // trigger when the Major Players section comes into view
+    function observeMajorPlayers() {
+        const el = document.getElementById("major-players-section");
+        if (!el) return;
+
+        new IntersectionObserver(
+        ([entry]) => bubblesVisible = entry.isIntersecting,
+        { threshold: 0.1 }
+        ).observe(el);
+    }
+
+
     function updateProgress() {
         const scrollTop = window.scrollY;
-        // total scrollable height = doc height minus viewport
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         pageProgress = Math.min(scrollTop / docHeight, 1);
     }
+    $: if (bubblesVisible) {
+        // normalize into [0,1] over the window [bubbleStart, bubbleEnd]
+        const prog = clamp01((pageProgress - bubbleStart) / (bubbleEnd - bubbleStart));
+        bubblesY = getBubblesY(prog);
+    } else {
+        bubblesY = [];  // hide them when you're out of view
+    }
+
+
+    // compute how many images to replace
+    $: replaceCount = computeReplaceCount(pageProgress, totalCells);
 
     function intersectionObserver(node) {
         const observer = new IntersectionObserver(
@@ -275,6 +297,7 @@
 
         updateProgress();                        // init
         window.addEventListener('scroll', updateProgress);
+        observeMajorPlayers();
 
         // ------------ marina's corporate ownership chart ------------
         await tick();
@@ -664,8 +687,42 @@
 </div>
 
 
+
+
 <div class="content-section">
     <div class="grid-container">
+
+    <!-- ■■■ New “What is iBuying?” step ■■■ -->
+    <div class="scrolly-step ibuying">
+        <div class="ibuying__text">
+            <h2>What is iBuying?</h2>
+            <br><br>
+            <p>
+            <b>iBuying</b> is the process by which a company uses algorithms
+            to instantly evaluate your home and make a cash offer,
+            eliminating many of the traditional steps of listing
+            and negotiating.
+            </p>
+            <br><br><br><br>
+            <p>
+                Instead of weeks or months, your home can sell in days—or even hours. This rapid turnaround holds <b>real appeal for sellers</b>, especially those who need certainty, speed, or who simply prefer not to deal with the hassle and uncertainty of traditional real estate transactions.
+            </p>
+            <br><br><br><br>
+            <p>
+                iBuying also tends to <b>drive up prices</b> more broadly, since these algorithmic buyers often compete aggressively, bidding above typical market rates and creating upward pressure on home values.
+            </p>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <div class="ibuying__sidebar" id="major-players-section">
+                <p>
+                    Major players—<b>Zillow, Opendoor, Offerpad, Redfin</b>—have bought
+                    thousands of homes in this way, promising speed and convenience
+                    in exchange for a fee.
+                </p>
+            </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <h2>Now, imagine you're a seller who has just listed your home.</h2>
+        </div>
+    </div>
     
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
          <!-- ■■■ Spacer to drive the grid animation ■■■ -->
@@ -685,14 +742,18 @@
                     style="transform: translateY(-50%) scale({scale}); opacity: {opacity};"
                 />
             
-                <div class="zoom-house-text">
-                    <p> Imagine this. <strong>You’re about to sell your home.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—<strong>it's a machine.</strong> </p>
+            <div class="zoom-house-text">
+                <p><strong>You are eager to sell your three-bedroom home in Somerville.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one.</p>
 
-                    <p class="note">
-                        Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
-                    </p>
-                </div>
+                <p>
+                    <strong>A machine makes you an offer in seconds</strong>. No waiting, no uncertainty, no endless walkthroughs.
+                </p>
+                <br>
+                <p class="note">
+                    Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
+                </p>
             </div>
+        </div>
           </div>
 
 
@@ -700,30 +761,22 @@
         <div class="scrolly-step" style="height:20vh"></div>
 
         <!-- bubble falling -->
-        {#if pageProgress >= 0.2 && pageProgress <= 0.5}
+        {#if bubblesVisible}
             <div class="bubbles">
                 {#each [zillowlogo, opendoorlogo, offerpadlogo, redfinlogo] as logo, i}
-                <div class="bubble" style="top: {bubblesY[i]}vh;">
-                    <img src={logo} alt="iBuyer logo" />
-                </div>
+                    <div class="bubble" style="top: {bubblesY[i]}vh;">
+                        <img src={logo} alt="iBuyer logo" />
+                    </div>
                 {/each}
             </div>
         {/if}
 
 
-        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
-            <div class="zoom-house-container left">
+        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:10vh;">
+            <div class="zoom-house-container center">
                 <div class="zoom-house-text">
                     <p>
-                        This is not science fiction; it's happening now through <strong>iBuying</strong>. 
-                    </p>
-
-                    <p>
-                        Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Offerpad, and Redfin have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
-                    </p>
-
-                    <p>
-                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because this isn’t just about buying houses. <strong>It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
+                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because <strong>this isn’t just about buying houses. It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
                     </p>
                 </div>
             </div>
@@ -735,11 +788,12 @@
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
             <div class="zoom-house-container center">
                 <div class="zoom-house-text">
+                    <h2>Why does this matter?</h2>
                     <p>
                         As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
                     </p>
                     <p>
-                        <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
+                        <strong>The aim of this project</strong> is to contextualize iBuying practices in the Greater Boston Area. Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
                     </p>
                 </div>
             </div>
