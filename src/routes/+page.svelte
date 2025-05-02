@@ -7,7 +7,6 @@
         /* margin: 0em; */
         /* add horizontal padding so there's space on both sides */
         padding: 0em 2em;
-        font-family: 'Roboto', sans-serif;
         align-items: center;
         overflow-x: hidden;
         overscroll-behavior-y: none;
@@ -23,7 +22,7 @@
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
-    import popupHome from "$lib/popup.js"
+    import popupHome from "$lib/popup.js";
 
     // Reactive variables for hovered and selected house
     let hoveredHouse = null;
