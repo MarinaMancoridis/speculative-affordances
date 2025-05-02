@@ -195,49 +195,92 @@ p {
 	z-index: 1;
 }
 
-/* 4) Your full‑screen title */
 .title-section {
-	/* 1) Make it full viewport width */
 	position: relative;
-	width: 100vw;
-	/* 3) Keep your full‑height + pink BG */
-	height: 100vh;
-	background: #2d2d2d;
-
-	/* 4) Center your text */
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	width: 100%;
+	height: 100vh;            /* fill viewport height */
+	overflow: hidden;
+	display: flex;            /* so title-text can lay out */
 	align-items: center;
-	color: #ffffff; 
-}
-
-.scroll-indicator {
-	border: none;
-	outline: none;
-
-	/* allow clicks now */
-	pointer-events: auto;
-	cursor: pointer;
-
+  }
+  
+  /* full-bleed rotating image */
+  .rotator {
 	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	z-index: 0;
+  }
+  .rotator img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+  }
+  
+  .title-section {
+	position: relative;
+  
+	/* span exactly the viewport width, centered on the screen */
+	width: 100vw;
+	margin-left:  calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+  
+	height: 100vh;
+	overflow: hidden;
+	background: white;
+  
+	display: flex;
+	align-items: center;
+  }
+  
+  /* full‐bleed, faded background image */
+  .rotator {
+	position: absolute;
+	inset: 0;                /* top:0; right:0; bottom:0; left:0 */
+	z-index: 0;
+  }
+  .rotator img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0.6;
+  }
+  
+  /* your white text box on the left */
+  .title-text {
+	/* never grow or shrink */
+	flex: 0 0 auto;
+  
+	/* pick a sensible range: between 300px and 600px, ideally 40% of the viewport */
+	width: clamp(300px, 40%, 600px);
+  
+	/* preserve your existing styling */
+	background: white;
+	padding: 3rem;
+	margin-left: 2rem;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	position: relative;
+	z-index: 1;
+  }
+  
+  /* center the Explore button at the bottom */
+  .scroll-indicator {
+	position: absolute;
+	z-index: 1;
+	font-size: 1.0rem;
 	bottom: 2rem;
 	left: 50%;
 	transform: translateX(-50%);
-
-	display: inline-flex;
-	flex-direction: column;
-	align-items: center;
-	color: #4f384c;
-
-	background: white;
-	padding: 1.2em 1.6em;
-	border-radius: 1rem;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-
-	font-size: 1rem;
-	z-index: 2;
-}
+	background: rgba(223, 214, 214, 0.9);
+	border: none;
+	padding: 0.75em 1.5em;
+	border-radius: 4px;
+	cursor: pointer;
+  }
+  .scroll-indicator:hover {
+	background: rgb(175, 168, 168);
+  }
 
 .post-chart {
 	font-size:1.0em;

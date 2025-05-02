@@ -28,6 +28,7 @@
     import { computeReplaceCount } from "$lib/backgroundHouses.js";
     import { startTypewriter } from "$lib/typewriter.js";
     import { renderCorporateOwnershipChart } from "$lib/corporateOwnershipChart.js";
+    import { rotatingImage } from '$lib/imageRotator.js';
 
     // Reactive variables for hovered and selected house
     let hoveredHouse = null;
@@ -98,8 +99,8 @@
     import opendoorlogo from "./../data/opendoor.png";
     import zillowlogo from "./../data/zillow.png";
     import offerpadlogo from "./../data/offerpad.png";
+    
 
-    // 2) Pack them into arrays
     const baseOriginals = [
         house1, house2, house3, house4, house5,
         house6, house7, house8, house9, house10,
@@ -641,13 +642,24 @@
 </div>
 
 <div class="title-section">
-    <h1 id="title">AUTOMATION AND SPECULATION</h1>
-    <p class="typewriter-line" id="typewriter"></p>
-    <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
-
+    <div class="rotator">
+      <img src={$rotatingImage} alt="Rotating title image" />
+    </div>
+  
+    <div class="title-text">
+      <h1>AUTOMATION AND SPECULATION</h1>
+      <p class="typewriter-line" id="typewriter"></p>
+      <p>
+        <b>Speculative Affordances, Final Project:</b>
+        <br>
+        <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i>
+      </p>
+    </div>
+  
+    <!-- now sibling of .title-text -->
     <button class="scroll-indicator" on:click={scrollToExplore} type="button">
-        <span>Explore</span>
-        <div class="arrow">↓</div>
+      <span>Explore</span>
+      <div class="arrow" style="margin-left:0.8rem;">↓</div>
     </button>
 </div>
 
