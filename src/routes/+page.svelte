@@ -563,7 +563,7 @@
             <h2>What is iBuying?</h2>
             <br><br>
             <p>
-            <b>iBuying</b> is the process by which a company uses algorithms
+            <b>iBuying</b>, or instant Buying, is the process by which a company uses algorithms
             to instantly evaluate your home and make a cash offer,
             eliminating many of the traditional steps of listing
             and negotiating.
@@ -671,8 +671,9 @@
                 
             <div id="sticky-container">
                 <div class="chart-text">
-                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
-                    <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
+                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but <b>by betting on their future</b>. 
+                    </p><p>These firms don't buy homes to live in them; <b>they speculate</b>. iBuying is <i>a form of corporate speculation</i>, wherein companies use these algorithms to make direct housing offers. </p>
+                    <p> <b>Scroll down</b> to explore the visualization and watch the history of how corporate speculation quietly but unmistakably alter Boston’s housing landscape over time. </p>
                 </div>
                 <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
                     <div id="chart-tooltip" class="dialogue-box"></div>
@@ -686,16 +687,19 @@
                 <br><br><br><br>
                 <h1 style="text-align: center;">Data Collection— The Presence of iBuying in Boston</h1>
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>How do you find a hidden market? While the previous chart focused broadly on corporate speculation in Boston, our analysis wishes to look at iBuying in particular. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players identified in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
+                    <p><b>How do you find a hidden market?</b> There is no public dataset of iBuying in the Greater Boston Area. While our previous chart focused more broadly on <i>corporate speculation</i> in Boston, our analysis wishes to look at iBuying in particular. 
+                        
+                    </p><p>Our analysis involved <b>creating our own dataset</b> of iBuying in the Greater Boston Area. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players in iBuying. This type of keyword matching is the approach that was used in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
                     </p> 
-                    <p>Using this simple but powerful method, we uncovered <b>407</b> homes purchased by iBuyers between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
+                    <p>Using this simple but powerful method, we uncovered <b>407 homes purchased by iBuyers</b> between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
+                    <br><br>
                 </div>
 
                 <NotIBoughtHomes {homes} />
                 
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br>
+                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
                     </p>
                 </div>
 
