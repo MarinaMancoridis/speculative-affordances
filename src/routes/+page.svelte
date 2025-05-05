@@ -304,7 +304,7 @@
         await tick();
         renderCorporateOwnershipChart(
             base,
-            "corp-own-chart",
+            "corp-own-chartcorp-own-chart",
             "sticky-container",
             "chart-wrapper",
             "chart-tooltip"

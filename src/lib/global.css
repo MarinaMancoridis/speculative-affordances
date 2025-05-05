@@ -667,10 +667,13 @@ img.outline {
 #sticky-container.sticky {
 	position: sticky;
 	top: 0;
-	z-index: 10;
 	width: 100%;
 	background: white;
 	transition: position 0.3s ease-out;
+	height: 200vh;  /* Adjust if you want the sticky container to take less height */
+    overflow-y: auto; /* Prevents content from spilling under */
+    background-color: white; /* Ensure it's opaque so text doesn't show through */
+    z-index: 100; /* Keep it on top */
 }
 
 .home-selection {
