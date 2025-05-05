@@ -1055,9 +1055,9 @@
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: goldenrod; border: 1px solid #4f5152; 
                                         border-radius: 50%; margin-right: 8px;"></span>Sold for greater than Zestimate</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
+                        <!-- <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Sold for price unknown</li>
+                                        border-radius: 50%; margin-right: 8px;"></span>Sold for price unknown</li> -->
 
                 </div>
                 
