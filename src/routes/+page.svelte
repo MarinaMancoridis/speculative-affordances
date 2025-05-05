@@ -30,10 +30,9 @@
     import { renderCorporateOwnershipChart } from "$lib/corporateOwnershipChart.js";
     import { rotatingImage } from '$lib/imageRotator.js';
 
-    // Reactive variables for hovered and selected house
-    let hoveredHouse = null;
-    let selectedHouse = null;
-    let notiBoughtHomes = [];
+    // Svelte Components
+    import NotIBoughtHomes from "./NotIBoughtHomes.svelte";
+    import EverythingIsGettingExpensive from "./EverythingIsGettingExpensive.svelte";
 
     // scroll states
     let scrollProgress = 0;
@@ -415,155 +414,8 @@
             return item;
         });
 
-
-        async function loadHOLCZestimates() {
-            const raw = await d3.json(`${base}/data/category_zestimate_averages.json`);
-
-            const colorMap = {
-                'Best': '#76a865',
-                'Still Desirable': '#74c3e3',
-                'Definitely Declining': '#ffff00',
-                'Hazardous': '#d9838d',
-                'Industrial': '#000000',
-                'Commercial': '#000000',
-                'N/A': '#808080'
-            };
-
-            const categories = Object.keys(raw);
-            const color = d3.scaleOrdinal()
-                .domain(categories)
-                .range(categories.map(c => colorMap[c]));
-
-
-            const allData = [];
-            categories.forEach(category => {
-                for (const [year, obj] of Object.entries(raw[category])) {
-                    allData.push({
-                        category,
-                        year: +year,
-                        avg: obj.average_zestimate
-                    });
-                }
-            });
-
-            const container = document.getElementById('zestimate-chart');
-            if (!container) {
-                console.warn('⚠️ couldn’t find #zestimate-chart in the DOM');
-                return;
-            }
-
-            const margin = { top: 40, right: 20, bottom: 100, left: 100 };
-            const { width: totalW, height: totalH } = container.getBoundingClientRect();
-            const width  = totalW  - margin.left - margin.right;
-            const height = totalH  - margin.top  - margin.bottom;
-
-            const svg = d3.select("#zestimate-chart")
-                .append("svg")
-                .attr("width", totalW)
-                .attr("height", totalH)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            const x = d3.scaleLinear()
-                .domain(d3.extent(allData, d => d.year))
-                .range([0, width]);
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(allData, d => d.avg)]).nice()
-                .range([height, 0]);
-
-            const xAxis = d3.axisBottom(x)
-                .tickFormat(d3.format('d'))
-                .tickPadding(15);
-            const yAxis = d3.axisLeft(y)
-                .tickFormat(d => `$${d3.format('.2s')(d)}`)
-                .tickPadding(15);
-
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(xAxis)
-            .selectAll('text')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '19px');
-
-            svg.append('g')
-                .call(yAxis)
-            .selectAll('text')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '19px');
-
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', height + margin.bottom - 30)
-                .attr('text-anchor', 'middle')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '20px')
-                .text('Year');
-
-            svg.append('text')
-                .attr('transform', `rotate(-90)`)
-                .attr('x', -height / 2)
-                .attr('y', -margin.left + 15)
-                .attr('text-anchor', 'middle')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '20px')
-                .text('Average Zestimate');
-
-            const nested = d3.groups(allData, d => d.category);
-
-            const line = d3.line()
-                .x(d => x(d.year))
-                .y(d => y(d.avg));
-
-            nested.forEach(([category, values]) => {
-                svg.append('path')
-                    .datum(values.sort((a, b) => a.year - b.year))
-                    .attr('fill', 'none')
-                    .attr('stroke', color(category))
-                    .attr('stroke-width', 3)
-                    .attr('d', line);
-            });
-
-            const legend = d3.select("#legend")
-                .append('ul')
-                .style('list-style', 'none')
-                .style('padding', '0')
-                .style('margin', '2em auto')
-                .style('display', 'flex')
-                .style('flex-wrap', 'wrap')
-                .style('justify-content', 'center')
-                .selectAll('li')
-                .data(categories)
-                .enter()
-                .append('li')
-                .style('margin', '0 1em')
-                .style('display', 'flex')
-                .style('align-items', 'center');
-
-            legend.append('span')
-                .style('display', 'inline-block')
-                .style('width', '12px')
-                .style('height', '12px')
-                .style('margin-right', '8px')
-                .style('border', '1px solid #4f5152')
-                .style('background-color', d => color(d));
-
-            legend.append('span')
-                .text(d => d);
-        }
-        loadHOLCZestimates();
-
         homes = Array.from(new Set(homes.map(home => home.Address)))
             .map(address => homes.find(home => home.Address === address));
-
-        const selectedHomeAddresses = [
-            "2 Front Street, Natick, MA 01760-6019, USA", 
-            "37 Halliday Street, Boston, MA 02131-2210, USA", 
-            "15 Fensmere Road, Boston, MA 02132-6011, USA"
-        ];
-
-        notiBoughtHomes = homes.filter(home => 
-            selectedHomeAddresses.includes(home.Address)
-        );
 
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
@@ -839,48 +691,8 @@
                     <p>Using this simple but powerful method, we uncovered <b>407</b> homes purchased by iBuyers between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
                 </div>
 
+                <NotIBoughtHomes {homes} />
                 
-                <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
-                <p style="text-align: center;">Click on a home to select it and learn more about it.</p>
-                <div class="home-selection">
-                    {#each notiBoughtHomes as home}
-                        <div class="home-card-wrapper">
-                            <button 
-                                class="home-card" 
-                                on:mouseover={() => hoveredHouse = home} 
-                                on:mouseout={() => hoveredHouse = null} 
-                                on:focus={() => hoveredHouse = home} 
-                                on:blur={() => hoveredHouse = null} 
-                                on:click={() => selectedHouse = home}
-                                class:selected={selectedHouse === home}
-                                aria-pressed={selectedHouse === home}
-                                aria-label={`Select House ${home}`}
-                            >
-                                <div class="image-container">
-                                    <img 
-                                        src={home.photoURL} 
-                                        alt={`${home}`} 
-                                        class:grayscale={hoveredHouse !== home && selectedHouse !== home}
-                                    />
-                                </div>
-                            </button>
-                        </div>
-                    {/each}
-                </div>
-    
-                {#if selectedHouse !== null}
-                    <div class="house-details">
-                        <h2>This is <em>{selectedHouse.Address}</em></h2>
-                        <p>This is an iBought home!</p>
-                        <p>
-                            Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
-                        </p>
-                        <p>
-                            The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms. It spans {selectedHouse.livingAreaValue} square feet of living area total.
-                        </p>
-                    </div>
-                {/if}
-
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
                     <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br>
@@ -955,18 +767,7 @@
                 </div>
             </div>
 
-            <h1 style="text-align: center;">💸 Everything's Getting Expensive! 💸</h1>
-            <div id="sticky-container">
-                <div class="chart-text">
-                    <p>Corporate speculation doesn't just buy homes: it predicts and bets on entire neighborhoods. Here's how the average Zestimates for iBought homes have changed for each historic HOLC district category.</p>
-                </div>
-                <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
-                    <div id="chart-tooltip" class="dialogue-box"></div>
-                    <h2 class="chart-title">Average Zestimate Trends by HOLC District.</h2>
-                    <div id="zestimate-chart" style="width:100%; height:500px;"></div>
-                    <div id="legend"></div>
-                </div>
-            </div>
+            <EverythingIsGettingExpensive />
 
             <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
             <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
