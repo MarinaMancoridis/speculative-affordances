@@ -288,6 +288,8 @@
             .domain(valueScale)
             .range([0, 25]);
 
+    // Filter out homes that we don't have comparison data on
+    let filteredHomes = [];
 
     onMount(async () => {
         await tick();
@@ -565,13 +567,24 @@
 
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
-        timeIndex = timeScale[1]; // Initialize to latest
+        timeIndex = timeScale[0]; // Initialize to latest
 
         // One more pass to calculate time cutoffs
         homes = homes.map(item => {
+            
             item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale)
+            if (item.dateLastSold) {
+                const year = new Date(item.dateLastSold)
+                console.log("solded: ", year.getFullYear(), timeScale)
+                for (let y=timeScale[0];y<year.getFullYear(); y++) {
+                    console.log(y, valueScale[0])
+                    item.time_lookup.set(y, valueScale[0])
+                }
+            }
             return item;
         })
+
+        filteredHomes = homes.filter((home) => home.color !== "white")
 
         map = new mapboxgl.Map({
             container: 'map', // HTML element ID
@@ -974,7 +987,7 @@
                 <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
                 <svg>
                     {#key mapViewChanged}
-                        {#each homes as home}
+                        {#each filteredHomes as home}
                             <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill={home.color} stroke="black" stroke-opacity="60%" on:click={()=>{popupHome(home, map)}}>
                                 <title>
                                     iBuyer: {home.Name}. Zestimate: ${home.zestimate}. Zestimate at sale time: {home.matchedZestimate?`$${home.matchedZestimate}`:"unknown"}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
