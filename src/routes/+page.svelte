@@ -1663,7 +1663,6 @@
                     <p>Using this simple but powerful method, we uncovered <b>407</b> homes purchased by iBuyers between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
                 </div>
 
-                
                 <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
                 <p style="text-align: center;">Click on a home to select it and learn more about it.</p>
                 <div class="home-selection">
@@ -1704,11 +1703,6 @@
                         </p>
                     </div>
                 {/if}
-
-                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <br><br><br><br><br><br><br><br>
-                    <p>In this qualitative analysis, the message is clear: <b>iBuying is not a single, monolithic strategy</b>. There is no typical mold for an iBought home. This diversity reminds us that while the term "iBuying" suggests a single model, in practice it covers a range of strategies.</p>
-                </div>
 
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
