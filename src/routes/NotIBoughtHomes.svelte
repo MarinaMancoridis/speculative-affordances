@@ -53,7 +53,9 @@
 </style>
 
 <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
-<p style="text-align: center;">Click on a home to select it and learn more about it.</p>
+<p style="max-width: 800px; margin: 0 auto; text-align: left;">Let's play a quick game: can you spot the homes that weren't snapped up by iBuyers?</p><br> 
+<p style="max-width: 800px; margin: 0 auto; text-align: left;"><b>Click on a house to learn more about it</b>. Behind every house is a story—real people, real communities, real impacts. By engaging with details about <i>actual homes</i>, we hope to ground the abstract concept of iBuying in a real, lived experiences. </p>
+<br>
 
 <div class="home-selection">
     {#each notiBoughtHomes as home}
