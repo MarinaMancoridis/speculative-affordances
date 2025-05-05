@@ -1,625 +1,16 @@
 <style>
     @import url("$lib/global.css");
 
-    :global(.scrolly) {
-        display: block !important;
-        --scrolly-gap: 2em;
-    }
-
     /* page and text background */
     :global(body) {
         color: #000;
         /* margin: 0em; */
         /* add horizontal padding so there's space on both sides */
         padding: 0em 2em;
-        font-family: 'Roboto', sans-serif;
         align-items: center;
         overflow-x: hidden;
         overscroll-behavior-y: none;
     }
-
-    /* each step just lives in the normal document flow */
-    :global(.scrolly-step) {
-        margin-bottom: var(--scrolly-gap);
-    }
-
-    :global(.scrolly-step .step-text) {
-        font-size: 1.2em;
-        line-height: 2;
-        /* width: 33.333%; */
-        margin: 0 auto;
-        background: #f8f8f8;
-        padding: 2em;
-        box-sizing: border-box;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(201, 73, 179, 0.1);
-        color: #000;
-        
-        /* disable flex inherited from parent */
-        flex: none;
-        min-width: auto;
-        display: block;
-    }
-
-    /* scrolly paragraphs */
-    :global(.scrolly-step p) {
-        /* confine to middle third */
-        /* width: 33.333%; */
-        margin: 0 auto;
-        padding: 0em;
-        
-        /* ensure text is dark */
-        color: #000;
-    }
-
-    /* center & constrain your main content */
-    .content-section {
-        min-height: 100vh;
-        margin: 0 auto;
-        /* max-width prevents over‑stretching on very large screens */
-        max-width: 1200px;
-        /* optional extra inner padding */
-        padding: 1em 1em;
-    }
-
-    /* keep your existing scrolly gap */
-    :global(.scrolly) {
-        --scrolly-gap: 0em;
-    }
-
-    .grid-bg {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        grid-template-rows:    repeat(10, 1fr);
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    .grid-cell {
-        width: 100%;
-        height: 100%;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        transition: background-image 0.1s ease-in;  /* quick cascade */
-    }
-
-    /* 3) Everything else floats above at z‑index 1+ */
-    .content, .title-section {
-        position: relative;
-        z-index: 1;
-    }
-
-    /* 4) Your full‑screen title */
-    .title-section {
-        /* 1) Make it full viewport width */
-        position: relative;
-        width: 100vw;
-        /* 3) Keep your full‑height + pink BG */
-        height: 100vh;
-        background: #2d2d2d;
-
-        /* 4) Center your text */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: #ffffff; 
-    }
-
-    .scroll-indicator {
-        border: none;
-        outline: none;
-
-        /* allow clicks now */
-        pointer-events: auto;
-        cursor: pointer;
-
-        position: absolute;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        color: #4f384c;
-
-        background: white;
-        padding: 1.2em 1.6em;
-        border-radius: 1rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-
-        font-size: 1rem;
-        z-index: 2;
-    }
-
-    .post-chart {
-        font-family: 'Roboto', sans-serif;
-        font-size:1.0em;
-    }
-
-    /* remove the second pointer‑events: none you had here */
-
-    .scroll-indicator span,
-    .scroll-indicator .arrow {
-        display: inline-block;
-        animation: bounce 2s infinite;
-    }
-
-    .scroll-indicator .arrow {
-        font-size: 1.5rem;
-        margin-top: 0.2em;
-        animation-delay: 0.1s;
-    }
-
-    /* keyframes for that gentle bounce */
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0);
-        }
-        40% {
-            transform: translateY(-10px);
-        }
-        60% {
-            transform: translateY(-5px);
-        }
-    }
-
-
-    /* push the viz well below the last step */
-    :global(.scrolly-viz) {
-        display: block;
-        margin-top: 3em;
-    }
-
-    :global(.text-side) {
-        font-size: 1.2em;
-    }
-
-    /* increase the horizontal space between text‑side and legend‑side */
-    :global(.scrolly-step:last-child) {
-        margin-bottom: 10em;
-    }
-
-    :global(.todo-box) {
-        background: #582546;          /* black background */
-        color: #fff;               /* white text */
-        width: 60%;                /* 60% of its container */
-        margin: 2em auto;          /* vertical spacing + center horizontally */
-        padding: 1.5em;            /* inner breathing room */
-        box-sizing: border-box;
-        border-radius: 6px;        /* optional rounded corners */
-        font-size: 1.2em;          /* match your other text size */
-        line-height: 1.5;
-        margin-bottom: 10em;
-        margin-top: 10em;
-    }
-
-    :global(.todo-box strong) {
-        display: block;            /* TODO: on its own line */
-        margin-bottom: 0.5em;
-    }
-
-    .grid-container {
-        position: relative;
-    }
-
-    /* 5×5 grid full‑screen, faded behind */
-    .house-grid {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        grid-template-rows: repeat(5, 1fr);
-        pointer-events: none;    /* so the grid doesn't block scrolling or clicks */
-        opacity: 0.5;           /* adjust overall fade */
-        z-index: 0;              /* behind all your steps */
-    }
-
-    .house-cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2em;          /* emoji size */
-    }
-
-    /* make sure your scrolly content and todo-box sit above the grid */
-    .grid-container :global(.scrolly-step),
-    .grid-container :global(.todo-box) {
-        position: relative;
-        z-index: 1;
-        /* background should be opaque (e.g. #fff7f7 or #582546) so text is legible */
-    }
-
-    :global(.scrolly-step.spacer) {
-        /* height = enough scroll to go from 0→25 houses; you can tweak */
-        height: 10vh;
-    }
-
-    /* ensure container is the stacking context */
-    .grid-container { position: relative; }
-
-    /* overlay only the first three real steps */
-    :global(.scrolly-step.overlay-step) {
-        /* remove absolute positioning */
-        position: relative;
-        top: auto; left: auto; transform: none;
-
-        /* space them out vertically */
-        margin: 5vh auto;   /* e.g. 5% of viewport height above & below each step */
-        width: 60%;
-    }
-
-    .house-grid.hidden {
-        opacity: 0;
-        transition: opacity 0.5s ease-out;
-        pointer-events: none;
-    }
-
-    .grid-section {
-        height: 100vh;
-        background: white;
-        display: grid;
-        grid-template-columns: repeat(100, 1fr);
-        grid-template-rows:    repeat(100, 1fr);
-        /* remove any gap so it's a solid block of emojis */
-        gap: 0;
-    }
-
-    /* each cell centers its emoji */
-    .grid-cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* scale the emoji so it's legible but not too huge—adjust as you like */
-        font-size: 0.8vw;
-        line-height: 1;
-    }
-
-    .after-todo {
-        position: relative;
-        z-index: 1;              /* above the fixed grid-bg */
-        
-        /* full‑width break‑out */
-        width: 100vw;
-        left: 50%;
-        margin-left: -50vw;
-        
-        /* include padding in that 100vw & 100vh */
-        box-sizing: border-box;
-        
-        /* white background */
-        background: white;
-        
-        /* always at least fill the viewport */
-        min-height: 100vh;
-        
-        /* vertical breathing room */
-        padding: 4em 2em;
-    }
-
-    #typewriter {
-        /* font-family: 'Tangerine', serif; */
-        font-family: "Source Code Pro", monospace;
-        font-size: 1.5rem;
-        color: #ffffff;
-        margin-top: 1em;
-        white-space: nowrap;
-        overflow: hidden;
-        border-right: 2px solid rgba(255,255,255,0.75);
-        animation: blink-caret 0.75s step-end infinite;
-    }
-
-    @keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: rgba(255,255,255,0.75); }
-    }
-
-    .zoom-house-container {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        width: 100%;
-        height: 100%;
-        padding: 2em;
-        box-sizing: border-box;
-    }
-
-    .zoom-house-container.right {
-        justify-content: flex-end;
-    }
-
-    .zoom-house-container.left {
-        justify-content: flex-start;
-    }
-
-    .zoom-house-container.center {
-        justify-content: center;
-    }
-
-
-    .zoom-house-image,
-    .zoom-house-step .zoom-house-container .zoom-house-text {
-        width: 40%;
-        background: #f8f8f8;
-        padding: 2em;
-        border-radius: 12px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        font-size: 1.25em;
-        line-height: 1.7;
-        color: #333333;
-        border: 1px solid rgba(0,0,0,0.05);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Note styling */
-    .zoom-house-text .note {
-        margin-top: auto;
-        font-size: 0.75em;
-        font-style: italic;
-        color: #666;
-        padding-top: 1em;
-    }
-
-    /* Remove unwanted background from paragraphs */
-    .zoom-house-text p {
-        background: transparent !important;
-    }
-
-    .zoom-house-text p + p {
-        margin-top: 1em; /* Adjust the value as needed */
-    }
-
-    .zoom-house-image {
-        width: 50%;
-        height: 100%;
-        transform: scale(0.1);
-        opacity: 0;
-        transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
-    }
-
-    .zoom-house-text {
-        width: 50%;
-        padding: 2em;
-        background: #fff7f7;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Active state for zoomed-in effect */
-    .zoom-house-step.active .zoom-house-image {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    .zoom-house-step {
-        /* make the step fill the viewport so it can enter/exit properly */
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        /* now the container children will lay out inside this full-height box */
-    }
-
-    .zoom-panel {
-        position: absolute;
-        /* compute these in the style attribute… */
-        overflow: hidden;
-        pointer-events: none;
-        z-index: 1;
-    }
-    .zoom-panel img {
-        width: 100%;
-        height: 100%;
-        transform-origin: center center;
-    }
-
-
-    /* make your text sit on the right half */
-    .text-step {
-        display: flex;
-        align-items: center;
-    }
-
-    /* force the .step-text to take up 40% of its parent,
-    push itself to the right, and leave 1em of breathing room */
-    .text-step .step-text {
-        width: 40%;              
-        margin: 0 1em 0 auto;    /* top/right/bottom/left → right-margin=1em, left-margin=auto */
-        box-sizing: border-box;   /* include any padding inside that 40% */
-    }
-
-    img#zoom-house {
-        position: fixed;
-        left: 1.5%;
-        top: 45%;
-        transform-origin: left center;
-        /* we'll override transform+opacity inline */
-        pointer-events: none;
-        z-index: 100;          /* on top of your grid & content */
-        width: 50vw;           /* half the screen width */
-        height: auto;
-    }
-
-    #zoom-house {
-        flex: 0 0 50%;
-        transform-origin: left center;
-        pointer-events: none;
-        width: 50vw;
-        height: auto;
-        position: fixed;
-        left: 1.5%;
-        top: 45%;
-    }
-
-    img.outline {
-        filter:
-            drop-shadow(10px 0 0 #d3a3a3)
-            drop-shadow(-10px 0 0 #d3a3a3)
-            drop-shadow(0 10px 0 #d3a3a3)
-            drop-shadow(0 -10px 0 #d3a3a3);
-    }
-
-    .bubbles {
-        position: fixed;
-        top: 0;
-        right: 10vw;
-        width: 35vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 10;
-    }
-
-    .bubbles .bubble {
-        position: absolute;
-        width: 10vw;                /* bigger circle */
-        height: 10vw;
-        background: #ffffff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        /* stronger drop-shadow under each bubble */
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    /* now space them at 30% increments across that 35vw strip */
-    .bubbles .bubble:nth-child(1) { left: 0%;  }
-    .bubbles .bubble:nth-child(2) { left: 30%; }
-    .bubbles .bubble:nth-child(3) { left: 60%; }
-    .bubbles .bubble:nth-child(4) { left: 90%; }
-
-    .bubbles .bubble img {
-        max-width: 80%;
-        max-height: 80%;
-        object-fit: contain;
-    }
-
-    .chart-text {
-        font-family: 'Roboto', sans-serif;
-        color: #333333;
-        font-size: 1.25em;
-        line-height: 1.7;
-        max-width: 700px;
-        margin: 0 auto 1.5em;
-    }
-
-    /* match the narrative headings’ font family, but keep your chart-title styling */
-    .chart-title {
-        font-family: 'Roboto', sans-serif;
-        color: #4f384c;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0 0 0.5rem;
-    }
-
-   /* the container we’ll flip on/off */
-   #sticky-container {
-        position: relative;
-    }
-
-    #sticky-container.sticky {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        width: 100%;
-        background: white;
-        transition: position 0.3s ease-out;
-    }
-
-    .home-selection {
-        display: flex;
-        justify-content: center;
-        gap: 2em;
-        margin: 2em 0;
-        flex-wrap: wrap;
-    }
-
-    .home-card-wrapper {
-        flex: 1 1 calc(33.333% - 2em);
-        max-width: calc(33.333% - 2em);
-        display: flex;
-        justify-content: center;
-    }
-
-    .home-card {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        transition: transform 0.3s ease, outline 0.3s ease;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        background: none;
-    }
-
-    .image-container {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        border-radius: 8px;
-    }
-
-    .home-card img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Ensures cropping to center */
-        transition: filter 0.3s ease;
-    }
-
-    .home-card img.grayscale {
-        filter: grayscale(100%);
-    }
-
-    .home-card.selected {
-        outline: 4px solid #644E8F;
-        transform: scale(1.05);
-    }
-
-    .house-details {
-        margin-top: 2em;
-        padding: 1em;
-        background: #f8f8f8;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .house-details h2 {
-        color: #644E8F;
-    }
-
-    .dialogue-box {
-        position: absolute;
-        background: #ffffff;
-        color: #333333;
-        font-family: 'Roboto', sans-serif;
-        font-size: 1.2rem;
-        line-height: 1.4;
-        padding: 0.75em 1em;
-        border-radius: 6px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        max-width: 240px;           /* wrap around 240px */
-        white-space: normal;        /* allow wrapping */
-        pointer-events: none;       /* never block scrolling */
-        transform: translate(-50%, -100%); /* center above point */
-        display: none;              /* hidden until needed */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: opacity 0.2s ease;
-        z-index: 1000;              /* float above everything */
-        text-align: left;
-    }
-
 </style>
 
 <script>
@@ -631,12 +22,17 @@
     import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
-    import popupHome from "$lib/popup.js"
+    import popupHome from "$lib/popup.js";
+    import { getZoomParams, packHouseImages } from '$lib/houseZoom.js';
+    import { getBubblesY, clamp01 } from "$lib/bubbleFall.js";
+    import { computeReplaceCount } from "$lib/backgroundHouses.js";
+    import { startTypewriter } from "$lib/typewriter.js";
+    import { renderCorporateOwnershipChart } from "$lib/corporateOwnershipChart.js";
+    import { rotatingImage } from '$lib/imageRotator.js';
 
-    // Reactive variables for hovered and selected house
-    let hoveredHouse = null;
-    let selectedHouse = null;
-    let notiBoughtHomes = [];
+    // Svelte Components
+    import NotIBoughtHomes from "./NotIBoughtHomes.svelte";
+    import EverythingIsGettingExpensive from "./EverythingIsGettingExpensive.svelte";
 
     // scroll states
     let scrollProgress = 0;
@@ -673,7 +69,6 @@
     import house23  from "./../data/house23.png";
     import house24  from "./../data/house24.png";
     import house25  from "./../data/house25.png";
-
     import house1mod  from "./../data/house1-modified.png";
     import house2mod  from "./../data/house2-modified.png";
     import house3mod  from "./../data/house3-modified.png";
@@ -703,8 +98,8 @@
     import opendoorlogo from "./../data/opendoor.png";
     import zillowlogo from "./../data/zillow.png";
     import offerpadlogo from "./../data/offerpad.png";
+    
 
-    // 2) Pack them into arrays
     const baseOriginals = [
         house1, house2, house3, house4, house5,
         house6, house7, house8, house9, house10,
@@ -719,107 +114,50 @@
         house16mod, house17mod, house18mod, house19mod, house20mod,
         house21mod, house22mod, house23mod, house24mod, house25mod
     ];
-    const originalImgs = [
-        ...baseOriginals,
-        ...baseOriginals,
-        ...baseOriginals,
-        ...baseOriginals
-    ];
-    const modifiedImgs = [
-        ...baseModifieds,
-        ...baseModifieds,
-        ...baseModifieds,
-        ...baseModifieds
-    ];
+    const { originalImgs, modifiedImgs } = packHouseImages(baseOriginals, baseModifieds);
 
-    // images turning from black to white
-    const startScroll = 0.25;
-    const endScroll   = 0.4;
 
     // pageProgress: 0 at top, 1 at bottom
     let pageProgress = 0;
 
     // zooming functionality         // in vh
-    const zoomInStart = 0.06;   
-    const zoomPeak    = 0.105;  
-    const zoomOutEnd  = 0.18;  
-    $: zoomP =
-        pageProgress < zoomInStart ? 0
-    : pageProgress < zoomPeak    ? (pageProgress - zoomInStart) / (zoomPeak - zoomInStart)
-    : pageProgress < zoomOutEnd  ? 1 - ((pageProgress - zoomPeak) / (zoomOutEnd - zoomPeak))
-    : 0;
-
-    $: scale   = 0.1 + zoomP * 0.9;
-    $: opacity = zoomP * 1.3;
+    $: ({ scale, opacity } = getZoomParams(pageProgress));
 
     // bubble falling functionality
-    // control points (in page‐progress units)
-    const fallStart = 0.14;
-    const fallEnd   = 0.215;
-    const bounceEnd = 0.230;
-    const leaveEnd  = 0.28;
+    let bubblesVisible = false;
+    let bubblesY = [];
+    const bubbleStart  = 0.0;  // don’t start moving until scrollProgress ≥ 0.4
+    const bubbleEnd    = 0.4;  // reach "end" by scrollProgress = 0.6
 
-    // Y positions (vh)
-    const startY       = -40;  // off‐screen top
-    const peakY        =  40;  // bottom of first drop
-    const bounceUp    =  15;    // how much to bounce up
-    const bounceY     =  peakY - bounceUp;  // 25
-    const endY         = 100;  // off‐screen bottom
 
-    // small delays to stagger each bubble
-    const delays = [0, 0.015, 0.03, 0.045];
+    // trigger when the Major Players section comes into view
+    function observeMajorPlayers() {
+        const el = document.getElementById("major-players-section");
+        if (!el) return;
 
-    function clamp01(t) {
-        return t < 0 ? 0 : t > 1 ? 1 : t;
+        new IntersectionObserver(
+        ([entry]) => bubblesVisible = entry.isIntersecting,
+        { threshold: 0.1 }
+        ).observe(el);
     }
 
-    function lerp(a, b, t) {
-        return a + (b - a) * clamp01(t);
-    }
 
-    function calcBubbleY(p) {
-        if (p < fallStart) {
-        return startY;
-        }
-        if (p < fallEnd) {
-        // drop from startY → peakY
-        const t = (p - fallStart) / (fallEnd - fallStart);
-        return lerp(startY, peakY, t);
-        }
-        if (p < bounceEnd) {
-        // bounce from peakY → bounceY
-        const t = (p - fallEnd) / (bounceEnd - fallEnd);
-        return lerp(peakY, bounceY, t);
-        }
-        if (p < leaveEnd) {
-        // exit from bounceY → endY
-        const t = (p - bounceEnd) / (leaveEnd - bounceEnd);
-        return lerp(bounceY, endY, t);
-        }
-        return endY;
-    }
-    $: bubblesY = delays.map(d => calcBubbleY(pageProgress - d));
-
-
-    // compute how many images to replace
-    $: replaceCount =
-        pageProgress <= startScroll ? 0
-    : pageProgress >= endScroll   ? totalCells
-    : Math.floor(
-        (pageProgress - startScroll)
-        / (endScroll - startScroll)
-        * totalCells
-        );
-    
-    // update pageProgress whenever you scroll
     function updateProgress() {
         const scrollTop = window.scrollY;
-        // total scrollable height = doc height minus viewport
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         pageProgress = Math.min(scrollTop / docHeight, 1);
     }
+    $: if (bubblesVisible) {
+        // normalize into [0,1] over the window [bubbleStart, bubbleEnd]
+        const prog = clamp01((pageProgress - bubbleStart) / (bubbleEnd - bubbleStart));
+        bubblesY = getBubblesY(prog);
+    } else {
+        bubblesY = [];  // hide them when you're out of view
+    }
 
-    let zoomActive = false;
+
+    // compute how many images to replace
+    $: replaceCount = computeReplaceCount(pageProgress, totalCells);
 
     function intersectionObserver(node) {
         const observer = new IntersectionObserver(
@@ -949,244 +287,28 @@
             .domain(valueScale)
             .range([0, 25]);
 
+    // Filter out homes that we don't have comparison data on
+    let filteredHomes = [];
 
     onMount(async () => {
         await tick();
         console.log("[corp-chart] onMount fired");
 
-        const text = "What happens when a machine becomes a buyer?";
-        const el = document.getElementById("typewriter");
-        let index = 0;
-
-        function typeChar() {
-            if (index < text.length) {
-                el.textContent += text.charAt(index);
-                index++;
-                setTimeout(typeChar, 45); // Speed in ms
-            }
-        }
-
-        typeChar();
+        startTypewriter("typewriter", "What happens when a machine becomes a buyer?");
 
         updateProgress();                        // init
         window.addEventListener('scroll', updateProgress);
+        observeMajorPlayers();
 
         // ------------ marina's corporate ownership chart ------------
-        // 1) load & preprocess corporate_ownership.csv
-        const url = `${base}/data/corporate_ownership.csv`;
-        console.log("about to process corporate ownership");
-        console.log("Fetching CSV from:", url);
-
-        let corpData;
-        try {
-            corpData = await d3.csv(url, d => ({
-            year:  +d.Year,
-            corp_own_rate: +d.corp_own_rate
-            }));
-        } catch (e) {
-            console.error("Error loading CSV:", e);
-            return;
-        }
-        console.log("corpData rows:", corpData.length, corpData.slice(0,3));
-
-        // 2) group by year and compute mean corp_own_rate
-        // now compute the grouped averages
-        const nested = d3.rollups(
-            corpData,
-            v => d3.mean(v, d => d.corp_own_rate),
-            d => d.year
-        ).map(([year, avg]) => ({ year, avg }))
-        .sort((a,b) => a.year - b.year);
-        console.log("nested averages:", nested);
-
-        const descriptions = {
-            2011: "Research shows that there was no single institutional investor who owned more than 1,000 single-family homes in America [1].",
-            2014: "Opendoor releases their “iBuyer” model. This model used algorithms to make near-instant, cash offers for home. This formally launched its platform as a direct buyer of homes [4].",
-            2015: "Collectively, institutional investors owned 170,000 to 300,000 homes [1].",
-            2017: "Zillow piloted its “instant offers” program in Orlando and Las Vegas, giving sellers the ability to compare cash bids from select investors with local agent market appraisals [2].",
-            2018: "Zillow shifted from facilitating offers to purchasing homes outright, directly competing with Opendoor; its first acquisition was a four-bedroom bungalow in Arizona, and by quarter’s end it had bought 19 Phoenix-area properties [2].",
-            2020: "Operating in 25 markets, Zillow drew criticism by hiring full-time, salaried agents for its iBuying arm—an initiative Zillow argued improved user experience, but many U.S. realtors viewed as an aggressive market incursion [2].",
-            2022: "The FTC charged Opendoor with misleading homeowners by promising they would receive true market value for their homes [3].",
-            2024: "Following the FTC investigation, nearly 62 million dollars in refunds were issued to sellers who had been misled by Opendoor Labs’ online listing service [3]."
-        };
-
-        // check chart container
-        const container = document.getElementById("corp-own-chart");
-        console.log("chart container exists?", !!container, container);
-        
-        if (!container) {
-            console.warn("⚠️ couldn’t find #corp-own-chart in the DOM");
-            return;
-        }
-
-        // 3) set up chart dimensions
-        // 1) Bigger margins to make room for larger labels
-        const margin = { top: 40, right: 20, bottom: 100, left: 100 };
-        const { width: totalW, height: totalH } = container.getBoundingClientRect();
-        const width  = totalW  - margin.left - margin.right;
-        const height = totalH  - margin.top  - margin.bottom;
-
-        // 2) Build the SVG
-        const svg = d3.select("#corp-own-chart")
-        .append("svg")
-            .attr("width", totalW)
-            .attr("height", totalH)
-        .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-
-        // 3) Scales
-        const x = d3.scaleLinear()
-            .domain(d3.extent(nested, d => d.year))
-            .range([0, width]);
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(nested, d => d.avg)]).nice()
-            .range([height, 0]);
-
-        // 4) Axis generators with extra tick‐padding
-        const xAxis = d3.axisBottom(x)
-            .tickFormat(d3.format("d"))
-            .tickPadding(15);
-        const yAxis = d3.axisLeft(y)
-            .tickPadding(15);
-
-        // 5) Draw X axis
-        svg.append("g")
-            .attr("transform", `translate(0,${height})`)
-            .call(xAxis)
-        .selectAll("text")
-            .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "19px");
-
-        // 6) Draw Y axis
-        svg.append("g")
-            .call(yAxis)
-        .selectAll("text")
-            .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "19px");
-
-        // 7) X‐axis label (bigger, pushed further down)
-        svg.append("text")
-            .attr("x", width / 2)
-            .attr("y", height + margin.bottom - 30)  // farther from axis
-            .attr("text-anchor", "middle")
-            .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "20px")
-            // .style("font-weight", "500")
-            .text("Year");
-
-        // 8) Y‐axis label (bigger, pushed further left)
-        svg.append("text")
-            .attr("transform", `rotate(-90)`)
-            .attr("x", -height / 2)
-            .attr("y", -margin.left + 15)           // more negative = further left
-            .attr("text-anchor", "middle")
-            .style("font-family", "Roboto, sans-serif")
-            .style("font-size", "20px")
-            // .style("font-weight", "500")
-            .text("Average Corporate Ownership Rate (%)");
-
-        // 9) Your line (unchanged)
-        const line = svg.append("path")
-            .datum(nested)
-            .attr("class", "ownership-line")    // ← add this
-            .attr("fill", "none")
-            .attr("stroke", "#ad2f4c") // red line
-            .attr("stroke-width", 3)
-            .attr("d", d3.line()
-                .x(d => x(d.year))
-                .y(d => y(d.avg))
+        await tick();
+        renderCorporateOwnershipChart(
+            base,
+            "corp-own-chartcorp-own-chart",
+            "sticky-container",
+            "chart-wrapper",
+            "chart-tooltip"
         );
-
-        // 10) calculate total length for dash‐array trick
-        // — get references —'
-        const stickyContainer = document.getElementById('sticky-container');
-        const wrapper = document.getElementById('chart-wrapper');
-        console.log('wrapper is', wrapper);
-        const path            = svg.select('.ownership-line');
-        const L               = path.node().getTotalLength();
-
-        // hide the line
-        path
-            .attr('stroke-dasharray', L)
-            .attr('stroke-dashoffset', L);
-
-        let drawingActive = false;
-        const stickObserver = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.intersectionRatio === 1 && !drawingActive) {
-                    stickyContainer.classList.add('sticky');
-                    drawingActive = true;
-                    startScrollY = window.scrollY;
-                    window.addEventListener('scroll', drawOnScroll, { passive: true });
-                    stickObserver.disconnect();
-                }
-            },
-            { threshold: 1.0 }
-        );
-        stickObserver.observe(wrapper);
-
-
-        // 11) scroll event to animate the line
-        function clamp01(t) {
-            return t < 0 ? 0 : t > 1 ? 1 : t;
-        }
-        let startScrollY = window.scrollY;
-        const maxScrollDelta = window.innerHeight;
-
-        function drawOnScroll() {
-            if (!drawingActive) return;
-            const delta = window.scrollY - startScrollY;
-            const prog  = clamp01(delta / window.innerHeight);
-            path.attr('stroke-dashoffset', L * (1 - prog));
-
-            // show tooltip only while drawing
-            const tooltip = document.getElementById('chart-tooltip');
-            if (prog > 0 && prog < 1) {
-                // 1) compute the exact point on the path
-                const pt = path.node().getPointAtLength(prog * L);
-
-                // 2) position tooltip (accounting for margins)
-                const svgContainer = document.getElementById('corp-own-chart');
-                const { top: svgTop, left: svgLeft } = svgContainer.getBoundingClientRect();
-                const { top: parentTop, left: parentLeft } = stickyContainer.getBoundingClientRect();
-
-                tooltip.style.left = `${parentLeft + (svgLeft - parentLeft) + pt.x + margin.left}px`;
-                tooltip.style.top  = `${parentTop + (svgTop - parentTop) + pt.y + margin.top}px`;
-
-                // 3) pick the nearest year
-                const bisect = d3.bisector(d => d.year).left;
-                const idx = Math.min(nested.length - 1, bisect(nested, x.invert(pt.x)));
-                const year = nested[idx].year;
-                const description  = descriptions[year];
-
-                if (description) {
-                    tooltip.innerText   = `${description}`;
-                    tooltip.style.display = 'block';
-                } else {
-                    
-                }
-                                
-            } else {
-                tooltip.style.display = 'none';
-            }
-
-            if (prog >= 1) {
-                drawingActive = false;
-                window.removeEventListener('scroll', drawOnScroll);
-                stickyContainer.classList.remove('sticky');
-                const h = stickyContainer.getBoundingClientRect().height;
-                window.scrollBy(0, -h);
-            }
-        }
-
-        // in case you’re already scrolled past when mounting
-        drawOnScroll();
-
-
-
-        window.addEventListener('scroll', drawOnScroll, { passive: true });
-        // one initial draw in case you’re already half-way scrolled:
-        drawOnScroll();
         
         // -------------------------------------------------------------------
 
@@ -1292,165 +414,29 @@
             return item;
         });
 
-
-        async function loadHOLCZestimates() {
-            const raw = await d3.json(`${base}/data/category_zestimate_averages.json`);
-
-            const colorMap = {
-                'Best': '#76a865',
-                'Still Desirable': '#74c3e3',
-                'Definitely Declining': '#ffff00',
-                'Hazardous': '#d9838d',
-                'Industrial': '#000000',
-                'Commercial': '#000000',
-                'N/A': '#808080'
-            };
-
-            const categories = Object.keys(raw);
-            const color = d3.scaleOrdinal()
-                .domain(categories)
-                .range(categories.map(c => colorMap[c]));
-
-
-            const allData = [];
-            categories.forEach(category => {
-                for (const [year, obj] of Object.entries(raw[category])) {
-                    allData.push({
-                        category,
-                        year: +year,
-                        avg: obj.average_zestimate
-                    });
-                }
-            });
-
-            const container = document.getElementById('zestimate-chart');
-            if (!container) {
-                console.warn('⚠️ couldn’t find #zestimate-chart in the DOM');
-                return;
-            }
-
-            const margin = { top: 40, right: 20, bottom: 100, left: 100 };
-            const { width: totalW, height: totalH } = container.getBoundingClientRect();
-            const width  = totalW  - margin.left - margin.right;
-            const height = totalH  - margin.top  - margin.bottom;
-
-            const svg = d3.select("#zestimate-chart")
-                .append("svg")
-                .attr("width", totalW)
-                .attr("height", totalH)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
-
-            const x = d3.scaleLinear()
-                .domain(d3.extent(allData, d => d.year))
-                .range([0, width]);
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(allData, d => d.avg)]).nice()
-                .range([height, 0]);
-
-            const xAxis = d3.axisBottom(x)
-                .tickFormat(d3.format('d'))
-                .tickPadding(15);
-            const yAxis = d3.axisLeft(y)
-                .tickFormat(d => `$${d3.format('.2s')(d)}`)
-                .tickPadding(15);
-
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(xAxis)
-            .selectAll('text')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '19px');
-
-            svg.append('g')
-                .call(yAxis)
-            .selectAll('text')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '19px');
-
-            svg.append('text')
-                .attr('x', width / 2)
-                .attr('y', height + margin.bottom - 30)
-                .attr('text-anchor', 'middle')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '20px')
-                .text('Year');
-
-            svg.append('text')
-                .attr('transform', `rotate(-90)`)
-                .attr('x', -height / 2)
-                .attr('y', -margin.left + 15)
-                .attr('text-anchor', 'middle')
-                .style('font-family', 'Roboto, sans-serif')
-                .style('font-size', '20px')
-                .text('Average Zestimate');
-
-            const nested = d3.groups(allData, d => d.category);
-
-            const line = d3.line()
-                .x(d => x(d.year))
-                .y(d => y(d.avg));
-
-            nested.forEach(([category, values]) => {
-                svg.append('path')
-                    .datum(values.sort((a, b) => a.year - b.year))
-                    .attr('fill', 'none')
-                    .attr('stroke', color(category))
-                    .attr('stroke-width', 3)
-                    .attr('d', line);
-            });
-
-            const legend = d3.select("#legend")
-                .append('ul')
-                .style('list-style', 'none')
-                .style('padding', '0')
-                .style('margin', '2em auto')
-                .style('display', 'flex')
-                .style('flex-wrap', 'wrap')
-                .style('justify-content', 'center')
-                .selectAll('li')
-                .data(categories)
-                .enter()
-                .append('li')
-                .style('margin', '0 1em')
-                .style('display', 'flex')
-                .style('align-items', 'center');
-
-            legend.append('span')
-                .style('display', 'inline-block')
-                .style('width', '12px')
-                .style('height', '12px')
-                .style('margin-right', '8px')
-                .style('border', '1px solid #4f5152')
-                .style('background-color', d => color(d));
-
-            legend.append('span')
-                .text(d => d);
-        }
-        loadHOLCZestimates();
-
         homes = Array.from(new Set(homes.map(home => home.Address)))
             .map(address => homes.find(home => home.Address === address));
 
-        const selectedHomeAddresses = [
-            "2 Front Street, Natick, MA 01760-6019, USA", 
-            "37 Halliday Street, Boston, MA 02131-2210, USA", 
-            "15 Fensmere Road, Boston, MA 02132-6011, USA"
-        ];
-
-        notiBoughtHomes = homes.filter(home => 
-            selectedHomeAddresses.includes(home.Address)
-        );
-
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
-        timeIndex = timeScale[1]; // Initialize to latest
+        timeIndex = timeScale[0]; // Initialize to latest
 
         // One more pass to calculate time cutoffs
         homes = homes.map(item => {
+            
             item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale)
+            if (item.dateLastSold) {
+                const year = new Date(item.dateLastSold)
+                console.log("solded: ", year.getFullYear(), timeScale)
+                for (let y=timeScale[0];y<year.getFullYear(); y++) {
+                    console.log(y, valueScale[0])
+                    item.time_lookup.set(y, valueScale[0])
+                }
+            }
             return item;
         })
+
+        filteredHomes = homes.filter((home) => home.color !== "white")
 
         map = new mapboxgl.Map({
             container: 'map', // HTML element ID
@@ -1544,19 +530,64 @@
 </div>
 
 <div class="title-section">
-    <h1 id="title">AUTOMATION AND SPECULATION</h1>
-    <p class="typewriter-line" id="typewriter"></p>
-    <p><b>Speculative Affordances, FP3:</b> <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i></p>
-
+    <div class="rotator">
+      <img src={$rotatingImage} alt="Rotating title image" />
+    </div>
+  
+    <div class="title-text">
+      <h1>AUTOMATION AND SPECULATION</h1>
+      <p class="typewriter-line" id="typewriter"></p>
+      <p>
+        <b>Speculative Affordances, Final Project:</b>
+        <br>
+        <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i>
+      </p>
+    </div>
+  
+    <!-- now sibling of .title-text -->
     <button class="scroll-indicator" on:click={scrollToExplore} type="button">
-        <span>Explore</span>
-        <div class="arrow">↓</div>
+      <span>Explore</span>
+      <div class="arrow" style="margin-left:0.8rem;">↓</div>
     </button>
 </div>
 
 
+
+
 <div class="content-section">
     <div class="grid-container">
+
+    <!-- ■■■ New “What is iBuying?” step ■■■ -->
+    <div class="scrolly-step ibuying">
+        <div class="ibuying__text">
+            <h2>What is iBuying?</h2>
+            <br><br>
+            <p>
+            <b>iBuying</b>, or instant Buying, is the process by which a company uses algorithms
+            to instantly evaluate your home and make a cash offer,
+            eliminating many of the traditional steps of listing
+            and negotiating.
+            </p>
+            <br><br><br><br>
+            <p>
+                Instead of weeks or months, your home can sell in days—or even hours. This rapid turnaround holds <b>real appeal for sellers</b>, especially those who need certainty, speed, or who simply prefer not to deal with the hassle and uncertainty of traditional real estate transactions.
+            </p>
+            <br><br><br><br>
+            <p>
+                iBuying also tends to <b>drive up prices</b> more broadly, since these algorithmic buyers often compete aggressively, bidding above typical market rates and creating upward pressure on home values.
+            </p>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <div class="ibuying__sidebar" id="major-players-section">
+                <p>
+                    Major players—<b>Zillow, Opendoor, Offerpad, Redfin</b>—have bought
+                    thousands of homes in this way, promising speed and convenience
+                    in exchange for a fee.
+                </p>
+            </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <h2>Now, imagine you're a seller who has just listed your home.</h2>
+        </div>
+    </div>
     
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
          <!-- ■■■ Spacer to drive the grid animation ■■■ -->
@@ -1576,14 +607,18 @@
                     style="transform: translateY(-50%) scale({scale}); opacity: {opacity};"
                 />
             
-                <div class="zoom-house-text">
-                    <p> Imagine this. <strong>You’re about to sell your home.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one. A machine makes you an offer in seconds. No waiting, no uncertainty, no endless walkthroughs. Your buyer isn't a person—<strong>it's a machine.</strong> </p>
+            <div class="zoom-house-text">
+                <p><strong>You are eager to sell your three-bedroom home in Somerville.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one.</p>
 
-                    <p class="note">
-                        Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
-                    </p>
-                </div>
+                <p>
+                    <strong>A machine makes you an offer in seconds</strong>. No waiting, no uncertainty, no endless walkthroughs.
+                </p>
+                <br>
+                <p class="note">
+                    Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
+                </p>
             </div>
+        </div>
           </div>
 
 
@@ -1591,30 +626,22 @@
         <div class="scrolly-step" style="height:20vh"></div>
 
         <!-- bubble falling -->
-        {#if pageProgress >= 0.2 && pageProgress <= 0.5}
+        {#if bubblesVisible}
             <div class="bubbles">
                 {#each [zillowlogo, opendoorlogo, offerpadlogo, redfinlogo] as logo, i}
-                <div class="bubble" style="top: {bubblesY[i]}vh;">
-                    <img src={logo} alt="iBuyer logo" />
-                </div>
+                    <div class="bubble" style="top: {bubblesY[i]}vh;">
+                        <img src={logo} alt="iBuyer logo" />
+                    </div>
                 {/each}
             </div>
         {/if}
 
 
-        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
-            <div class="zoom-house-container left">
+        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:10vh;">
+            <div class="zoom-house-container center">
                 <div class="zoom-house-text">
                     <p>
-                        This is not science fiction; it's happening now through <strong>iBuying</strong>. 
-                    </p>
-
-                    <p>
-                        Instant buying, or "iBuying," uses algorithms to evaluate your home and make a frictionless offer. Companies like Zillow, Opendoor, Offerpad, and Redfin have become major players, snapping up homes across America at scale. In fact, they purchased <strong>1% of all U.S. Homes in 2021</strong>.
-                    </p>
-
-                    <p>
-                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because this isn’t just about buying houses. <strong>It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
+                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because <strong>this isn’t just about buying houses. It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
                     </p>
                 </div>
             </div>
@@ -1626,11 +653,12 @@
         <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
             <div class="zoom-house-container center">
                 <div class="zoom-house-text">
+                    <h2>Why does this matter?</h2>
                     <p>
                         As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
                     </p>
                     <p>
-                        <strong>This project contextualizes iBuying practices in the Greater Boston Area.</strong> Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
+                        <strong>The aim of this project</strong> is to contextualize iBuying practices in the Greater Boston Area. Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
                     </p>
                 </div>
             </div>
@@ -1643,8 +671,9 @@
                 
             <div id="sticky-container">
                 <div class="chart-text">
-                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but by betting on their future. These firms don't buy homes to live in them; they speculate, relying increasingly on algorithms rather than human intuition. iBuying is just one form of corporate speculation, wherein companies use these algorithms to make direct housing offers. </p>
-                    <p> Scroll down to explore the visualization and watch corporate speculation quietly but unmistakably alter Boston’s housing landscape. </p>
+                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but <b>by betting on their future</b>. 
+                    </p><p>These firms don't buy homes to live in them; <b>they speculate</b>. iBuying is <i>a form of corporate speculation</i>, wherein companies use these algorithms to make direct housing offers. </p>
+                    <p> <b>Scroll down</b> to explore the visualization and watch the history of how corporate speculation quietly but unmistakably alter Boston’s housing landscape over time. </p>
                 </div>
                 <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
                     <div id="chart-tooltip" class="dialogue-box"></div>
@@ -1658,55 +687,19 @@
                 <br><br><br><br>
                 <h1 style="text-align: center;">Data Collection— The Presence of iBuying in Boston</h1>
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>How do you find a hidden market? While the previous chart focused broadly on corporate speculation in Boston, our analysis wishes to look at iBuying in particular. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players identified in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
+                    <p><b>How do you find a hidden market?</b> There is no public dataset of iBuying in the Greater Boston Area. While our previous chart focused more broadly on <i>corporate speculation</i> in Boston, our analysis wishes to look at iBuying in particular. 
+                        
+                    </p><p>Our analysis involved <b>creating our own dataset</b> of iBuying in the Greater Boston Area. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players in iBuying. This type of keyword matching is the approach that was used in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
                     </p> 
-                    <p>Using this simple but powerful method, we uncovered <b>407</b> homes purchased by iBuyers between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
+                    <p>Using this simple but powerful method, we uncovered <b>407 homes purchased by iBuyers</b> between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
+                    <br><br>
                 </div>
 
-                <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
-                <p style="text-align: center;">Click on a home to select it and learn more about it.</p>
-                <div class="home-selection">
-                    {#each notiBoughtHomes as home}
-                        <div class="home-card-wrapper">
-                            <button 
-                                class="home-card" 
-                                on:mouseover={() => hoveredHouse = home} 
-                                on:mouseout={() => hoveredHouse = null} 
-                                on:focus={() => hoveredHouse = home} 
-                                on:blur={() => hoveredHouse = null} 
-                                on:click={() => selectedHouse = home}
-                                class:selected={selectedHouse === home}
-                                aria-pressed={selectedHouse === home}
-                                aria-label={`Select House ${home}`}
-                            >
-                                <div class="image-container">
-                                    <img 
-                                        src={home.photoURL} 
-                                        alt={`${home}`} 
-                                        class:grayscale={hoveredHouse !== home && selectedHouse !== home}
-                                    />
-                                </div>
-                            </button>
-                        </div>
-                    {/each}
-                </div>
-    
-                {#if selectedHouse !== null}
-                    <div class="house-details">
-                        <h2>This is <em>{selectedHouse.Address}</em></h2>
-                        <p>This is an iBought home!</p>
-                        <p>
-                            Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>${selectedHouse.price}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
-                        </p>
-                        <p>
-                            The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms. It spans {selectedHouse.livingAreaValue} square feet of living area total.
-                        </p>
-                    </div>
-                {/if}
-
+                <NotIBoughtHomes {homes} />
+                
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br>
+                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
                     </p>
                 </div>
 
@@ -1778,18 +771,7 @@
                 </div>
             </div>
 
-            <h1 style="text-align: center;">💸 Everything's Getting Expensive! 💸</h1>
-            <div id="sticky-container">
-                <div class="chart-text">
-                    <p>Corporate speculation doesn't just buy homes: it predicts and bets on entire neighborhoods. Here's how the average Zestimates for iBought homes have changed for each historic HOLC district category.</p>
-                </div>
-                <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
-                    <div id="chart-tooltip" class="dialogue-box"></div>
-                    <h2 class="chart-title">Average Zestimate Trends by HOLC District.</h2>
-                    <div id="zestimate-chart" style="width:100%; height:500px;"></div>
-                    <div id="legend"></div>
-                </div>
-            </div>
+            <EverythingIsGettingExpensive />
 
             <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
             <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
@@ -1810,7 +792,7 @@
                 <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
                 <svg>
                     {#key mapViewChanged}
-                        {#each homes as home}
+                        {#each filteredHomes as home}
                             <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill={home.color} stroke="black" stroke-opacity="60%" on:click={()=>{popupHome(home, map)}}>
                                 <title>
                                     iBuyer: {home.Name}. Zestimate: ${home.zestimate}. Zestimate at sale time: {home.matchedZestimate?`$${home.matchedZestimate}`:"unknown"}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
@@ -1878,9 +860,9 @@
                         <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: goldenrod; border: 1px solid #4f5152; 
                                         border-radius: 50%; margin-right: 8px;"></span>Sold for greater than Zestimate</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
+                        <!-- <li><span style="display: inline-block; width: 12px; height: 12px;
                                         background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Sold for price unknown</li>
+                                        border-radius: 50%; margin-right: 8px;"></span>Sold for price unknown</li> -->
 
                 </div>
                 
