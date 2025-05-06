@@ -95,3 +95,6 @@
         </p>
     </div>
 {/if}
+<br><br>
+<p style="max-width: 800px; margin: 0 auto; text-align: left;">Surprise— <b>all</b> of the homes you've just seen were purchased by iBuyers! This trend isn't confined to a single neighborhood; it's reshaping diverse communities across the Greater Boston area. <i>Scroll down to explore</i> how these homes fit into the broader context of Boston's varied districts.</p>
+<br><br>
