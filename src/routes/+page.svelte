@@ -683,9 +683,10 @@
             <EverythingIsGettingExpensive />
 
             <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
-            <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
-                <p><b>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth</b>. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
-                <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time.</p>
+            <div class="chart-text">
+                <p><b>iBuyers say they purchase homes at fair market prices—but their own data tells another story.</b> In 2022, the FTC charged Opendoor with misleading sellers about receiving full market value, resulting in a $62 million settlement. Yet Opendoor didn’t retreat; instead, it expanded into more than 50 markets, including Boston.</p>
+                <p><b>Why is a price sold below its Zestimate value "unfair"?</b> The Zestimate represents Zillow’s own estimate of a home’s market value—the price a home could reasonably fetch under normal market conditions. If an iBuyer purchases a home significantly below this estimate, it implies that the seller likely missed out on value they could have realized on the open market. Calling these prices "unfair" captures the idea that sellers, expecting a fair, market-value offer, instead received considerably less—revealing a discrepancy between what’s promised and what's delivered.</p> 
+                <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time. <b>Click any point</b> to see information about the home, selling price, and Zestimate value. <b>Scroll on the map</b> to explore different parts of the Greater Boston Area. <b>Use the slider</b> to see how Zestimate values change by year.</p>
             </div>
 
             <div class="legend-text-wrapper" style="
@@ -778,11 +779,11 @@
             </div>
             </div>
 
-            <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
-                <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
-                <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
+            <div class="chart-text">
+                <p>We find that the vast majority of homes were sold for less—often significantly less—than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
+                </p>
             </div>
+
               
             <br><br><br><br>
             <div id="takeaways">
