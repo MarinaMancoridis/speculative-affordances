@@ -170,7 +170,9 @@ export async function renderCorporateOwnershipChart(
     function drawOnScroll() {
         if (!drawingActive) return;
         const delta = window.scrollY - startScrollY;
-        const prog  = clamp01(delta / window.innerHeight);
+
+        const scrollSensitivity = 3; // adjust this number to change scroll speed (higher = slower)
+        const prog = clamp01(delta / (window.innerHeight * scrollSensitivity));
         path.attr('stroke-dashoffset', L * (1 - prog));
 
         // show tooltip only while drawing
