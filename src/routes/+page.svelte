@@ -33,6 +33,9 @@
     // Svelte Components
     import NotIBoughtHomes from "./NotIBoughtHomes.svelte";
     import EverythingIsGettingExpensive from "./EverythingIsGettingExpensive.svelte";
+    import Intro from "./intro.svelte";
+    import Somerville from "./somerville.svelte";
+    import StickyChart from "./corpownership.svelte";
 
     // scroll states
     let scrollProgress = 0;
@@ -558,130 +561,28 @@
     <div class="grid-container">
 
     <!-- ■■■ New “What is iBuying?” step ■■■ -->
-    <div class="scrolly-step ibuying">
-        <div class="ibuying__text">
-            <h2>What is iBuying?</h2>
-            <br><br>
-            <p>
-            <b>iBuying</b>, or instant Buying, is the process by which a company uses algorithms
-            to instantly evaluate your home and make a cash offer,
-            eliminating many of the traditional steps of listing
-            and negotiating.
-            </p>
-            <br><br><br><br>
-            <p>
-                Instead of weeks or months, your home can sell in days—or even hours. This rapid turnaround holds <b>real appeal for sellers</b>, especially those who need certainty, speed, or who simply prefer not to deal with the hassle and uncertainty of traditional real estate transactions.
-            </p>
-            <br><br><br><br>
-            <p>
-                iBuying also tends to <b>drive up prices</b> more broadly, since these algorithmic buyers often compete aggressively, bidding above typical market rates and creating upward pressure on home values.
-            </p>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <div class="ibuying__sidebar" id="major-players-section">
-                <p>
-                    Major players—<b>Zillow, Opendoor, Offerpad, Redfin</b>—have bought
-                    thousands of homes in this way, promising speed and convenience
-                    in exchange for a fee.
-                </p>
-            </div>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <h2>Now, imagine you're a seller who has just listed your home.</h2>
-        </div>
-    </div>
+    <Intro />
     
     <Scrolly bind:progress={scrollProgress} threshold={0.5} debounce>
-         <!-- ■■■ Spacer to drive the grid animation ■■■ -->
-        <div class="scrolly-step spacer"></div>
 
-        <!-- a spacer so you actually scroll past before zoom begins -->
-        <div class="scrolly-step" style="height:0vh"></div>
-
-        <!-- this step holds the “Imagine” text + zooming image -->
-        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
-            <div class="zoom-house-container right">
-                <img
-                    id="zoom-house"
-                    src={house16}
-                    alt="Zooming house"
-                    class = "outline"
-                    style="transform: translateY(-50%) scale({scale}); opacity: {opacity};"
-                />
-            
-            <div class="zoom-house-text">
-                <p><strong>You are eager to sell your three-bedroom home in Somerville.</strong> Normally, you'd tidy it up, stage it carefully, list it, and wait. You'd negotiate with buyers, navigate offers, and hope for the best possible outcome. But now, imagine instead—a click. Just one.</p>
-
-                <p>
-                    <strong>A machine makes you an offer in seconds</strong>. No waiting, no uncertainty, no endless walkthroughs.
-                </p>
-                <br>
-                <p class="note">
-                    Note: All depicted houses are currently on the Greater Boston housing market on Zillow.
-                </p>
-            </div>
-        </div>
-          </div>
-
-
-        <!-- more content so you can scroll past -->
-        <div class="scrolly-step" style="height:20vh"></div>
-
-        <!-- bubble falling -->
-        {#if bubblesVisible}
-            <div class="bubbles">
-                {#each [zillowlogo, opendoorlogo, offerpadlogo, redfinlogo] as logo, i}
-                    <div class="bubble" style="top: {bubblesY[i]}vh;">
-                        <img src={logo} alt="iBuyer logo" />
-                    </div>
-                {/each}
-            </div>
-        {/if}
-
-
-        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:10vh;">
-            <div class="zoom-house-container center">
-                <div class="zoom-house-text">
-                    <p>
-                        On the surface, this seems simple: a transaction at the speed of software. But speed obscures something deeper. Because <strong>this isn’t just about buying houses. It’s about how the algorithm sees value</strong>. It’s about which homes get chosen, which neighborhoods are entered—and which are avoided.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="scrolly-step" style="height:20vh"></div>
-
-
-        <div class="scrolly-step zoom-house-step" use:intersectionObserver style="height:100vh;">
-            <div class="zoom-house-container center">
-                <div class="zoom-house-text">
-                    <h2>Why does this matter?</h2>
-                    <p>
-                        As iBuyers rapidly expand—buying homes from Boston to Phoenix—their decisions aren't just commercial; <strong>they're reshaping communities</strong>. These algorithmic buyers don't just influence housing markets; they have the power to perpetuate historical inequalities or to challenge them.
-                    </p>
-                    <p>
-                        <strong>The aim of this project</strong> is to contextualize iBuying practices in the Greater Boston Area. Which homes get chosen—and why? Are the prices fair, or are biases quietly embedded in the algorithms themselves? By mapping Boston’s historically redlined neighborhoods, analyzing pricing data, and visualizing patterns of corporate ownership, we uncover how automated speculation impacts real lives, real homes, and real communities.
-                    </p>
-                </div>
-            </div>
-        </div>
+        <Somerville
+            {intersectionObserver}
+            {house16}
+            {scale}
+            {opacity}
+            {bubblesVisible}
+            {bubblesY}
+            zillowlogo={zillowlogo}
+            opendoorlogo={opendoorlogo}
+            offerpadlogo={offerpadlogo}
+            redfinlogo={redfinlogo}
+        />
 
         <!-- VIZ only shows once you've scrolled through all previous steps -->
         <svelte:fragment slot="viz">
 
-            <div class="after-todo">  
-                
-            <div id="sticky-container">
-                <div class="chart-text">
-                    <p> Corporate ownership quietly reshapes who gets to call Boston home—not by moving into neighborhoods, but <b>by betting on their future</b>. 
-                    </p><p>These firms don't buy homes to live in them; <b>they speculate</b>. iBuying is <i>a form of corporate speculation</i>, wherein companies use these algorithms to make direct housing offers. </p>
-                    <p> <b>Scroll down</b> to explore the visualization and watch the history of how corporate speculation quietly but unmistakably alter Boston’s housing landscape over time. </p>
-                </div>
-                <div id="chart-wrapper" style="max-width:900px; margin:3em auto 0; text-align:center;">
-                    <div id="chart-tooltip" class="dialogue-box"></div>
-                    <h2 class="chart-title">Corporate Ownership Rate Over Time</h2>
-                    <div id="corp-own-chart" style="width:100%; height:500px;"></div>
-                </div>
-            </div>
-
+        <div class="after-todo">
+            <StickyChart/>
 
             <div class="post-chart">
                 <br><br><br><br>
@@ -699,8 +600,13 @@
                 
                 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
                 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
-                    </p>
+                    <p>We're exploring not just where iBuying happens geographically, but <b>how it aligns with deeper patterns of inequality</b>. Beyond maps and neighborhoods, we're interested in understanding if iBuying intersects with historical discrimination.
+
+                    </p><p> Redlining emerged prominently in the 1930s, driven by the Home Owners' Loan Corporation (HOLC). Through color-coded maps, the HOLC systematically labeled neighborhoods—often those home to minority communities—as <b><span style="color: #d9838d;">hazardous</span></b> or <b><span style="color: goldenrod">definitely declining areas</span></b>. These classifications effectively blocked residents from mortgages, credit, and equitable housing opportunities, creating lasting impacts still felt today.
+
+                    </p><p>By examining iBuying through the lens of these historical markers, we aim to uncover whether modern real estate practices might be echoing—or even amplifying—past inequities. <b>Could today's tech-driven transactions be shaped by the  shadow of yesterday's redlining?</b> That's exactly what we're investigating.</p>
+                        
+                    <br><br>
                 </div>
 
                 <!-- wrapper that holds text on the left and legend on the right -->
@@ -770,6 +676,9 @@
                     </div>
                 </div>
             </div>
+            <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+            <p>We find that iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
+            </p></div>
 
             <EverythingIsGettingExpensive />
 
