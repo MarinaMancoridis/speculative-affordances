@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+ 
 export async function renderCorporateOwnershipChart(
     base,       // your Svelte `base` path
     chartId,    // e.g. "corp-own-chart"
@@ -147,15 +148,18 @@ export async function renderCorporateOwnershipChart(
     let drawingActive = false;
     const stickObserver = new IntersectionObserver(
         ([entry]) => {
-            if (entry.intersectionRatio === 1 && !drawingActive) {
-                stickyContainer.classList.add('sticky');
+            console.log("ratio:", entry.intersectionRatio, "isIntersecting:", entry.isIntersecting);
+            if (entry.intersectionRatio >= 0.5 && !drawingActive) {
+                console.log("🚀 Sticking wrapper now");
+                wrapper.classList.add('fixed');
+                disableNativeScroll();
+                startDrawing();
                 drawingActive = true;
                 startScrollY = window.scrollY;
-                window.addEventListener('scroll', drawOnScroll, { passive: true });
                 stickObserver.disconnect();
             }
         },
-        { threshold: 1.0 }
+        { threshold: 0.5 }
     );
     stickObserver.observe(wrapper);
 
@@ -166,6 +170,52 @@ export async function renderCorporateOwnershipChart(
     }
     let startScrollY = window.scrollY;
     const maxScrollDelta = window.innerHeight;
+
+    function disableNativeScroll() {
+        document.body.style.overflow = 'hidden';
+      }
+      function enableNativeScroll() {
+        document.body.style.overflow = '';
+      }
+      let accumulated = 0;
+      const scrollSensitivity = 3;  // bigger = slower
+      
+      function onWheel(e) {
+        e.preventDefault();           // STOP the page from moving
+        accumulated += e.deltaY;      // positive when user scrolls down
+        drawFromDelta(accumulated);
+      }
+      
+      function drawFromDelta(deltaY) {
+        // compute prog ∈ [0,1]
+        const prog = clamp01(deltaY / (window.innerHeight * scrollSensitivity));
+        path.attr('stroke-dashoffset', L * (1 - prog));
+      
+        // your existing tooltip logic …
+        // …
+        
+        if (prog >= 1) {
+          finishDrawing();
+        }
+      }
+      
+      function startDrawing() {
+        drawingActive = true;
+        accumulated = 0;
+        window.addEventListener('wheel', onWheel, { passive: false });
+      }
+      
+      function finishDrawing() {
+        drawingActive = false;
+        window.removeEventListener('wheel', onWheel);
+        wrapper.classList.remove('fixed');
+        enableNativeScroll();
+      
+        // adjust scroll so you’re not hiding next section under the chart
+        const h = wrapper.getBoundingClientRect().height;
+        window.scrollBy(0, -h);
+      }
+
 
     function drawOnScroll() {
         if (!drawingActive) return;
@@ -183,11 +233,13 @@ export async function renderCorporateOwnershipChart(
 
             // 2) position tooltip (accounting for margins)
             const svgContainer = document.getElementById('corp-own-chart');
-            const { top: svgTop, left: svgLeft } = svgContainer.getBoundingClientRect();
-            const { top: parentTop, left: parentLeft } = stickyContainer.getBoundingClientRect();
 
-            tooltip.style.left = `${parentLeft + (svgLeft - parentLeft) + pt.x + margin.left}px`;
-            tooltip.style.top  = `${parentTop + (svgTop - parentTop) + pt.y + margin.top}px`;
+
+            const svgRect = document.getElementById('corp-own-chart')
+                     .getBoundingClientRect();
+
+            tooltip.style.left = `${svgRect.left + pt.x + margin.left}px`;
+            tooltip.style.top  = `${svgRect.top  + pt.y + margin.top}px`;
 
             // 3) pick the nearest year
             const bisect = d3.bisector(d => d.year).left;
@@ -208,19 +260,17 @@ export async function renderCorporateOwnershipChart(
 
         if (prog >= 1) {
             drawingActive = false;
-            window.removeEventListener('scroll', drawOnScroll);
-            stickyContainer.classList.remove('sticky');
             const h = stickyContainer.getBoundingClientRect().height;
-            window.scrollBy(0, -h);
+            window.removeEventListener('scroll', drawOnScroll);
+            wrapper.classList.remove('fixed');
+            unlockPageScroll();
+            // window.scrollBy(0, -h);
         }
     }
 
-    // in case you’re already scrolled past when mounting
-    drawOnScroll();
 
 
-
-    window.addEventListener('scroll', drawOnScroll, { passive: true });
+    // window.addEventListener('scroll', drawOnScroll, { passive: true });
     // one initial draw in case you’re already half-way scrolled:
     drawOnScroll();
 }

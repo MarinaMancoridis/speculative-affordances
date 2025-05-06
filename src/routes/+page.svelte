@@ -329,9 +329,9 @@
             item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale, valueScale[0])
             if (item.dateLastSold) {
                 const year = new Date(item.dateLastSold)
-                console.log("solded: ", year.getFullYear(), timeScale)
+                // console.log("solded: ", year.getFullYear(), timeScale)
                 for (let y=timeScale[0];y<year.getFullYear(); y++) {
-                    console.log(y, valueScale[0])
+                    // console.log(y, valueScale[0])
                     item.time_lookup.set(y, valueScale[0])
                 }
             }

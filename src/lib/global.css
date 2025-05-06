@@ -700,22 +700,23 @@ img.outline {
 	margin: 0 0 0.5rem;
 }
 
-/* the container we’ll flip on/off */
-#sticky-container {
+#chart-wrapper {
 	position: relative;
+	background: white;      /* so nothing behind shows through */
+	z-index: 10;            /* above the page content */
 }
 
-#sticky-container.sticky {
-	position: sticky;
-	top: 0;
-	width: 100%;
+#chart-wrapper.fixed {
+	position: fixed;
+	bottom: 0;
+	left: 50%;                    /* start in the horizontal middle */
+	transform: translateX(-50%);  /* shift back by half its own width */
+	width: 100%;                  /* fill up to max-width */
+	max-width: 900px;             /* match your normal wrapper max width */
 	background: white;
-	transition: position 0.3s ease-out;
-	height: 200vh;  /* Adjust if you want the sticky container to take less height */
-    overflow-y: auto; /* Prevents content from spilling under */
-    background-color: white; /* Ensure it's opaque so text doesn't show through */
-    z-index: 100; /* Keep it on top */
-}
+	z-index: 999;
+  }
+
 
 .home-selection {
 	display: flex;
