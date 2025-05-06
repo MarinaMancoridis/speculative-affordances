@@ -581,9 +581,13 @@
             <EverythingIsGettingExpensive />
 
             <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
-            <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
+            <div style="max-width: 900px; margin: 0 auto; text-align: left;">
                 <p><b>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth</b>. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
-                <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time.</p>
+                <p>This visualization shows the history of iBuying activity and which homes were sold for less than their estimated price.</p>
+                <p><b><i>Use the slider</i></b> to see iBuying activity changing by <b>Year</b>, and <b>Zestimate Value</b></p>
+                <p><b><i>Click any point(s)</i></b> to compare information about the home, selling price, and Zestimate.</p>
+                <p><b><i>Move the map</i></b> to explore different parts of the Greater Boston Area.</p>
+                
             </div>
 
             <div class="legend-text-wrapper" style="
@@ -675,12 +679,8 @@
                 
             </div>
             </div>
-
             <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                <p><b><i>Use the slider</i></b> to see iBuying activity changing by <b>Year</b>, and <b>Zestimate Value</b></p>
-                <p><b><i>Click any point(s)</i></b> to compare information about the home, selling price, and Zestimate.</p>
-                <p><b><i>Move the map</i></b> to explore different parts of the Greater Boston Area.</p>
-                
+                <p>We find that there is a <b>prevalence</b> of properties sold for <b><span style="color: #644E8F;">less</span></b> than their estimated prices, compared to properties sold for <b><span style="color: goldenrod;">more</span></b> over the years of iBuying activity.</p>
             </div>
               
             <br><br><br><br>
