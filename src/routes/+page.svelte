@@ -36,6 +36,7 @@
     import Somerville from "./somerville.svelte";
     import StickyChart from "./corpownership.svelte";
     import DataCollection from "./datacollection.svelte";
+    import FtcRefund from "./FtcRefund.svelte";
 
     // Zestimate helpers
     import {
@@ -677,9 +678,9 @@
                 <p>We find that the vast majority of homes were sold for <b><span style="color: #644E8F;">less</span></b> than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
                 </p>
             </div>
-
+            <FtcRefund />
               
-            <br><br><br><br>
+            <br><br>
             <h1 style="text-align: center;">Final Takeaways</h1>
             <div class="info-grid">
                 <div id="takeaways">
