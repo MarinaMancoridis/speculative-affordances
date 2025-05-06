@@ -54,7 +54,7 @@ onMount(() => {
 </script>
 
 <style>
-  .btn-outline {
+.btn-outline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -70,15 +70,32 @@ onMount(() => {
     transition: background-color 0.2s ease;
     text-decoration: none;
     margin:auto;
-  }
+}
 
-  .btn-outline:hover {
+.btn-outline:hover {
     background-color: rgba(100, 78, 143, 0.05);
-  }
+}
 
-  .btn-outline:active {
+.btn-outline:active {
     transform: translateY(1px);
-  }
+}
+
+.tableauPlaceholder {
+    position: relative; 
+    margin: auto;
+    background: white;
+    color: #000;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em 1em .1em 1em;
+    font-size: 0.95em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tableauViz {
+    width:1100px; 
+    height:900px;
+}
 </style>
 <div>
     <div class="chart-text">
@@ -87,11 +104,11 @@ onMount(() => {
         <div style="display: flex; justify-content: center; align-items: center"><button class="btn-outline" on:click={toggle}>Opendoor refunds in MA</button></div>
     </div>
     {#if showViz}
-        <div class='tableauPlaceholder' id='viz1746558020694' style='position: relative; margin: auto'>
+        <div class='tableauPlaceholder' id='viz1746558020694'>
             <noscript>
                 <a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;PY&#47;PYDDXX29Q&#47;1_rss.png' style='border: none' /></a>
             </noscript>
-            <object class='tableauViz'  style='width:1100px; height:900px'>
+            <object class='tableauViz'>
                 <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
                 <param name='embed_code_version' value='3' /> 
                 <param name='path' value='shared&#47;PYDDXX29Q' /> 
