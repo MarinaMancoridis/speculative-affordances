@@ -678,7 +678,7 @@
             </div>
 
             <div class="chart-text">
-                <p>We find that the vast majority of homes were sold for less—often significantly less—than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
+                <p>We find that the vast majority of homes were sold for <b><span style="color: #644E8F;">less</span></b> than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
                 </p>
             </div>
 
