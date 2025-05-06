@@ -86,13 +86,13 @@ h2 {
     padding: 2em 1em;
 }
 
-.info-grid a {
+a {
     color: #28587B; /* Change this color to your desired default */
     text-decoration: none;
     border-bottom: 1px dotted currentColor;
 }
 
-.info-grid a:hover {
+a:hover {
     color: #8bb9dd; /* Change to desired hover color */
     border-bottom-color: currentColor;
 }
