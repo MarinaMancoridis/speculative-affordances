@@ -77,54 +77,94 @@ h2 {
 	text-align: center;
 }
 
-#takeaways, #action, #references, #acks {
-    background-color: white;
-    padding: 3em;
-    border-radius: 16px; /* Rounded corners */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Soft, modern shadow */
-    margin: 3em 0; /* Space between sections */
-    color: #333; /* Softer text color */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3em;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2em 1em;
 }
 
-/* Different subtle background tint for each */
+.info-grid a {
+    color: #28587B; /* Change this color to your desired default */
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+}
+
+.info-grid a:hover {
+    color: #8bb9dd; /* Change to desired hover color */
+    border-bottom-color: currentColor;
+}
+
+#takeaways, #action, #references, #acks {
+    background-color: #f8f8f8;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    color: #444;
+    font-size: 20px; /* Slightly larger text */
+    line-height: 1.7;
+    box-sizing: border-box; /* Ensures padding is included in box sizing */
+}
+
+#takeaways h3,
+#action h3,
+#references h3,
+#acks h3 {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.4em;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.2em;
+}
+
 #takeaways {
-	background-color: #3E2F5B;
-	color: white;
-	padding: 3em;
-	font-size: 24px;
+    background-color: #e9e5f2; /* lavender tint */
 }
 
 #action {
-	background-color: #E01A4F;
-	color: white;
-	padding: 3em;
-	font-size: 24px;
-}
-
-#references {
-	background-color: steelblue;
-	color: white;
-	padding: 3em;
-	font-size: 20px;
+    background-color: #f4e6ea; /* soft blush */
 }
 
 #acks {
-	background-color: #70A288;
-	color: white;
-	padding: 3em;
-	font-size: 24px;
+    background-color: #e6f0e9; /* muted sage green */
+	max-height: 350px;
 }
 
-.ref {
-	color: white;
+#references {
+    background-color: #e3eef6; /* subtle sky blue */
+	max-height: 350px;
 }
+
+#references ul {
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.action-links, .ref {
+    color: #28587B;
+    text-decoration: none;
+    border-bottom: 1px dotted #28587B;
+}
+
+.action-links:hover, .ref:hover {
+    color: #3c377a;
+    border-bottom-color: #183b55;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 800px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 h3 {
 	font-size: 36px;
-}
-
-#action-links {
-	color: white;
 }
 
 p {
