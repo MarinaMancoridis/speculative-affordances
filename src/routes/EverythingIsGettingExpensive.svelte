@@ -187,7 +187,10 @@
 <div id="sticky-container">
     <div class="chart-text">
         <p>
-            Corporate speculation doesn't just buy homes: it predicts and bets on entire neighborhoods. Here's how the average Zestimates for iBought homes have changed for each historic HOLC district category.
+            Corporate speculation isn't just about buying individual homes—it's about betting on entire neighborhoods. To measure this broader impact, we look at <b>Zestimates</b>, Zillow's algorithmic estimates of home values, which provide a snapshot of how markets predict a property's worth.
+        </p>
+        <p>
+            By tracking Zestimates, we're able to see how the perceived value of homes purchased by iBuyers has evolved over time. We contextualize these statistics by analyzing average Zestimate changes for homes across different historical HOLC district categories.
         </p>
     </div>
     <div id="chart-wrapper" class="chart-wrapper">
@@ -197,3 +200,11 @@
         <div id="legend"></div>
     </div>
 </div>
+
+<br>
+<div class="chart-text">
+    <p>
+        Notice how the Zestimate trajectories for each HOLC district category remain largely separate over time—<b>they rarely cross</b>. This persistent separation reveals something important: historic boundaries continue to define perceived value even today. Despite decades passing, market perceptions of neighborhoods remain anchored in old distinctions.
+    </p>
+</div>
+<br><br>
