@@ -833,3 +833,24 @@ img.outline {
     text-align: left;
     max-width: 300px; /* Adjust width as needed */
 }
+
+#data-collection {
+    display: flex;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 2em;
+  }
+  #stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+  }
+  .counter {
+    font-size: 1.5em;
+  }
+  .unit {
+    font-size: 0.4em;
+  }
