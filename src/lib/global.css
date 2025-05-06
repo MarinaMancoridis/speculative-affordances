@@ -320,9 +320,14 @@ p {
 	background: rgb(175, 168, 168);
   }
 
-.post-chart {
-	font-size:1.0em;
-}
+	#post-chart {
+		display: block;
+	}
+  
+  /* while drawing, hide it completely */
+  body.drawing #sticky-container ~ * {
+	display: none !important;
+  }
 
 /* remove the second pointer‑events: none you had here */
 
@@ -704,18 +709,10 @@ img.outline {
 	position: relative;
 	background: white;      /* so nothing behind shows through */
 	z-index: 10;            /* above the page content */
+	max-width: 900px;
+	margin: 3em auto 0;    /* normal centering */
+	position: relative;     /* default */
 }
-
-#chart-wrapper.fixed {
-	position: fixed;
-	bottom: 0;
-	left: 50%;                    /* start in the horizontal middle */
-	transform: translateX(-50%);  /* shift back by half its own width */
-	width: 100%;                  /* fill up to max-width */
-	max-width: 900px;             /* match your normal wrapper max width */
-	background: white;
-	z-index: 999;
-  }
 
 
 .home-selection {

@@ -149,17 +149,51 @@ export async function renderCorporateOwnershipChart(
     const stickObserver = new IntersectionObserver(
         ([entry]) => {
             console.log("ratio:", entry.intersectionRatio, "isIntersecting:", entry.isIntersecting);
-            if (entry.intersectionRatio >= 0.5 && !drawingActive) {
+            if (entry.intersectionRatio >= 1 && !drawingActive) {
                 console.log("🚀 Sticking wrapper now");
                 wrapper.classList.add('fixed');
                 disableNativeScroll();
+
+                const marginBottom = margin.bottom; // from your chart code, e.g. 100
+
+                // grab original wrapper bounds & computed margins
+                const rect = wrapper.getBoundingClientRect();
+                const cs   = getComputedStyle(wrapper);
+                const marginTop = parseFloat(cs.marginTop);
+                const marginBot = parseFloat(cs.marginBottom);
+
+                // create the placeholder
+                const placeholder = document.createElement('div');
+                placeholder.className = 'chart-placeholder';
+                placeholder.style.height = `${rect.height}px`;
+                placeholder.style.marginTop    = `${marginTop}px`;
+                placeholder.style.marginBottom = `${marginBot}px`;
+
+                // stick it into the DOM right before your wrapper
+                wrapper.parentNode.insertBefore(placeholder, wrapper);
+
+                // now fix your wrapper in place…
+                Object.assign(wrapper.style, {
+                position:  'fixed',
+                top:       `${Math.max(0, rect.top - marginTop)}px`,
+                left:      '50%',
+                transform: 'translateX(-50%)',
+                width:     `${rect.width}px`,
+                height:    `${rect.height}px`,
+                overflow:  'visible',
+                background:'white',
+                zIndex:    999
+                });
+
+                // 4) lock page scroll & start your wheel/touch animation
+                document.body.style.overflow = 'hidden';
                 startDrawing();
                 drawingActive = true;
                 startScrollY = window.scrollY;
                 stickObserver.disconnect();
             }
         },
-        { threshold: 0.5 }
+        { threshold: 1.0 }
     );
     stickObserver.observe(wrapper);
 
@@ -195,12 +229,19 @@ export async function renderCorporateOwnershipChart(
         // …
         
         if (prog >= 1) {
-          finishDrawing();
+            finishDrawing();
+
+            // remove your fixed‐position styles:
+            wrapper.removeAttribute('style');
+
+            // restore normal scrolling
+            document.body.style.overflow = '';
         }
       }
       
       function startDrawing() {
         drawingActive = true;
+        document.body.classList.add('drawing');
         accumulated = 0;
         window.addEventListener('wheel', onWheel, { passive: false });
       }
@@ -210,10 +251,28 @@ export async function renderCorporateOwnershipChart(
         window.removeEventListener('wheel', onWheel);
         wrapper.classList.remove('fixed');
         enableNativeScroll();
+        document.body.classList.remove('drawing');
+
+        // remove exactly that placeholder
+        const placeholder = document.querySelector('.chart-placeholder');
+        if (placeholder) placeholder.remove();
+
+
+        wrapper.style.position  = '';
+        wrapper.style.top       = '';
+        wrapper.style.left      = '';
+        wrapper.style.transform = '';
+        wrapper.style.width     = '';
+        wrapper.style.height    = '';
+        wrapper.style.overflow  = '';
+        wrapper.style.background= '';
+        wrapper.style.zIndex    = '';
+      
+        document.body.style.overflow = '';
       
         // adjust scroll so you’re not hiding next section under the chart
         const h = wrapper.getBoundingClientRect().height;
-        window.scrollBy(0, -h);
+        window.scrollBy(0, 0);
       }
 
 
@@ -235,11 +294,13 @@ export async function renderCorporateOwnershipChart(
             const svgContainer = document.getElementById('corp-own-chart');
 
 
-            const svgRect = document.getElementById('corp-own-chart')
-                     .getBoundingClientRect();
+            const svgRect = document
+            .getElementById("corp-own-chart")
+            .getBoundingClientRect();
 
-            tooltip.style.left = `${svgRect.left + pt.x + margin.left}px`;
-            tooltip.style.top  = `${svgRect.top  + pt.y + margin.top}px`;
+            // NO extra + margin here!
+            tooltip.style.left = `${svgRect.left + pt.x}px`;
+            tooltip.style.top  = `${svgRect.top  + pt.y}px`;
 
             // 3) pick the nearest year
             const bisect = d3.bisector(d => d.year).left;
@@ -264,7 +325,9 @@ export async function renderCorporateOwnershipChart(
             window.removeEventListener('scroll', drawOnScroll);
             wrapper.classList.remove('fixed');
             unlockPageScroll();
-            // window.scrollBy(0, -h);
+
+            const rect = wrapper.getBoundingClientRect();
+            window.scrollBy(0, -rect.height);
         }
     }
 
