@@ -101,7 +101,7 @@ onMount(() => {
     <div class="chart-text">
         <p>The Opendoor FTC case is still processing refunds. What might be your <b>guess</b> for how many <b>recipients</b> there have been in Massachusetts, and the <b>median refund amount</b>? Click here for the official FTC refund dashboard: </p>
 
-        <div style="display: flex; justify-content: center; align-items: center"><button class="btn-outline" on:click={toggle}>Opendoor refunds in MA</button></div>
+        <div style="display: flex; justify-content: center; align-items: center"><button class="btn-outline" on:click={toggle}>Click to view Opendoor refunds in MA</button></div>
     </div>
     {#if showViz}
         <div class='tableauPlaceholder' id='viz1746558020694'>
