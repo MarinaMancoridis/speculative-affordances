@@ -128,6 +128,8 @@ function formatDate(date) {
     return `${monthNames[monthIndex]} ${day}, ${year}`;
 }
 
+let popup;
+
 export default function popupHome(home, map) {
     console.log("homed:", home)
     const data = home;
@@ -198,7 +200,12 @@ export default function popupHome(home, map) {
             
         </div>
     </div>`
-    const popup = new mapboxgl.Popup({
+    // if (popup) {popup.popup.remove()}
+    const old = document.getElementsByClassName('mapboxgl-popup');
+    if ( old.length ) {
+        old[0].remove();
+    }
+    popup = new mapboxgl.Popup({
             closeButton: true,
             closeOnClick: true,
             className: 'marker-popup' // Custom class for styling

@@ -19,7 +19,6 @@
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
     import { onMount, tick } from "svelte";
     import localData from "./../data/mapping_inequality_redlining.json";
-    import { booleanPointInPolygon } from "@turf/boolean-point-in-polygon";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
     import popupHome from "$lib/popup.js";
@@ -36,6 +35,18 @@
     import Intro from "./intro.svelte";
     import Somerville from "./somerville.svelte";
     import StickyChart from "./corpownership.svelte";
+    import DataCollection from "./datacollection.svelte";
+
+    // Zestimate helpers
+    import {
+        parseZestimateHistory, 
+        getLastSoldEvent, 
+        calculateZestimateSince, 
+        calculateAddressColor, 
+        calculateFairPrice, 
+        zestimateHistoryScale,
+        matchSoldZestimate
+    } from "$lib/zestimateHelpers.js"
 
     // scroll states
     let scrollProgress = 0;
@@ -185,9 +196,6 @@
     let valueScale = [0, 0];
     let timeIndex = 0;
 
-    // Config for threshold between sale to nearest zestimate
-    const saleToZestimateDateThreshold = 4e9; // Roughly 45 days
-
     // Swiping between maps
     let beforeMap;
     let afterMap;
@@ -207,81 +215,6 @@
     function scrollToExplore() {
         window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
     }
-
-    // Sort times and values for faster filtering
-    function parseZestimateHistory (data) {
-        const points = data?.zillowData?.data?.property?.homeValueChartData[0]?.points || [];
-        const times = d3.sort(points.map(({x, y}) => x));
-        const values = d3.sort(points.map(({x, y}) => y));
-        return [times, values];
-    };
-
-    // Gets the most recent "sold" event, if it exists
-    function getLastSoldEvent (home) {
-        const priceHistory = home["priceHistory"];
-        if (priceHistory) {
-            for (const historicalEvent of priceHistory) {
-                if (historicalEvent["event"] === "Sold") {
-                    return historicalEvent;
-                }
-            }
-        }
-        return undefined;
-    }
-
-    // Cache the lookup for each year
-    function calculateZestimateSince (times, values, scale) {
-        let lookup = new Map();
-        for (let i = scale[0]; i <= scale[1]; i++) {
-            const yearStart = new Date(i, 0, 1).getTime();
-            let value = valueScale[0];
-            if (times) {
-                for (let j = 0; j < times.length; j++) {
-                    if (times[j] >= yearStart) {
-                        value = values[j];
-                        break;
-                    }
-                }
-            }
-            lookup.set(i, value);
-        }
-        return lookup;
-    };
-
-    // We can also cache this if there are performance issues
-    function calculateAddressColor(home) {
-        let color = "white";
-        localData.features.some(f => {
-            if (booleanPointInPolygon([home.Longitude, home.Latitude], f)) {
-                color = f.properties?.fill || "white";
-                return true;
-            }
-            return false;
-        });
-        return color;
-    }
-
-    function calculateFairPrice(home) {
-        let color = "white";
-        localData.features.some(f => {
-            if (home.difference < 0) {
-                color = "#644E8F";
-                return true;
-            } else if (home.difference >= 0) {
-                color = "goldenrod";
-                return true;
-            }
-            return false;
-        });
-        return color;
-    }
-
-    // Establish scale across full history
-    function zestimateHistoryScale ([times, values]) {
-        const time_range = [new Date(d3.min(times)).getFullYear(), new Date(d3.max(times)).getFullYear()];
-        const value_range = [d3.min(values), d3.max(values)];
-        return [time_range, value_range];
-    };
 
     $: map?.on("move", evt => mapViewChanged++);
     $: mapSwipe?.on("move", evt => mapViewChangedSwipe++);
@@ -343,42 +276,6 @@
                 all_times = all_times.concat(times);
                 all_values = all_values.concat(values);
 
-                function matchSoldZestimate(e, [times, values]) {
-                    const d = (new Date(e["date"])).getTime()
-                    const time = times[0]
-                    if (!time) {
-                        // console.log("No zestimates available")
-                        return
-                    }
-                    const diff = d-time
-                    if (diff<0) {
-                        // console.log("Zestimate not recent enough"); 
-                        return
-                    }
-                    let idx = 0;
-                    for (let i=0; i<times.length; i++) {
-                        const diff = d-times[i]
-                        if (diff<0) {
-                            idx = i
-                            function msToTime(ms) {
-                                let seconds = (ms / 1000).toFixed(1);
-                                let minutes = (ms / (1000 * 60)).toFixed(1);
-                                let hours = (ms / (1000 * 60 * 60)).toFixed(1);
-                                let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-                                if (seconds < 60) return seconds + " Sec";
-                                else if (minutes < 60) return minutes + " Min";
-                                else if (hours < 24) return hours + " Hrs";
-                                else return days + " Days"
-                            }
-                            if (Math.abs(diff)>saleToZestimateDateThreshold) return
-                            // console.log("diff; ", msToTime(-diff))
-                            break
-                        }
-                    }
-                    return values[idx]
-                    // console.log("date", d)
-                }
-
                 // recent sold event
                 const recentSoldEvent = getLastSoldEvent(zillowData[item.Address]);
                 if (recentSoldEvent) {
@@ -417,17 +314,19 @@
             return item;
         });
 
+        // Virtual set to filter unique records
         homes = Array.from(new Set(homes.map(home => home.Address)))
             .map(address => homes.find(home => home.Address === address));
 
         // Calculate max range scales
         [timeScale, valueScale] = zestimateHistoryScale([all_times, all_values]);
-        timeIndex = timeScale[0]; // Initialize to latest
+        // timeIndex = timeScale[0]; // Initialize to latest
+        timeIndex = (timeScale[1]+timeScale[0]) / 2 | 0 // JS sorcery for integer division
 
         // One more pass to calculate time cutoffs
         homes = homes.map(item => {
             
-            item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale)
+            item.time_lookup = calculateZestimateSince(item.ztimes, item.zvalues, timeScale, valueScale[0])
             if (item.dateLastSold) {
                 const year = new Date(item.dateLastSold)
                 console.log("solded: ", year.getFullYear(), timeScale)
@@ -586,15 +485,7 @@
 
             <div class="post-chart">
                 <br><br><br><br>
-                <h1 style="text-align: center;">Data Collection— The Presence of iBuying in Boston</h1>
-                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p><b>How do you find a hidden market?</b> There is no public dataset of iBuying in the Greater Boston Area. While our previous chart focused more broadly on <i>corporate speculation</i> in Boston, our analysis wishes to look at iBuying in particular. 
-                        
-                    </p><p>Our analysis involved <b>creating our own dataset</b> of iBuying in the Greater Boston Area. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players in iBuying. This type of keyword matching is the approach that was used in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
-                    </p> 
-                    <p>Using this simple but powerful method, we uncovered <b>407 homes purchased by iBuyers</b> between 2019 and 2025. Of course, this likely understates the true figure: not every transaction may cleanly announce itself in the records. In other words, the story of iBuying in Boston may be even bigger than these numbers suggest. </p>
-                    <br><br>
-                </div>
+                <DataCollection />
 
                 <NotIBoughtHomes {homes} />
                 
@@ -683,9 +574,13 @@
             <EverythingIsGettingExpensive />
 
             <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
-            <div style="max-width: 1100px; margin: 0 auto; text-align: left;">
-                <p><b>Despite iBuyers claiming that they purchase homes at fair prices, they often buy homes for much less than their worth</b>. In 2022, FTC charged Opendoor with lying to people that they were getting market value for their homes and Opendoor agreed to pay $62 million. Since then, Opendoor has continued to expand to over 50+ markets, including Boston.</p> 
-                <p>This visualization shows which iBought homes were sold for unfair prices and how Zestimates increase over time.</p>
+            <div class="chart-text">
+                <p><b>iBuyers say they purchase homes at fair market prices—but their own data tells another story.</b> In 2022, the FTC charged Opendoor with misleading sellers about receiving full market value, resulting in a $62 million settlement. Yet Opendoor didn’t retreat; instead, it expanded into more than 50 markets, including Boston.</p>
+                <p><b>Why is a price sold below its Zestimate value "unfair"?</b> The Zestimate represents Zillow’s own estimate of a home’s market value—the price a home could reasonably fetch under normal market conditions. If an iBuyer purchases a home significantly below this estimate, it implies that the seller likely missed out on value they could have realized on the open market. Calling these prices "unfair" captures the idea that sellers, expecting a fair, market-value offer, instead received considerably less—revealing a discrepancy between what’s promised and what's delivered.</p> 
+                <!-- <p>This visualization shows the history of iBuying activity and which homes were sold for less than their estimated price.</p> -->
+                <p><b><i>Use the slider</i></b> to see iBuying activity changing by <b>Year</b>, and <b>Zestimate Value</b></p>
+                <p><b><i>Click any point(s)</i></b> for details and comparing homes.</p>
+                <p><b><i>Move the map</i></b> to explore different parts of the Greater Boston Area.</p>
             </div>
 
             <div class="legend-text-wrapper" style="
@@ -724,7 +619,7 @@
                     ">
 
                 <label style="display: block; color: #333; font-weight: 500;">
-                    <b>Zestimate Year:</b>
+                    <b>Year:</b>
                     <input 
                     type="range" 
                     min="{timeScale[0]}" 
@@ -778,45 +673,48 @@
             </div>
             </div>
 
-            <div style="max-width: 900px; margin: 0 auto; text-align: left;">
-                <p><i><b>Click any point</b></i> to see information about the home, selling price, and Zestimate value.</p>
-                <p><i><b>Scroll on the map</b></i> to explore different parts of the Greater Boston Area.</p>
-                <p><i><b>Use the slider</b></i> to see how Zestimate values change by year.</p>
+            <div class="chart-text">
+                <p>We find that the vast majority of homes were sold for <b><span style="color: #644E8F;">less</span></b> than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
+                </p>
             </div>
+
               
             <br><br><br><br>
-            <div id="takeaways">
-                <h3>Takeaways</h3>
-                <ul>
-                <li>iBuying is prevalent in Boston, especially for more affordable housing.</li>
-                <li>Redlining and discriminatory housing practices in the past continue to affect present housing and consquently AI real estate pricing models.</li>
-                <li>iBought homes are not bought for fair prices.</li>
-            </div>
+            <h1 style="text-align: center;">Final Takeaways</h1>
+            <div class="info-grid">
+                <div id="takeaways">
+                    <h3>Summary of Findings</h3>
+                    <ul>
+                    <li>iBuying is prevalent in Boston, especially for more afforadble housing.</li>
+                    <li>Redlining and discriminatory housing practices in the past continue to affect present housing and consquently AI real estate pricing models.</li>
+                    <li>iBought homes are not bought for fair prices.</li>
+                    </ul>
+                </div>
 
-            <br><br>
-            <div id="action">
-                <h3>What can we do?</h3>
-                <ul>
-                <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
-                <li> Reach out to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
-                <li> Advocate for protections against automated speculation practices.</li>
-            </div>
+                <div id="action">
+                    <h3>What can we do?</h3>
+                    <ul>
+                    <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
+                    <li> Reach out to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
+                    <li> Advocate for protections against automated speculation practices.</li>
+                    </ul>
+                </div>
 
-            <br><br>
-            <div id="acks">
-                <h3>Acknowledgements</h3>
-                <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
-            </div>
+                <div id="acks">
+                    <h3>Acknowledgements</h3>
+                    <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
+                </div>
 
-            <br><br>
-            <div id="references">
-                <h3>References</h3>
-                <ul>
-                <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
-                <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
-                <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
-                <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
-                <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
+                <div id="references">
+                    <h3>References</h3>
+                    <ul>
+                    <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
+                    <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
+                    <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
+                    <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
+                    <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
+                    </ul>
+                </div>
             </div>
 
         </div>
