@@ -37,6 +37,10 @@
     import StickyChart from "./corpownership.svelte";
     import DataCollection from "./datacollection.svelte";
     import FtcRefund from "./FtcRefund.svelte";
+    import FinalTakeaways from "./final.svelte";
+    import RedliningMap from "./redlining.svelte";
+    import FairPrices from "./fairprices.svelte";
+    import TitlePage from "./titlepage.svelte";
 
     // Zestimate helpers
     import {
@@ -352,10 +356,10 @@
 
         await new Promise(resolve => map.on("load", resolve));
         
-        map.addSource("redlining_data", {
-            type: "geojson",
-            data: localData
-        });
+        // map.addSource("redlining_data", {
+        //     type: "geojson",
+        //     data: localData
+        // });
 
         // Homes for Swiping Between Maps
         homesSwipe = await d3.csv(`${base}/data/mass_records.csv`, row => ({
@@ -418,41 +422,15 @@
     });
 </script>
 
-<div class="grid-bg">
-    {#each Array(cols*rows) as _, i}
-      <div
-        class="grid-cell"
-        style="background-image:
-                 url({ i < replaceCount
-                          ? modifiedImgs[i]
-                          : originalImgs[i]
-                      });
-               ">
-      </div>
-    {/each}
-</div>
-
-<div class="title-section">
-    <div class="rotator">
-      <img src={$rotatingImage} alt="Rotating title image" />
-    </div>
-  
-    <div class="title-text">
-      <h1>AUTOMATION AND SPECULATION</h1>
-      <p class="typewriter-line" id="typewriter"></p>
-      <p>
-        <b>Speculative Affordances, Final Project:</b>
-        <br>
-        <i>Lena Armstrong, Marina Mancoridis, Eagon Meng, Jon Rosario</i>
-      </p>
-    </div>
-  
-    <!-- now sibling of .title-text -->
-    <button class="scroll-indicator" on:click={scrollToExplore} type="button">
-      <span>Explore</span>
-      <div class="arrow" style="margin-left:0.8rem;">↓</div>
-    </button>
-</div>
+<TitlePage 
+    {cols} 
+    {rows} 
+    {replaceCount} 
+    {modifiedImgs} 
+    {originalImgs} 
+    {rotatingImage} 
+    {scrollToExplore}
+/>
 
 
 
@@ -490,233 +468,23 @@
 
                 <NotIBoughtHomes {homes} />
                 
-                <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
-                <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-                    <p>We're exploring not just where iBuying happens geographically, but <b>how it aligns with deeper patterns of inequality</b>. Beyond maps and neighborhoods, we're interested in understanding if iBuying intersects with historical discrimination.
-
-                    </p><p> Redlining emerged prominently in the 1930s, driven by the Home Owners' Loan Corporation (HOLC). Through color-coded maps, the HOLC systematically labeled neighborhoods—often those home to minority communities—as <b><span style="color: #d9838d;">hazardous</span></b> or <b><span style="color: goldenrod">definitely declining areas</span></b>. These classifications effectively blocked residents from mortgages, credit, and equitable housing opportunities, creating lasting impacts still felt today.
-
-                    </p><p>By examining iBuying through the lens of these historical markers, we aim to uncover whether modern real estate practices might be echoing—or even amplifying—past inequities. <b>Could today's tech-driven transactions be shaped by the  shadow of yesterday's redlining?</b> That's exactly what we're investigating.</p>
-                        
-                    <br><br>
-                </div>
-
-                <!-- wrapper that holds text on the left and legend on the right -->
-                <div class="legend-text-wrapper" style="
-                        display: flex;
-                        gap: 2em;
-                        align-items: flex-start;
-                        margin-bottom: 2em;
-                        font-size: 1.2em;
-                    ">
-
-                <!-- left: all your step-4 & last-step text + slider -->
-                <!-- iBuying and redlining map -->
-                <div id="mapSwipe">
-                    <svg>
-                        {#key mapViewChangedSwipe}
-                            {#each homesSwipe as homeSwipe}
-                                <circle { ...getHomesSwipe(homeSwipe) } r="12" fill="#F2F2F2" fill-opacity="100%" stroke="black" stroke-opacity="60%">
-                                </circle> 
-                                <text
-                                    x={getHomesSwipe(homeSwipe).cx}
-                                    y={getHomesSwipe(homeSwipe).cy}
-                                    font-size="12"
-                                    text-anchor="middle"
-                                    dominant-baseline="middle"
-                                > 🏠 </text>
-                            {/each}
-                        {/key}
-                    </svg>
-                </div>
-
-                <!-- right: the legend box -->
-                <div class="legend-side" style="flex: 0 0 300px;">
-                    <div style="
-                        background: #faf7fa;
-                        color: #000;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        padding: 1em;
-                        font-size: 0.95em;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    ">
-                        <b>Historic Redlining Map<br/>HOLC District Categories</b>
-                        <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #76a865; border: 1px solid #4f5152; 
-                                        border-radius: 0%; margin-right: 8px;"></span>Best</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #74c3e3; border: 1px solid #4f5152; 
-                                        border-radius: 0%; margin-right: 8px;"></span>Still Desirable</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #ffff00; border: 1px solid #4f5152; 
-                                        border-radius: 0%; margin-right: 8px;"></span>Definitely Declining</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #d9838d; border: 1px solid #4f5152; 
-                                        border-radius: 0%; margin-right: 8px;"></span>Hazardous</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #000; border-radius: 0%; 
-                                        margin-right: 8px;"></span>Industrial/Commercial</li>
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #fff; border: 1px solid #4f5152; 
-                                        border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
-                        
-                        <br>
-                        <label><b>Redlining Map Opacity: <b></label>
-                        <input id="slider" type="range" min="0" max="75" step="1" value="50">
-                    </div>
-                </div>
-            </div>
-            <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-            <p>We find that iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
-            </p></div>
+                <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 
             <EverythingIsGettingExpensive />
-
-            <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
-            <div class="chart-text">
-                <p><b>iBuyers say they purchase homes at fair market prices—but their own data tells another story.</b> In 2022, the FTC charged Opendoor with misleading sellers about receiving full market value, resulting in a $62 million settlement. Yet Opendoor didn’t retreat; instead, it expanded into more than 50 markets, including Boston.</p>
-                <p><b>Why is a price sold below its Zestimate value "unfair"?</b> The Zestimate represents Zillow’s own estimate of a home’s market value—the price a home could reasonably fetch under normal market conditions. If an iBuyer purchases a home significantly below this estimate, it implies that the seller likely missed out on value they could have realized on the open market. Calling these prices "unfair" captures the idea that sellers, expecting a fair, market-value offer, instead received considerably less—revealing a discrepancy between what’s promised and what's delivered.</p> 
-                <!-- <p>This visualization shows the history of iBuying activity and which homes were sold for less than their estimated price.</p> -->
-                <p><b><i>Use the slider</i></b> to see iBuying activity changing by <b>Year</b>, and <b>Zestimate Value</b></p>
-                <p><b><i>Click any point(s)</i></b> for details and comparing homes.</p>
-                <p><b><i>Move the map</i></b> to explore different parts of the Greater Boston Area.</p>
-            </div>
-
-            <div class="legend-text-wrapper" style="
-                    display: flex;
-                    gap: 2em;
-                    align-items: flex-start;
-                    margin-bottom: 2em;
-                    font-size: 1.2em;
-                ">
-
-            <!-- left side: map -->
-            <div id="map">
-                <div id="tooltip" style="position:absolute; display:none; background:white; border:1px solid black; padding:4px; font-size:12px; pointer-events:none; z-index:100;"></div>
-                <svg>
-                    {#key mapViewChanged}
-                        {#each filteredHomes as home}
-                            <circle { ...getHomes(home) } r="{radiusScale(home.time_lookup.get(timeIndex))}" fill={home.color} stroke="black" stroke-opacity="60%" on:click={()=>{popupHome(home, map)}}>
-                                <title>
-                                    iBuyer: {home.Name}. Zestimate: ${home.zestimate}. Zestimate at sale time: {home.matchedZestimate?`$${home.matchedZestimate}`:"unknown"}. {home.price ? `Sold for: $${home.price} on ${home.dateLastSold}` : "Unknown when last sold for"}. 
-                                </title>
-                            </circle> 
-                        {/each}
-                    {/key}
-                </svg>
-            </div>
-
-            <div class="legend-text-wrapper">
-                <div style="
-                        background: #faf7fa;
-                        color: #000;
-                        border: 1px solid #ccc;
-                        border-radius: 8px;
-                        padding: 1em;
-                        font-size: 0.95em;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    ">
-
-                <label style="display: block; color: #333; font-weight: 500;">
-                    <b>Year:</b>
-                    <input 
-                    type="range" 
-                    min="{timeScale[0]}" 
-                    max="{timeScale[1]}" 
-                    bind:value={timeIndex} 
-                    style="width: 100%; accent-color: steelblue;"
-                    />
-                    <time style="display: block; text-align: right; font-size: 0.9em; color: #555; margin-top: 0.25em;">
-                    {timeIndex}
-                    </time>
-                </label>
-
-                 <b>Zestimate Value </b>
-                        <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 15px; height: 15px;
-                                        background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>$500,000</li>
-                        <li><span style="display: inline-block; width: 20px; height: 20px;
-                                        background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>$1,000,000</li>
-                        <li><span style="display: inline-block; width: 25px; height: 25px;
-                                        background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>$1,500,000</li>
-                        <li><span style="display: inline-block; width: 30px; height: 30px;
-                                        background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>$2,000,000</li>
-                
-                <!-- <br><br> -->
-                <!-- Slider to filter by difference -->
-                <!-- <label style="display: block; color: #333; font-weight: 500;">  -->
-                <!--    <b>Price Difference:</b>  -->
-                <!--    <input type="range" id="difference-slider" min="0" max="2000000" value="0" step="50000" style="width: 100%; accent-color: steelblue;"/>  -->
-                <!-- </label>  -->
-
-                <br>
-                <b>Was the selling price of the iBought Home <br> less than its Zestimate?</b> 
-                    <ul style="list-style: none; padding: 0; margin: 0.5em 0;">
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: #644E8F; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Sold for lower than Zestimate</li>
-                        
-                        <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: goldenrod; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Sold for greater than Zestimate</li>
-                        <!-- <li><span style="display: inline-block; width: 12px; height: 12px;
-                                        background-color: white; border: 1px solid #4f5152; 
-                                        border-radius: 50%; margin-right: 8px;"></span>Sold for price unknown</li> -->
-
-                </div>
-                
-            </div>
-            </div>
-
-            <div class="chart-text">
-                <p>We find that the vast majority of homes were sold for <b><span style="color: #644E8F;">less</span></b> than their Zestimates. This isn’t just a technicality; it reveals a systematic gap between promised "fair market value" and reality. <b>Sellers might be paying a hidden price for convenience</b>, leaving substantial value on the table.
-                </p>
-            </div>
+            <FairPrices 
+                {timeScale} 
+                {popupHome} 
+                {timeIndex} 
+                {map} 
+                {getHomes} 
+                {radiusScale} 
+                {mapViewChanged} 
+                {filteredHomes}
+            />
+            
             <FtcRefund />
+            <FinalTakeaways />
               
-            <br><br>
-            <h1 style="text-align: center;">Final Takeaways</h1>
-            <div class="info-grid">
-                <div id="takeaways">
-                    <h3>Summary of Findings</h3>
-                    <ul>
-                    <li>iBuying is prevalent in Boston, especially for more afforadble housing.</li>
-                    <li>Redlining and discriminatory housing practices in the past continue to affect present housing and consquently AI real estate pricing models.</li>
-                    <li>iBought homes are not bought for fair prices.</li>
-                    </ul>
-                </div>
-
-                <div id="action">
-                    <h3>What can we do?</h3>
-                    <ul>
-                    <li> Reconsider selling your home to iBuyers. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
-                    <li> Reach out to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
-                    <li> Advocate for protections against automated speculation practices.</li>
-                    </ul>
-                </div>
-
-                <div id="acks">
-                    <h3>Acknowledgements</h3>
-                    <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
-                </div>
-
-                <div id="references">
-                    <h3>References</h3>
-                    <ul>
-                    <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
-                    <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
-                    <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
-                    <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
-                    <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
-                    </ul>
-                </div>
-            </div>
 
         </div>
         </svelte:fragment>

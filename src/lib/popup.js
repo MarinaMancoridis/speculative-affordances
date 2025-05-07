@@ -131,7 +131,7 @@ function formatDate(date) {
 let popup;
 
 export default function popupHome(home, map) {
-    console.log("homed:", home)
+    // console.log("homed:", home)
     const data = home;
     // const description = `<strong>${home.Address}</strong>`
     // const style = ``
