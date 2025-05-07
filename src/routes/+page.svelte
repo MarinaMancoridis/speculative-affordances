@@ -18,7 +18,6 @@
     import * as d3 from "d3";
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
     import { onMount, tick } from "svelte";
-    import localData from "./../data/mapping_inequality_redlining.json";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
     import popupHome from "$lib/popup.js";
@@ -190,20 +189,15 @@
     // map and data states
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
     let homes = [];
-    let homesSwipe = [];
     let zillowData = [];
-    let mergedData = [];
     let map = null;
-    let mapSwipe = null;
     let mapViewChanged = 0;
-    let mapViewChangedSwipe = 0;
     let timeScale = [0, 0];
     let valueScale = [0, 0];
     let timeIndex = 0;
-
-    // Swiping between maps
-    let beforeMap;
-    let afterMap;
+    let homesSwipe = [];
+    let mapSwipe = null;
+    let mapViewChangedSwipe = 0;
     
     function getHomes (home) {
         let point = new mapboxgl.LngLat(+home.Longitude, +home.Latitude);
@@ -301,7 +295,7 @@
                 }
                 
                 // color fill for redlining
-                // item.color = calculateAddressColor(item);
+                item.color = calculateAddressColor(item);
 
                 // color fill for fair prices 
                 item.color = calculateFairPrice(item);
@@ -355,13 +349,7 @@
         });
 
         await new Promise(resolve => map.on("load", resolve));
-        
-        // map.addSource("redlining_data", {
-        //     type: "geojson",
-        //     data: localData
-        // });
 
-        // Homes for Swiping Between Maps
         homesSwipe = await d3.csv(`${base}/data/mass_records.csv`, row => ({
             ...row,
             Latitude: Number(row.Latitude), 
@@ -370,16 +358,8 @@
             Name: String(row.Name)
         }));
 
+        // Homes for Swiping Between Maps
          mapSwipe = new mapboxgl.Map({
-            container: 'mapSwipe', // HTML element ID
-            style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
-            center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
-            zoom: 11.5,
-            minZoom: 10,
-            maxZoom: 18
-        });
-
-        mapSwipe = new mapboxgl.Map({
             container: 'mapSwipe', // HTML element ID
             style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
             center: [-71.1056, 42.3736], // Cambridge/Boston (longitude, latitude)
@@ -432,9 +412,6 @@
     {scrollToExplore}
 />
 
-
-
-
 <div class="content-section">
     <div class="grid-container">
 
@@ -473,18 +450,18 @@
             <EverythingIsGettingExpensive />
             <FairPrices 
                 {timeScale} 
-                {popupHome}
-                {timeIndex}
+                {popupHome} 
+                {timeIndex} 
                 {map} 
                 {getHomes} 
                 {radiusScale} 
                 {mapViewChanged} 
                 {filteredHomes}
             />
-
+            
             <FtcRefund />
             <FinalTakeaways />
-
+              
 
         </div>
         </svelte:fragment>

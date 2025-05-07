@@ -30,7 +30,7 @@
         <svg>
             {#key mapViewChangedSwipe}
                 {#each homesSwipe as homeSwipe}
-                    <circle { ...getHomesSwipe(homeSwipe) } r="12" fill="#F2F2F2" fill-opacity="100%" stroke="black" stroke-opacity="60%">
+                    <circle { ...getHomesSwipe(homeSwipe) } r="12" fill={homeSwipe.fill} fill-opacity="100%" stroke="black" stroke-opacity="60%">
                     </circle> 
                     <text
                         x={getHomesSwipe(homeSwipe).cx}
@@ -77,7 +77,7 @@
                             border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
             
             <br>
-            <label><b>Redlining Map Opacity: <b></label>
+            <label for="slider"><b>Redlining Map Opacity:</b></label>
             <input id="slider" type="range" min="0" max="75" step="1" value="50">
         </div>
     </div>
