@@ -473,18 +473,18 @@
             <EverythingIsGettingExpensive />
             <FairPrices 
                 {timeScale} 
-                {popupHome} 
-                {timeIndex} 
+                {popupHome}
+                {timeIndex}
                 {map} 
                 {getHomes} 
                 {radiusScale} 
                 {mapViewChanged} 
                 {filteredHomes}
             />
-            
+
             <FtcRefund />
             <FinalTakeaways />
-              
+
 
         </div>
         </svelte:fragment>
