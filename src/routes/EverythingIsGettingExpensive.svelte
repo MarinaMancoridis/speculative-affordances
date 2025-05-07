@@ -3,6 +3,8 @@
     import * as d3 from "d3";
     import { onMount } from "svelte";
 
+    let isGraphVisible = false;
+    const animationHalfDurMS = 3000;
 
     onMount(async () => {
         const raw = await d3.json(`${base}/data/category_zestimate_averages.json`);
@@ -10,7 +12,7 @@
         const colorMap = {
             'Best': '#76a865',
             'Still Desirable': '#74c3e3',
-            'Definitely Declining': '#ffff00',
+            'Definitely Declining': '#ffd700',
             'Hazardous': '#d9838d',
             'Industrial': '#000000',
             'Commercial': '#000000',
@@ -22,29 +24,50 @@
             .domain(categories)
             .range(categories.map(c => colorMap[c]));
 
-
         const allData = [];
+        const yearlyAverages = {};
+        const iBoughtAverages = [];
+
+        // Calculate yearly averages and prepare data
         categories.forEach(category => {
             for (const [year, obj] of Object.entries(raw[category])) {
+                const yearNum = +year;
+                if (!yearlyAverages[yearNum]) {
+                    yearlyAverages[yearNum] = { total: 0, count: 0 };
+                }
+                yearlyAverages[yearNum].total += obj.average_zestimate * obj.count;
+                yearlyAverages[yearNum].count += obj.count;
+
                 allData.push({
                     category,
-                    year: +year,
+                    year: yearNum,
                     avg: obj.average_zestimate
                 });
             }
         });
-        
-        // Related to getting expensive section.
+
+        // Calculate the difference from the yearly average
+        allData.forEach(d => {
+            const yearlyAvg = yearlyAverages[d.year].total / yearlyAverages[d.year].count;
+            d.diffFromAvg = d.avg - yearlyAvg;
+        });
+
+        // Prepare iBought averages (baseline line at y=0)
+        Object.entries(yearlyAverages).forEach(([year, { total, count }]) => {
+            iBoughtAverages.push({ year: +year, avg: total / count });
+        });
+
+        // Set up the graph
         const container = document.getElementById('zestimate-chart');
         if (!container) {
             console.warn("⚠️ couldn't find #zestimate-chart in the DOM");
             return;
         }
 
-        const margin = { top: 40, right: 20, bottom: 100, left: 100 };
+        const margin = { top: 40, right: 150, bottom: 100, left: 150 };
         const { width: totalW, height: totalH } = container.getBoundingClientRect();
-        const width  = totalW  - margin.left - margin.right;
-        const height = totalH  - margin.top  - margin.bottom;
+        const width = totalW - margin.left - margin.right;
+        const height = totalH - margin.top - margin.bottom;
 
         const svg = d3.select("#zestimate-chart")
             .append("svg")
@@ -57,7 +80,7 @@
             .domain(d3.extent(allData, d => d.year))
             .range([0, width]);
         const y = d3.scaleLinear()
-            .domain([0, d3.max(allData, d => d.avg)]).nice()
+            .domain(d3.extent(allData, d => d.diffFromAvg)).nice()
             .range([height, 0]);
 
         const xAxis = d3.axisBottom(x)
@@ -70,13 +93,13 @@
         svg.append('g')
             .attr('transform', `translate(0,${height})`)
             .call(xAxis)
-        .selectAll('text')
+            .selectAll('text')
             .style('font-family', 'Roboto, sans-serif')
             .style('font-size', '19px');
 
         svg.append('g')
             .call(yAxis)
-        .selectAll('text')
+            .selectAll('text')
             .style('font-family', 'Roboto, sans-serif')
             .style('font-size', '19px');
 
@@ -95,49 +118,110 @@
             .attr('text-anchor', 'middle')
             .style('font-family', 'Roboto, sans-serif')
             .style('font-size', '20px')
-            .text('Average Zestimate');
+            .text('Difference from Average Zestimate');
 
         const nested = d3.groups(allData, d => d.category);
 
         const line = d3.line()
             .x(d => x(d.year))
-            .y(d => y(d.avg));
+            .y(d => y(d.diffFromAvg));
 
-        nested.forEach(([category, values]) => {
-            svg.append('path')
-                .datum(values.sort((a, b) => a.year - b.year))
+        const baseline = d3.line()
+            .x(d => x(d.year))
+            .y(() => y(0)); // Baseline at y=0
+
+        // Draw baseline with animation
+        function animateBaseline() {
+            const path = svg.append('path')
+                .datum(iBoughtAverages)
                 .attr('fill', 'none')
-                .attr('stroke', color(category))
+                .attr('stroke', '#000000') // Fully black baseline
                 .attr('stroke-width', 3)
-                .attr('d', line);
-        });
+                .attr('stroke-dasharray', function () {
+                    const length = this.getTotalLength();
+                    return `${length} ${length}`; // Set the dasharray to the total length of the path
+                })
+                .attr('stroke-dashoffset', function () {
+                    return this.getTotalLength(); // Initially offset the entire length
+                })
+                .attr('d', baseline);
 
-        const legend = d3.select("#legend")
-            .append('ul')
-            .style('list-style', 'none')
-            .style('padding', '0')
-            .style('margin', '2em auto')
-            .style('display', 'flex')
-            .style('flex-wrap', 'wrap')
-            .style('justify-content', 'center')
-            .selectAll('li')
-            .data(categories)
-            .enter()
-            .append('li')
-            .style('margin', '0 1em')
-            .style('display', 'flex')
-            .style('align-items', 'center');
+            path.transition()
+                .duration(animationHalfDurMS)
+                .ease(d3.easeLinear)
+                .attr('stroke-dashoffset', 0); // Animate the offset to 0
 
-        legend.append('span')
-            .style('display', 'inline-block')
-            .style('width', '12px')
-            .style('height', '12px')
-            .style('margin-right', '8px')
-            .style('border', '1px solid #4f5152')
-            .style('background-color', d => color(d));
+            // Add a label for the baseline
+            svg.append('text')
+                .attr('x', x(iBoughtAverages[iBoughtAverages.length - 1].year)) // Position to the right of the last point
+                .attr('y', y(0)) // Align with the y=0 line
+                .attr('dy', '0.35em')
+                .attr('fill', '#000000') // Black text
+                .style('font-family', 'Roboto, sans-serif')
+                .style('font-size', '14px')
+                .style('font-weight', 'bold')
+                .text('Overall Baseline');
+        }
 
-        legend.append('span')
-            .text(d => d);
+        // Draw lines with animation
+        function animateLines() {
+            nested.forEach(([category, values]) => {
+                const path = svg.append('path')
+                    .datum(values.sort((a, b) => a.year - b.year))
+                    .attr('fill', 'none')
+                    .attr('stroke', color(category))
+                    .attr('stroke-width', 3)
+                    .attr('d', line)
+                    .attr('stroke-dasharray', function () {
+                        const length = this.getTotalLength();
+                        return `${length} ${length}`;
+                    })
+                    .attr('stroke-dashoffset', function () {
+                        return this.getTotalLength();
+                    });
+
+                // Animate the line drawing
+                path.transition()
+                    .duration(animationHalfDurMS)
+                    .ease(d3.easeLinear)
+                    .attr('stroke-dashoffset', 0);
+
+                // Add a label that moves with the line
+                const label = svg.append('text')
+                    .attr('fill', color(category))
+                    .style('font-family', 'Roboto, sans-serif')
+                    .style('font-size', '14px')
+                    .style('font-weight', 'bold')
+                    .text(category);
+
+                // Animate the label to follow the line
+                label.transition()
+                    .duration(animationHalfDurMS)
+                    .ease(d3.easeLinear)
+                    .tween('textPosition', function () {
+                        const pathLength = path.node().getTotalLength();
+                        return function (t) {
+                            const point = path.node().getPointAtLength(t * pathLength);
+                            label.attr('x', point.x).attr('y', point.y + (category === 'N/A' ? 20 : 0)); // Adjust "N/A" label
+                        };
+                    });
+            });
+        }
+
+        // Use IntersectionObserver to trigger animations
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    isGraphVisible = true;
+                    animateBaseline(); // Animate baseline first
+                    setTimeout(animateLines, 2000); // Delay original lines until baseline finishes
+                    observer.disconnect(); // Stop observing after animation starts
+                }
+            },
+            { threshold: 0.5 } // Trigger when 50% of the chart is visible
+        );
+
+        observer.observe(container);
     });
 </script>
 
@@ -146,6 +230,8 @@
         max-width: 900px;
         margin: 3em auto 0;
         text-align: center;
+        position: sticky;
+        top: 0;
     }
 
     .chart-title {
@@ -157,29 +243,6 @@
         margin-bottom: 2em;
         font-size: 1.2rem;
         line-height: 1.5;
-    }
-
-    #legend ul {
-        list-style: none;
-        padding: 0;
-        margin: 2em auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    #legend li {
-        margin: 0 1em;
-        display: flex;
-        align-items: center;
-    }
-
-    #legend span {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        margin-right: 8px;
-        border: 1px solid #4f5152;
     }
 </style>
 
@@ -195,16 +258,7 @@
     </div>
     <div id="chart-wrapper" class="chart-wrapper">
         <div id="chart-tooltip" class="dialogue-box"></div>
-        <h2 class="chart-title">Average Zestimate Trends by HOLC District</h2>
+        <h2 class="chart-title">Difference from Average Zestimate by HOLC District</h2>
         <div id="zestimate-chart" style="width:100%; height:500px;"></div>
-        <div id="legend"></div>
     </div>
 </div>
-
-<br>
-<div class="chart-text">
-    <p>
-        Notice how the Zestimate trajectories for each HOLC district category remain largely separate over time—<b>they rarely cross</b>. This persistent separation reveals something important: historic boundaries continue to define perceived value even today. Despite decades passing, market perceptions of neighborhoods remain anchored in old distinctions.
-    </p>
-</div>
-<br><br>
