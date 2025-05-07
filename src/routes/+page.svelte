@@ -356,10 +356,10 @@
 
         await new Promise(resolve => map.on("load", resolve));
         
-        map.addSource("redlining_data", {
-            type: "geojson",
-            data: localData
-        });
+        // map.addSource("redlining_data", {
+        //     type: "geojson",
+        //     data: localData
+        // });
 
         // Homes for Swiping Between Maps
         homesSwipe = await d3.csv(`${base}/data/mass_records.csv`, row => ({
@@ -473,9 +473,9 @@
             <EverythingIsGettingExpensive />
             <FairPrices 
                 {timeScale} 
-                {valueScale} 
+                {popupHome} 
                 {timeIndex} 
-                {homes} 
+                {map} 
                 {getHomes} 
                 {radiusScale} 
                 {mapViewChanged} 
