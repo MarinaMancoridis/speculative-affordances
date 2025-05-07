@@ -329,6 +329,7 @@ p {
 	display: none !important;
   }
 
+
 /* remove the second pointer‑events: none you had here */
 
 .scroll-indicator span,
@@ -711,7 +712,7 @@ img.outline {
 	z-index: 10;            /* above the page content */
 	max-width: 900px;
 	margin: 3em auto 0;    /* normal centering */
-	position: relative;     /* default */
+	overflow: visible;
 }
 
 
@@ -780,8 +781,16 @@ img.outline {
 	color: #644E8F;
 }
 
+.scrolly-step,
+#sticky-container,
+#chart-wrapper {
+  overflow: visible !important;
+}
+
 .dialogue-box {
-	position: absolute;
+	position: fixed !important;
+	z-index: 10000;
+	overflow: visible;
 	background: #ffffff;
 	color: #333333;
 	font-size: 1.2rem;
@@ -796,7 +805,6 @@ img.outline {
 	display: none;              /* hidden until needed */
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	transition: opacity 0.2s ease;
-	z-index: 1000;              /* float above everything */
 	text-align: left;
 }
 

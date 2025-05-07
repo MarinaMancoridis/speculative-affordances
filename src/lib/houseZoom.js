@@ -1,5 +1,5 @@
-export const zoomInStart = 0.18;
-export const zoomPeak    = 0.215;
+export const zoomInStart = 0.170;
+export const zoomPeak    = 0.205;
 export const zoomOutEnd  = 0.30;
 
 export function getZoomParams(pageProgress) {

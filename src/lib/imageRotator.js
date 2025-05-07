@@ -2,25 +2,25 @@
 import { readable } from 'svelte/store';
 
 // ① import all nine images here
-import hand1 from "../data/hand1.jpg";
-import hand2 from "../data/hand2.jpg";
-import hand3 from "../data/hand3.jpg";
-import hand4 from "../data/hand4.jpg";
-import hand5 from "../data/hand5.jpg";
-import hand6 from "../data/hand6.jpg";
-import hand7 from "../data/hand7.jpg";
-import hand8 from "../data/hand8.jpg";
-import hand9 from "../data/hand9.jpg";
-import hand10 from "../data/hand10.jpg";
-import hand11 from "../data/hand11.jpg";
-import hand12 from "../data/hand12.jpg";
-import hand13 from "../data/hand13.jpg";
-import hand14 from "../data/hand14.jpg";
-import hand15 from "../data/hand15.jpg";
-import hand16 from "../data/hand16.jpg";
-import hand17 from "../data/hand17.jpg";
-import hand18 from "../data/hand18.jpg";
-import hand19 from "../data/hand19.jpg";
+import hand1 from "../data/claw1-fs8.png";
+import hand2 from "../data/claw2-fs8.png";
+import hand3 from "../data/claw3-fs8.png";
+import hand4 from "../data/claw4-fs8.png";
+import hand5 from "../data/claw5-fs8.png";
+import hand6 from "../data/claw6-fs8.png";
+import hand7 from "../data/claw7-fs8.png";
+import hand8 from "../data/claw88-fs8.png";
+import hand9 from "../data/claw99-fs8.png";
+import hand10 from "../data/claw10-fs8.png";
+import hand11 from "../data/claw11-fs8.png";
+import hand12 from "../data/claw12-fs8.png";
+import hand13 from "../data/claw13-fs8.png";
+import hand14 from "../data/claw14-fs8.png";
+import hand15 from "../data/claw15-fs8.png";
+import hand16 from "../data/claw16-fs8.png";
+import hand17 from "../data/claw17-fs8.png";
+import hand18 from "../data/claw18-fs8.png";
+import hand19 from "../data/claw19-fs8.png";
 
 
 // ② put them in an array
