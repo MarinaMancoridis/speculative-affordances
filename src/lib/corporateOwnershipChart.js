@@ -39,7 +39,7 @@ export async function renderCorporateOwnershipChart(
         2014: "Opendoor releases their “iBuyer” model. This model used algorithms to make near-instant, cash offers for home. This formally launched its platform as a direct buyer of homes [4].",
         2015: "Collectively, institutional investors owned 170,000 to 300,000 homes [1].",
         2017: "Zillow piloted its “instant offers” program in Orlando and Las Vegas, giving sellers the ability to compare cash bids from select investors with local agent market appraisals [2].",
-        2018: "Zillow shifted from facilitating offers to purchasing homes outright, directly competing with Opendoor; its first acquisition was a four-bedroom bungalow in Arizona, and by quarter’s end it had bought 19 Phoenix-area properties [2].",
+        2018: "Zillow began purchasing homes outright; its first acquisition was a four-bedroom bungalow in Arizona, and by quarter’s end it had bought 19 Phoenix-area properties [2].",
         2020: "Operating in 25 markets, Zillow drew criticism by hiring full-time, salaried agents for its iBuying arm—an initiative Zillow argued improved user experience, but many U.S. realtors viewed as an aggressive market incursion [2].",
         2022: "The FTC charged Opendoor with misleading homeowners by promising they would receive true market value for their homes [3].",
         2024: "Following the FTC investigation, nearly 62 million dollars in refunds were issued to sellers who had been misled by Opendoor Labs’ online listing service [3]."
@@ -47,6 +47,26 @@ export async function renderCorporateOwnershipChart(
 
     // check chart container
     const container = document.getElementById("corp-own-chart");
+    // make sure tooltip is in the chart container, positioned absolutely
+    const tooltip   = document.getElementById(tooltipId);
+    Object.assign(tooltip.style, {
+        position:      'absolute',
+        pointerEvents: 'none',
+        display:       'none',
+        width:         '240px',
+        height:        'auto',
+        maxWidth:      '240px',       // wrap no wider than this
+        padding:       '8px',
+        boxSizing:     'border-box',
+        whiteSpace:    'normal',      // allow wrapping
+        wordWrap:      'break-word',
+        zIndex:        10000,
+        transform:     'translate(0, -100%)'  
+        // ↓ no horizontal shift, just shift UP by own height
+      });
+    
+
+
     console.log("chart container exists?", !!container, container);
     
     if (!container) {
@@ -219,14 +239,68 @@ export async function renderCorporateOwnershipChart(
         accumulated += e.deltaY;      // positive when user scrolls down
         drawFromDelta(accumulated);
       }
+
+      function updateTooltip(prog) {
+        if (prog <= 0 || prog >= 1) {
+          tooltip.style.display = 'none';
+          return;
+        }
+      
+        const pt = path.node().getPointAtLength(prog * L);
+        const xLocal = pt.x + margin.left;
+        const yLocal = pt.y + margin.top;
+      
+        const year = Math.round(x.invert(pt.x));
+        const desc = descriptions[year];
+        if (!desc) {
+          tooltip.style.display = 'none';
+          return;
+        }
+      
+        tooltip.innerText     = desc;
+        tooltip.style.display = 'block';
+      
+        // position at the raw point
+        tooltip.style.left = `${xLocal + 10}px`;
+        tooltip.style.top  = `${yLocal + 50}px`;
+      
+        // choose anchor based on year
+        // if (year >= 2020) {
+        //   // bottom-left: put tooltip below the point, left edge aligned
+        //   tooltip.style.transform = 'translate(0, 0)';
+        //   // if you want it slightly below: uncomment next line
+        //   // tooltip.style.top = `${yLocal + 8}px`;
+        // } else {
+        //   // top-right: put tooltip above the point, right edge aligned
+        //   tooltip.style.transform = 'translate(-100%, -100%)';
+        //   // if you want it slightly above/left: tweak with +/- px here
+        // }
+      
+        // clamp to wrapper bounds if necessary
+        const wrapperWidth = wrapper.clientWidth;
+        const ttRightEdge = xLocal + tooltip.offsetWidth * (year < 2020 ? -1 : 1);
+        // if (year < 2020) {
+        //     // if top-right would overflow left, force bottom-left
+        //     tooltip.style.left = `${xLocal + 10}px`;
+        //     tooltip.style.top     = `${yLocal + 50}px`;
+        // // } else if (year >= 2020) {
+        // //   tooltip.style.transform = 'translate(-150%, 0)';
+        // }
+      }
+      
+      
+      
+      
       
       function drawFromDelta(deltaY) {
         // compute prog ∈ [0,1]
         const prog = clamp01(deltaY / (window.innerHeight * scrollSensitivity));
         path.attr('stroke-dashoffset', L * (1 - prog));
       
-        // your existing tooltip logic …
-        // …
+        // ========== Tooltip logic ===============
+        const tooltip = document.getElementById(tooltipId);
+        updateTooltip(prog);
+        // =========================================
         
         if (prog >= 1) {
             finishDrawing();
@@ -269,6 +343,8 @@ export async function renderCorporateOwnershipChart(
         wrapper.style.zIndex    = '';
       
         document.body.style.overflow = '';
+
+        tooltip.style.display = 'none';
       
         // adjust scroll so you’re not hiding next section under the chart
         const h = wrapper.getBoundingClientRect().height;
