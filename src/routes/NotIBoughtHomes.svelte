@@ -114,8 +114,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        max-width: 800px;
-        margin: 2rem auto;
+        max-width: 1000px;
+        margin: 0rem auto;
         padding: 1rem;
         border-radius: 8px;
         background-color: #f9f9f9;
