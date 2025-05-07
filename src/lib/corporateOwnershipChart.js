@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 
+ 
 export async function renderCorporateOwnershipChart(
     base,       // your Svelte `base` path
     chartId,    // e.g. "corp-own-chart"
@@ -147,11 +148,48 @@ export async function renderCorporateOwnershipChart(
     let drawingActive = false;
     const stickObserver = new IntersectionObserver(
         ([entry]) => {
-            if (entry.intersectionRatio === 1 && !drawingActive) {
-                stickyContainer.classList.add('sticky');
+            console.log("ratio:", entry.intersectionRatio, "isIntersecting:", entry.isIntersecting);
+            if (entry.intersectionRatio >= 1 && !drawingActive) {
+                console.log("🚀 Sticking wrapper now");
+                wrapper.classList.add('fixed');
+                disableNativeScroll();
+
+                const marginBottom = margin.bottom; // from your chart code, e.g. 100
+
+                // grab original wrapper bounds & computed margins
+                const rect = wrapper.getBoundingClientRect();
+                const cs   = getComputedStyle(wrapper);
+                const marginTop = parseFloat(cs.marginTop);
+                const marginBot = parseFloat(cs.marginBottom);
+
+                // create the placeholder
+                const placeholder = document.createElement('div');
+                placeholder.className = 'chart-placeholder';
+                placeholder.style.height = `${rect.height}px`;
+                placeholder.style.marginTop    = `${marginTop}px`;
+                placeholder.style.marginBottom = `${marginBot}px`;
+
+                // stick it into the DOM right before your wrapper
+                wrapper.parentNode.insertBefore(placeholder, wrapper);
+
+                // now fix your wrapper in place…
+                Object.assign(wrapper.style, {
+                position:  'fixed',
+                top:       `${Math.max(0, rect.top - marginTop)}px`,
+                left:      '50%',
+                transform: 'translateX(-50%)',
+                width:     `${rect.width}px`,
+                height:    `${rect.height}px`,
+                overflow:  'visible',
+                background:'white',
+                zIndex:    999
+                });
+
+                // 4) lock page scroll & start your wheel/touch animation
+                document.body.style.overflow = 'hidden';
+                startDrawing();
                 drawingActive = true;
                 startScrollY = window.scrollY;
-                window.addEventListener('scroll', drawOnScroll, { passive: true });
                 stickObserver.disconnect();
             }
         },
@@ -166,6 +204,77 @@ export async function renderCorporateOwnershipChart(
     }
     let startScrollY = window.scrollY;
     const maxScrollDelta = window.innerHeight;
+
+    function disableNativeScroll() {
+        document.body.style.overflow = 'hidden';
+      }
+      function enableNativeScroll() {
+        document.body.style.overflow = '';
+      }
+      let accumulated = 0;
+      const scrollSensitivity = 3;  // bigger = slower
+      
+      function onWheel(e) {
+        e.preventDefault();           // STOP the page from moving
+        accumulated += e.deltaY;      // positive when user scrolls down
+        drawFromDelta(accumulated);
+      }
+      
+      function drawFromDelta(deltaY) {
+        // compute prog ∈ [0,1]
+        const prog = clamp01(deltaY / (window.innerHeight * scrollSensitivity));
+        path.attr('stroke-dashoffset', L * (1 - prog));
+      
+        // your existing tooltip logic …
+        // …
+        
+        if (prog >= 1) {
+            finishDrawing();
+
+            // remove your fixed‐position styles:
+            wrapper.removeAttribute('style');
+
+            // restore normal scrolling
+            document.body.style.overflow = '';
+        }
+      }
+      
+      function startDrawing() {
+        drawingActive = true;
+        document.body.classList.add('drawing');
+        accumulated = 0;
+        window.addEventListener('wheel', onWheel, { passive: false });
+      }
+      
+      function finishDrawing() {
+        drawingActive = false;
+        window.removeEventListener('wheel', onWheel);
+        wrapper.classList.remove('fixed');
+        enableNativeScroll();
+        document.body.classList.remove('drawing');
+
+        // remove exactly that placeholder
+        const placeholder = document.querySelector('.chart-placeholder');
+        if (placeholder) placeholder.remove();
+
+
+        wrapper.style.position  = '';
+        wrapper.style.top       = '';
+        wrapper.style.left      = '';
+        wrapper.style.transform = '';
+        wrapper.style.width     = '';
+        wrapper.style.height    = '';
+        wrapper.style.overflow  = '';
+        wrapper.style.background= '';
+        wrapper.style.zIndex    = '';
+      
+        document.body.style.overflow = '';
+      
+        // adjust scroll so you’re not hiding next section under the chart
+        const h = wrapper.getBoundingClientRect().height;
+        window.scrollBy(0, 0);
+      }
+
 
     function drawOnScroll() {
         if (!drawingActive) return;
@@ -183,11 +292,15 @@ export async function renderCorporateOwnershipChart(
 
             // 2) position tooltip (accounting for margins)
             const svgContainer = document.getElementById('corp-own-chart');
-            const { top: svgTop, left: svgLeft } = svgContainer.getBoundingClientRect();
-            const { top: parentTop, left: parentLeft } = stickyContainer.getBoundingClientRect();
 
-            tooltip.style.left = `${parentLeft + (svgLeft - parentLeft) + pt.x + margin.left}px`;
-            tooltip.style.top  = `${parentTop + (svgTop - parentTop) + pt.y + margin.top}px`;
+
+            const svgRect = document
+            .getElementById("corp-own-chart")
+            .getBoundingClientRect();
+
+            // NO extra + margin here!
+            tooltip.style.left = `${svgRect.left + pt.x}px`;
+            tooltip.style.top  = `${svgRect.top  + pt.y}px`;
 
             // 3) pick the nearest year
             const bisect = d3.bisector(d => d.year).left;
@@ -208,19 +321,19 @@ export async function renderCorporateOwnershipChart(
 
         if (prog >= 1) {
             drawingActive = false;
-            window.removeEventListener('scroll', drawOnScroll);
-            stickyContainer.classList.remove('sticky');
             const h = stickyContainer.getBoundingClientRect().height;
-            window.scrollBy(0, -h);
+            window.removeEventListener('scroll', drawOnScroll);
+            wrapper.classList.remove('fixed');
+            unlockPageScroll();
+
+            const rect = wrapper.getBoundingClientRect();
+            window.scrollBy(0, -rect.height);
         }
     }
 
-    // in case you’re already scrolled past when mounting
-    drawOnScroll();
 
 
-
-    window.addEventListener('scroll', drawOnScroll, { passive: true });
+    // window.addEventListener('scroll', drawOnScroll, { passive: true });
     // one initial draw in case you’re already half-way scrolled:
     drawOnScroll();
 }

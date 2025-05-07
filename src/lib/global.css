@@ -320,9 +320,14 @@ p {
 	background: rgb(175, 168, 168);
   }
 
-.post-chart {
-	font-size:1.0em;
-}
+	#post-chart {
+		display: block;
+	}
+  
+  /* while drawing, hide it completely */
+  body.drawing #sticky-container ~ * {
+	display: none !important;
+  }
 
 /* remove the second pointer‑events: none you had here */
 
@@ -700,22 +705,15 @@ img.outline {
 	margin: 0 0 0.5rem;
 }
 
-/* the container we’ll flip on/off */
-#sticky-container {
+#chart-wrapper {
 	position: relative;
+	background: white;      /* so nothing behind shows through */
+	z-index: 10;            /* above the page content */
+	max-width: 900px;
+	margin: 3em auto 0;    /* normal centering */
+	position: relative;     /* default */
 }
 
-#sticky-container.sticky {
-	position: sticky;
-	top: 0;
-	width: 100%;
-	background: white;
-	transition: position 0.3s ease-out;
-	height: 200vh;  /* Adjust if you want the sticky container to take less height */
-    overflow-y: auto; /* Prevents content from spilling under */
-    background-color: white; /* Ensure it's opaque so text doesn't show through */
-    z-index: 100; /* Keep it on top */
-}
 
 .home-selection {
 	display: flex;
@@ -833,3 +831,24 @@ img.outline {
     text-align: left;
     max-width: 300px; /* Adjust width as needed */
 }
+
+#data-collection {
+    display: flex;
+    align-items: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 2em;
+  }
+  #stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+  }
+  .counter {
+    font-size: 1.5em;
+  }
+  .unit {
+    font-size: 0.4em;
+  }
