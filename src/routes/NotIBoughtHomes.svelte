@@ -8,7 +8,7 @@
 
     const initialHomeAddresses = [
         "2 Front Street, Natick, MA 01760-6019, USA", 
-        "37 Halliday Street, Boston, MA 02131-2210, USA", 
+        "181 Sycamore Street, Boston, MA 02131-2634, USA", 
         "15 Fensmere Road, Boston, MA 02132-6011, USA"
     ];
     const numberHomes = 3;
