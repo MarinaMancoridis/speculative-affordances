@@ -41,6 +41,8 @@
     import RedliningMap from "./redlining.svelte";
     import FairPrices from "./fairprices.svelte";
     import TitlePage from "./titlepage.svelte";
+    import PastPresent from "./pastPresent.svelte";
+    import Background from "./background.svelte";
 
     // Zestimate helpers
     import {
@@ -117,7 +119,6 @@
     import opendoorlogo from "./../data/opendoor.png";
     import zillowlogo from "./../data/zillow.png";
     import offerpadlogo from "./../data/offerpad.png";
-    import PastPresent from "./pastPresent.svelte";
     
 
     const baseOriginals = [
@@ -463,9 +464,10 @@
 
                 <NotIBoughtHomes {homes} />
                 
-                <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
+                 <!-- <PastPresent/> -->
+                 <Background/>
 
-                <!-- <PastPresent/> -->
+                <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 
             <EverythingIsGettingExpensive />
 
