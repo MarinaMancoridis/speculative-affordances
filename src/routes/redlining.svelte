@@ -2,6 +2,16 @@
     export let mapViewChangedSwipe;
     export let homesSwipe;
     export let getHomesSwipe;
+
+    // count per color
+    // $: colorCounts = homesSwipe.reduce((acc, home) => {
+    //     const color = home.color;
+    //     if (!acc[color]) {
+    //     acc[color] = 0;
+    //     }
+    //     acc[color]++;
+    //     return acc;
+    // }, {});
 </script>
 
 <h1 id="redlining" style="text-align: center;">🏠 iBought Homes Contexutalized with Historically Redlined Districts 🏠</h1>    
@@ -30,7 +40,7 @@
         <svg>
             {#key mapViewChangedSwipe}
                 {#each homesSwipe as homeSwipe}
-                    <circle { ...getHomesSwipe(homeSwipe) } r="12" fill={homeSwipe.fill} fill-opacity="100%" stroke="black" stroke-opacity="60%">
+                    <circle { ...getHomesSwipe(homeSwipe) } r="12" fill={homeSwipe.color} fill-opacity="50%" stroke="black" stroke-width="3px" stroke-opacity="60%">
                     </circle> 
                     <text
                         x={getHomesSwipe(homeSwipe).cx}
@@ -75,13 +85,28 @@
             <li><span style="display: inline-block; width: 12px; height: 12px;
                             background-color: #fff; border: 1px solid #4f5152; 
                             border-radius: 0%; margin-right: 8px;"></span>Not on Historic Maps</li>
+            <br>
+            <li><span style="margin-right: 8px;">🏠</span>iBought Home</li>
             
             <br>
-            <label for="slider"><b>Redlining Map Opacity:</b></label>
+            <label for="slider"><b>Redlining Map Opacity: </b></label>
             <input id="slider" type="range" min="0" max="75" step="1" value="50">
         </div>
     </div>
 </div>
 <div style="max-width: 800px; margin: 0 auto; text-align: left;">
-<p>We find that iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous</span></b> and <b><span style="color: goldenrod">definitely declining areas</span></b>, suggesting long‑lasting effects of historical redlining.<br><br><br>
+<p>We find that iBought homes tend to be in areas that were historically redlined as <b><span style="color: #d9838d;">hazardous (30 homes)</span></b> and <b><span style="color: goldenrod">definitely declining areas (77 homes)</span></b>, 
+        as opposed to  <b><span style="color: #76a865;">best (3 homes)</span></b> and  <b><span style="color: #74c3e3;">still desirable (22 homes)</span></b>.<br><br><br>
 </p></div>
+
+<!-- <div>
+    <h3>🏠 iBought Homes by Color</h3>
+    <ul>
+      {#each Object.entries(colorCounts) as [color, count]}
+        <li>
+          <span style="display: inline-block; width: 12px; height: 12px; background-color: {color}; margin-right: 8px;"></span>
+          {count} home(s)
+        </li>
+      {/each}
+    </ul>
+  </div> --> 

@@ -18,6 +18,7 @@
     import * as d3 from "d3";
     import "../../node_modules/mapbox-gl/dist/mapbox-gl.css";
     import { onMount, tick } from "svelte";
+    import localData from "./../data/mapping_inequality_redlining.json";
     import { base } from '$app/paths';
     import Scrolly from "svelte-scrolly";
     import popupHome from "$lib/popup.js";
@@ -116,6 +117,7 @@
     import opendoorlogo from "./../data/opendoor.png";
     import zillowlogo from "./../data/zillow.png";
     import offerpadlogo from "./../data/offerpad.png";
+    import PastPresent from "./pastPresent.svelte";
     
 
     const baseOriginals = [
@@ -189,15 +191,15 @@
     // map and data states
     mapboxgl.accessToken = "pk.eyJ1IjoibWFyaW5hLW1hbmNvcmlkaXMiLCJhIjoiY205NXBjZmx3MWNkZjJzcHc0dDVlYXFodCJ9.mS5MAGr-YmpGput97-3htA";
     let homes = [];
+    let homesSwipe = [];
     let zillowData = [];
     let map = null;
+    let mapSwipe = null;
     let mapViewChanged = 0;
+    let mapViewChangedSwipe = 0;
     let timeScale = [0, 0];
     let valueScale = [0, 0];
     let timeIndex = 0;
-    let homesSwipe = [];
-    let mapSwipe = null;
-    let mapViewChangedSwipe = 0;
     
     function getHomes (home) {
         let point = new mapboxgl.LngLat(+home.Longitude, +home.Latitude);
@@ -295,7 +297,7 @@
                 }
                 
                 // color fill for redlining
-                item.color = calculateAddressColor(item);
+                // item.color = calculateAddressColor(item);
 
                 // color fill for fair prices 
                 item.color = calculateFairPrice(item);
@@ -349,7 +351,13 @@
         });
 
         await new Promise(resolve => map.on("load", resolve));
+        
+        // map.addSource("redlining_data", {
+        //     type: "geojson",
+        //     data: localData
+        // });
 
+        // Homes for Swiping Between Maps
         homesSwipe = await d3.csv(`${base}/data/mass_records.csv`, row => ({
             ...row,
             Latitude: Number(row.Latitude), 
@@ -358,7 +366,14 @@
             Name: String(row.Name)
         }));
 
-        // Homes for Swiping Between Maps
+        // Fill Color
+         homesSwipe = homesSwipe.map(itemSwipe => {
+            if (zillowData[itemSwipe.Address]) {
+                itemSwipe.color = calculateAddressColor(itemSwipe);
+            }
+            return itemSwipe;
+        });
+
          mapSwipe = new mapboxgl.Map({
             container: 'mapSwipe', // HTML element ID
             style: 'mapbox://styles/marina-mancoridis/cm95pzaws009901qt26z24os9',
@@ -412,6 +427,9 @@
     {scrollToExplore}
 />
 
+
+
+
 <div class="content-section">
     <div class="grid-container">
 
@@ -447,7 +465,10 @@
                 
                 <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 
+                <!-- <PastPresent/> -->
+
             <EverythingIsGettingExpensive />
+
             <FairPrices 
                 {timeScale} 
                 {popupHome} 
