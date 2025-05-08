@@ -14,12 +14,13 @@
             'Still Desirable': '#74c3e3',
             'Definitely Declining': '#ffd700',
             'Hazardous': '#d9838d',
-            'Industrial': '#000000',
-            'Commercial': '#000000',
+            'Industrial': '#777777',
+            'Commercial': '#777777',
             'N/A': '#808080'
         };
 
-        const categories = Object.keys(raw);
+        const categories = Object.keys(raw)
+            .filter(c => c !== "N/A");
         const color = d3.scaleOrdinal()
             .domain(categories)
             .range(categories.map(c => colorMap[c]));
@@ -260,5 +261,10 @@
         <div id="chart-tooltip" class="dialogue-box"></div>
         <h2 class="chart-title">Difference from Average Zestimate by HOLC District</h2>
         <div id="zestimate-chart" style="width:100%; height:500px;"></div>
+    </div>
+    <div class="chart-text">
+        <p>
+            This graph highlights the lingering effects of historical HOLC redlining practices. Neighborhoods that were historically labeled as "Hazardous" or "Definitely Declining" still show lower average Zestimates compared to those categorized as "Best" or "Still Desirable." This suggests that the historical harms created by redlining continue to persist, influencing property values even today.
+        </p>
     </div>
 </div>
