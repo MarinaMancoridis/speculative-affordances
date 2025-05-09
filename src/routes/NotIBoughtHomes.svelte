@@ -8,15 +8,37 @@
 
     const initialHomeAddresses = [
         "2 Front Street, Natick, MA 01760-6019, USA", 
-        "37 Halliday Street, Boston, MA 02131-2210, USA", 
+        "181 Sycamore Street, Boston, MA 02131-2634, USA", 
         "15 Fensmere Road, Boston, MA 02132-6011, USA"
     ];
     const numberHomes = 3;
+
+    function isValidHouse(home) {
+        return home.photoURL != null 
+            && home.yearBuilt != null
+            && home.price != null
+            ;
+    }
     
 
     function getRandomHomes(homes, count) {
-        const shuffled = [...homes].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        while (attempts < maxAttempts) {
+            const shuffled = [...homes].sort(() => 0.5 - Math.random());
+            const selectedHomes = shuffled.slice(0, count);
+
+            if (selectedHomes.every(home => isValidHouse(home))) {
+                return selectedHomes;
+            }
+
+            attempts++;
+        }
+
+        console.log("return to default")
+        // default back to good ole initialHomeAddressess
+        return initialHomeAddresses;
     }
 
     function resetGame() {
@@ -29,6 +51,7 @@
             notiBoughtHomes = homes.filter(home => 
                 initialHomeAddresses.includes(home.Address)
             );
+            console.log(homes);
         } else {
             notiBoughtHomes = getRandomHomes(homes, numberHomes);
         }
@@ -54,11 +77,11 @@
         justify-content: center;
         gap: 1rem;
         margin-top: 1rem;
+        margin: auto 12rem;
     }
 
     .home-card-wrapper {
         position: relative;
-        width: 200px;
         border-radius: 8px; /* Rounded corners for the wrapper */
         overflow: hidden; /* Ensure the overlay matches the image corners */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a clean look */
@@ -74,6 +97,7 @@
 
     .home-card img {
         width: 100%;
+        object-fit: cover;
         border-radius: 8px; /* Rounded corners for the image */
         transition: filter 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
     }
@@ -115,15 +139,16 @@
         align-items: center;
         justify-content: space-between;
         max-width: 1000px;
-        margin: 0rem auto;
-        padding: 1rem;
+        margin: 1rem auto;
+        padding: 1.5rem;
         border-radius: 8px;
         background-color: #f9f9f9;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        gap: 1.5rem;
     }
 
     .final-message p {
-        flex: 0 0 80%; 
+        flex: 1; 
         margin: 0;
         text-align: left;
     }
