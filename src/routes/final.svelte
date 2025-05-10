@@ -18,13 +18,15 @@
     <li> <b>Advocate</b> for protections against automated speculation practices.</li>
     </ul>
 </div>
+</div>
 
-<div id="acks">
+<div id="acks" class="info-grid">
     <h3>Acknowledgements</h3>
     <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
 </div>
 
-<div id="references">
+<br><br>
+<div id="references" class="info-grid">
     <h3>References</h3>
     <ul>
     <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
@@ -35,5 +37,4 @@
     <li> [6] <a class="ref" href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract">https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract></li>
     <li> [7] <a class="ref" href="https://link.springer.com/article/10.1007/s11146-023-09954-z">https://link.springer.com/article/10.1007/s11146-023-09954-z</a></li>
     </ul>
-</div>
 </div>
