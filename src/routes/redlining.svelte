@@ -40,12 +40,12 @@
         <svg>
             {#key mapViewChangedSwipe}
                 {#each homesSwipe as homeSwipe}
-                    <circle { ...getHomesSwipe(homeSwipe) } r="12" fill={homeSwipe.color} fill-opacity="50%" stroke="black" stroke-width="3px" stroke-opacity="60%">
+                    <circle { ...getHomesSwipe(homeSwipe) } r="10" fill={homeSwipe.color} fill-opacity="50%" stroke="black" stroke-width="2px" stroke-opacity="60%">
                     </circle> 
                     <text
                         x={getHomesSwipe(homeSwipe).cx}
                         y={getHomesSwipe(homeSwipe).cy}
-                        font-size="12"
+                        font-size="10"
                         text-anchor="middle"
                         dominant-baseline="middle"
                     > 🏠 </text>
