@@ -465,7 +465,7 @@
                 <NotIBoughtHomes {homes} />
                 
                  <!-- <PastPresent/> -->
-                 <Background/>
+                 <Background {homes}/>
 
                 <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 

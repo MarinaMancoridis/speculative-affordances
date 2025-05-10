@@ -32,6 +32,8 @@
     <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
     <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
     <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
+    <li> [6] <a class="ref" href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract">https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract></li>
+    <li> [7] <a class="ref" href="https://link.springer.com/article/10.1007/s11146-023-09954-z">https://link.springer.com/article/10.1007/s11146-023-09954-z</a></li>
     </ul>
 </div>
 </div>
