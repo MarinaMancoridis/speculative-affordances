@@ -312,6 +312,7 @@
                 item.livingAreaValue = zillowData[item.Address].livingAreaValue;
                 item.yearBuilt = zillowData[item.Address].yearBuilt;
                 item.photoURL = zillowData[item.Address].responsivePhotos[0]["mixedSources"]["jpeg"].at(-1)["url"];
+                item.popupURL = zillowData[item.Address].responsivePhotos[0].url
             }
             return item;
         });
