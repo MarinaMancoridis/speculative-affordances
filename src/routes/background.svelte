@@ -126,11 +126,11 @@
           with an average loss of around $11,311, comparing the home's selling price to its Zestimate in that year.</p>
           
           <p>We also found that iBuyers targeted affordable housing options in a variety of communities. 
-          Most iBought homes in the Greater Boston area (75%) were less than the U.S. Census median value ($710,400) and 
+          Most iBought homes in the Greater Boston area (75%) were less than the U.S. Census Boston median value ($710,400) and 
           95% were under $1,000,000.</p>
 
       <p>Other work by Wonyoung So [6] found a positive correlation between iBuyer's profit margins and 
-        the proportion of marginalized racial groups within a census tract, and consquently illuminates this potential concern for iBuyers
+        the proportion of marginalized racial groups within a census tract, and consquently illuminates this potential concern of iBuyers
         trying to maximize profits from homeowners in communities of color. 
         These iBuying practices also have the potential to reshape who owns property.
         Since iBuyers are more likely to sell to institutional investors [5] and increase home prices [7], 
