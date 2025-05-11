@@ -28,7 +28,7 @@
     </div>
   
     <div class="title-text">
-      <h1>AUTOMATION AND SPECULATION</h1>
+      <h1>iBuying: Automated Speculation</h1>
       <p class="typewriter-line" id="typewriter"></p>
       <p>
         <b>Speculative Affordances, Final Project:</b>
