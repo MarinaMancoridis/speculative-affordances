@@ -8,7 +8,7 @@
 
     const initialHomeAddresses = [
         "2 Front Street, Natick, MA 01760-6019, USA", 
-        "181 Sycamore Street, Boston, MA 02131-2634, USA", 
+        "17 Lakeshore Drive, Hopkinton, MA 01748-2737, USA", 
         "15 Fensmere Road, Boston, MA 02132-6011, USA"
     ];
     const numberHomes = 3;
@@ -17,6 +17,7 @@
         return home.photoURL != null 
             && home.yearBuilt != null
             && home.price != null
+            && !home.photoURL.includes("googleapis.com")
             ;
     }
     

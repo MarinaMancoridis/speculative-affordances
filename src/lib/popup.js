@@ -143,7 +143,7 @@ export default function popupHome(home, map) {
             </div>
             
             <div class="popup-image">
-                <img src="${data.photoURL}" alt="Property at ${data.StreetNum}" class="property-photo">
+                <img src="${data.popupURL}" alt="Property at ${data.StreetNum}" class="property-photo">
             </div>
             <div class="popup-footer">
             <div class="property-date">Record Date: ${data.Date}</div>
