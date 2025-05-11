@@ -39,7 +39,7 @@
 
         console.log("return to default")
         // default back to good ole initialHomeAddressess
-        return initialHomeAddresses;
+        return homes.filter(home => initialHomeAddresses.includes(home.Address));
     }
 
     function resetGame() {
