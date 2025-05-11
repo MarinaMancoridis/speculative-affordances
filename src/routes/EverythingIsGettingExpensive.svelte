@@ -251,10 +251,11 @@
 <div id="sticky-container">
     <div class="chart-text">
         <p>
+            <b>How do iBuyers assess the value of a home?</b>
             Corporate speculation isn't just about buying individual homes—it's about betting on entire neighborhoods. To measure this broader impact, we look at <b>Zestimates</b>, Zillow's algorithmic estimates of home values, which provide a snapshot of how markets predict a property's worth.
         </p>
         <p>
-            By tracking Zestimates, we're able to see how the perceived value of homes purchased by iBuyers has evolved over time. We contextualize these statistics by analyzing average Zestimate changes for homes across different historical HOLC district categories.
+            By tracking Zestimates, we're able to see how the perceived value of homes purchased by iBuyers has evolved over time. <b>How do home valuations relate to historical measures of discrimination?</b> We contextualize these statistics by analyzing average Zestimate changes for homes across different historical HOLC district categories.
         </p>
     </div>
     <div id="chart-wrapper" class="chart-wrapper">
@@ -264,7 +265,7 @@
     </div>
     <div class="chart-text">
         <p>
-            This graph highlights the lingering effects of historical HOLC redlining practices. Neighborhoods that were historically labeled as "Hazardous" or "Definitely Declining" still show lower average Zestimates compared to those categorized as "Best" or "Still Desirable." This suggests that the historical harms created by redlining continue to persist, influencing property values even today.
+            This graph highlights the lingering effects of historical HOLC redlining practices. Neighborhoods that were historically labeled as <b><span style="color: #d9838d;">hazardous</span></b> or <b><span style="color: goldenrod">definitely declining areas</span></b> still show lower average Zestimates compared to those categorized as <b><span style="color: #76a865;">best</span></b> or <b><span style="color: #74c3e3;">still desirable</span></b>. This suggests that the historical harms created by redlining continue to persist, influencing property values even today.
         </p>
     </div>
 </div>

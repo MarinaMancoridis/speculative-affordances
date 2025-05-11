@@ -173,8 +173,8 @@
 </style>
 
 <h1 style="text-align: center;">Which of these homes are <em>not</em> iBought?</h1>
-<p style="max-width: 800px; margin: 0 auto; text-align: left;">Let's play a quick game: can you spot the homes that weren't snapped up by iBuyers?</p><br> 
-<p style="max-width: 800px; margin: 0 auto; text-align: left;"><b>Click on a house to learn more about it</b>. Behind every house is a story—real people, real communities, real impacts. By engaging with details about <i>actual homes</i>, we hope to ground the abstract concept of iBuying in a real, lived experience. </p>
+<p style="max-width: 800px; margin: 0 auto; text-align: left;">Behind every house is a story—real people, real communities, real impacts. By engaging with details about <i>actual homes</i>, we hope to ground the abstract concept of iBuying in a real, lived experience.</p><br> 
+<p style="max-width: 800px; margin: 0 auto; text-align: left;">To help you see this, <b>let's play a quick game</b>: can you spot the homes that weren't snapped up by iBuyers? <b>Click on a house to learn more about it</b>. </p>
 <br>
 
 <div class="home-selection">

@@ -11,12 +11,11 @@
 
 <h1 style="text-align: center;">🏠 Are iBought Homes Sold for Fair Prices? 🏠</h1>
 <div class="chart-text">
-    <p><b>iBuyers say they purchase homes at fair market prices—but their own data tells another story.</b> In 2022, the FTC charged Opendoor with misleading sellers about receiving full market value, resulting in a $62 million settlement. Yet Opendoor didn’t retreat; instead, it expanded into more than 50 markets, including Boston.</p>
+    <p>We have explored how iBuyers value homes and how these valuations relate to historical measures of discimination. But <b>are the ultimate selling prices of iBought homes <i>fair</i> ?</b> iBuyers <i>say</i> they purchase homes at fair market prices—but their own data tells another story. In 2022, the FTC charged Opendoor with misleading sellers about receiving full market value, resulting in a $62 million settlement. Yet Opendoor didn’t retreat; instead, it expanded into more than 50 markets, including Boston.</p>
     <p><b>Why is a price sold below its Zestimate value "unfair"?</b> The Zestimate represents Zillow’s own estimate of a home’s market value—the price a home could reasonably fetch under normal market conditions. If an iBuyer purchases a home significantly below this estimate, it implies that the seller likely missed out on value they could have realized on the open market. Calling these prices "unfair" captures the idea that sellers, expecting a fair, market-value offer, instead received considerably less—revealing a discrepancy between what’s promised and what's delivered.</p> 
     <!-- <p>This visualization shows the history of iBuying activity and which homes were sold for less than their estimated price.</p> -->
-    <p><b><i>Use the slider</i></b> to see iBuying activity changing by <b>Year</b>, and <b>Zestimate Value</b></p>
-    <p><b><i>Click any circle</i></b> for details about each property.</p>
-    <p><b><i>Move the map</i></b> to explore different parts of the Greater Boston Area.</p>
+    <p><b>To explore this visualization,</b> <i>use the slider</i> to view iBuying activity by year and Zestimate value, <i>click any circle</i> for property details, and <i>move the map</i> to explore different areas of Greater Boston.</p>
+
 </div>
 
 <div class="legend-text-wrapper" style="

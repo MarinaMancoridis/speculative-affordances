@@ -100,8 +100,8 @@
   >
         <br><br><br>
         <div style="font-size: 3em; color: #e63946; text-align: center;">
-            -$<span class="counter" data-target="11311">0</span>
-            <div class="unit">Dollars Lost by Selling to an iBuyer</div>
+            $<span class="counter" data-target="11311">0</span>
+            <div class="unit">Average Dollars Lost by Selling to an iBuyer</div>
             </div>
         
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
