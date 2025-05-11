@@ -207,16 +207,48 @@
 </div>
 
 {#if selectedHouse !== null}
-    <div class="house-details">
-        <h2>This is <em>{selectedHouse.Address}</em></h2>
-        <p>This is an iBought home!</p>
-        <p>
-            Originally built in {selectedHouse.yearBuilt}, it was last sold for <b>{selectedHouse.price ? "$" + selectedHouse.price : (selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "an unknown sale price")}</b>, while its most recent Zestimate is <b>{selectedHouse.zestimate ? "$" + selectedHouse.zestimate : "unknown"}</b>.
-        </p>
-        <p>
-            The home features {selectedHouse.bedrooms || "an unknown number of"} bedrooms and {selectedHouse.bathrooms || "an unknown number of"} bathrooms. It spans {selectedHouse.livingAreaValue} square feet of living area total.
-        </p>
+  <div class="house-details">
+    <p class="description">
+      Below are the details for the selected property:
+    </p>
+
+    <h3 class="house-address">
+      {selectedHouse.Address}
+    </h3>
+
+    <div class="ibought-announcement">
+      This is an iBought Home!
     </div>
+
+    <div class="house-info">
+      <p class="info-item">
+        <strong>Built</strong>: {selectedHouse.yearBuilt}
+      </p>
+      <p class="info-item">
+        <strong>Last Sold</strong>:
+          {selectedHouse.price 
+            ? `$${selectedHouse.price}` 
+            : selectedHouse.zestimate 
+              ? `$${selectedHouse.zestimate}` 
+              : "Unknown"}
+      </p>
+      <p class="info-item">
+        <strong>Zestimate</strong>:
+          {selectedHouse.zestimate 
+            ? `$${selectedHouse.zestimate}` 
+            : "Unknown"}
+      </p>
+      <p class="info-item">
+        <strong>Bedrooms:</strong> {selectedHouse.bedrooms || "—"}
+      </p>
+      <p class="info-item">
+        <strong>Bathrooms:</strong> {selectedHouse.bathrooms || "—"}
+      </p>
+      <p class="info-item">
+        <strong>Living Area:</strong> {selectedHouse.livingAreaValue || "—"} sq ft
+      </p>
+    </div>
+  </div>
 {/if}
 
 {#if allHomesClicked}
