@@ -7,6 +7,7 @@
     <li><b>iBuying is active in the Greater Boston Area</b>, clustering in historically redlined neighborhoods—raising concerns that algorithms might inadvertently reinforce existing inequalities.</li>
     <li><b>The convenience of iBuying comes at a cost</b>. Most homes sell below market-value estimates (<i>Zestimates</i>), subtly transferring wealth from homeowners to corporate speculators.</li>
     <li><b>Transparency is lacking</b>. The full scope of iBuying remains hidden, making its true impact likely larger than current data suggest.</li>
+    <li><b>iBuying disproportionately targets affordable homes and marginalized communities</b>, amplifying historical housing inequities and potentially displacing local residents.</li>
     </ul>
 </div>
 
@@ -50,7 +51,7 @@
         <li> [3] Federal Trade Commission, <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">
             "FTC Sends Nearly $62 Million in Refunds to Sellers Deceived by Online Real Estate Listing Service Opendoor Labs"</a> (April 2024)</li>
         <li> [4] Opendoor, <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">"FAQs"</a> (2025)</li>
-        <li> [5] Isaac Slaughter, Eva Maxfield Brown, and Nic Weber, <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">
+        <li> [5] Isaac Slaughter, Eva Maxfield Brown, and Nic Weber, <a class="ref" href="https://dl.acm.org/doi/abs/10.1145/3630106.3659027">
         "The Impact of iBuying is About More Than Just Racial Disparities: Evidence from Mecklenburg County, NC"</a> (June 2024)</li>
         <li> [6] Wonyoung So, <a class="ref" href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract">
             "Race, profit, and algorithms: Neighborhood-level analysis of iBuyers’ profit margin"</a> (October 2024)</li>

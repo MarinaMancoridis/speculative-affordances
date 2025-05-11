@@ -19,9 +19,9 @@
         <br><br><br><br><br><br><br><br><br>
         <div class="ibuying__sidebar" id="major-players-section">
             <p>
-                Major players—<b>Opendoor, Offerpad, Redfin, and Zillow</b>—have bought
+                Major players—<b>Opendoor, Offerpad, Zillow (until 2021), and Redfin</b>—have bought
                 thousands of homes in this way, promising speed and convenience
-                in exchange for a fee. Although Zillow left the iBuying business in 2021.
+                in exchange for a fee.
             </p>
         </div>
         <br><br><br><br><br><br><br><br><br>

@@ -150,10 +150,6 @@ a:hover {
     font-size: 14px;
 }
 
-#acks p {
-    font-size: 14px;
-}
-
 #refs {
 	display: flex;
 	gap: 40px; /* adjust spacing as needed */
