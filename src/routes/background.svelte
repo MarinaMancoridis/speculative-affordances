@@ -98,7 +98,7 @@
       gap: 0;
     "
   >
-        <br>
+        <br><br><br>
         <div style="font-size: 3em; color: #e63946; text-align: center;">
             -$<span class="counter" data-target="11311">0</span>
             <div class="unit">Dollars Lost by Selling to an iBuyer</div>
@@ -113,28 +113,7 @@
     </div>
 
     <div style="flex: 1; text-align: left;">
-      <p>While we did not find evidence that iBought homes were primarily located in communities of color, 
-        we did find that iBuyers tend to purchase more affordable housing at a discount, 
-        which can disproportionately impact historically marginalized groups.</p> 
-        
-        <p>Prior work by Isaac Slaughter, Eva Maxfield Brown, and Nic Weber [5] found that 
-        <i>"iBuyers are equalizing housing outcomes by extending real estate harms typically isolated to
-          Black homeowners to White homeowners as well."</i>  They found that Black home sellers lost around $4,000 
-          by selling their home to an iBuyer and White homesellers lost around $27,000 in Mecklenburg County, North Carolina.</p>
-
-          <p>In our analysis within the Greater Boston Area, we also found that homesellers lost money by selling to iBuyers 
-          with an average loss of around $11,311, comparing the home's selling price to its Zestimate in that year.</p>
-          
-          <p>We also found that iBuyers targeted affordable housing options in a variety of communities. 
-          Most iBought homes in the Greater Boston area (75%) were less than the U.S. Census Boston median value ($710,400)[8] and 
-          95% were under $1,000,000.</p>
-
-      <p>Other work by Wonyoung So [6] found a positive correlation between iBuyer's profit margins and 
-        the proportion of marginalized racial groups within a census tract, and consquently illuminates this potential concern of iBuyers
-        trying to maximize profits from homeowners in communities of color. 
-        These iBuying practices also have the potential to reshape who owns property.
-        Since iBuyers are more likely to sell to institutional investors [5] and increase home prices [7], 
-        there is the risk of iBuying practices displacing local homeowners and residents.</p>
+      <p><b>Could algorithmic home-buying inadvertently worsen inequality?</b> While we did not find <i>direct</i> evidence that iBought homes were predominantly located in communities of color, we did observe that iBuyers consistently purchased affordable housing at discounted prices—a practice that risks disproportionately affecting marginalized groups. Prior research has explored the relationship between iBuying and inequality; for completeness, we summarize some findings here.</p> <p><b>Previous studies highlight that iBuying can amplify housing inequalities.</b> <a href="https://dl.acm.org/doi/abs/10.1145/3630106.3659027">Slaughter, Brown, and Weber [5]</a> found that iBuyers extended real estate harms—traditionally concentrated among Black homeowners—to White homeowners as well, with losses of approximately $4,000 for Black sellers and $27,000 for White sellers in Mecklenburg County, NC. Additionally, <a href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936">Wonyoung So [6]</a> identified a positive correlation between iBuyer profit margins and the proportion of marginalized racial groups in census tracts, raising concerns that iBuyers may maximize profits at the expense of communities of color. Since iBuyers often resell to institutional investors <a href="https://dl.acm.org/doi/abs/10.1145/3630106.3659027">[5]</a> and inflate home prices <a href="https://link.springer.com/article/10.1007/s11146-023-09954-z">[7]</a>, these practices could reshape property ownership and displace locals.</p> <p><b>Our analysis in the Greater Boston Area aligns with these concerns.</b> We found homeowners lost an average of $11,311 when selling to iBuyers, measured by the difference between selling price and the home’s Zestimate for that year. Additionally, iBuyers mainly targeted affordable housing: 75% of iBought homes were valued below Boston's median home price ($710,400) <a href="https://www.census.gov/quickfacts/fact/table/bostoncitymassachusetts/PST045224">[8]</a>, and 95% were priced under $1,000,000.</p>
   </div>
 </div>
 <br><br><br><br>
