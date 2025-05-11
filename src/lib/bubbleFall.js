@@ -1,10 +1,10 @@
 // bubbleFall.js
 
 // Control points (normalized 0 to 1 animation progress)
-export const fallStart = 0.2;
-export const fallEnd   = 0.25;
-export const bounceEnd = 0.30;
-export const leaveEnd  = 0.35;
+export const fallStart = 0.17;
+export const fallEnd   = 0.19;
+export const bounceEnd = 0.23;
+export const leaveEnd  = 0.3;
 
 // Y positions (vh units)
 export const startY    = -40;  // off-screen top
@@ -14,7 +14,7 @@ export const bounceY   = peakY - bounceUp;
 export const endY      = 100;  // off-screen bottom
 
 // Delays for each bubble to stagger drops
-export const delays = [0, 0.03, 0.06, 0.09];
+export const delays = [0, 0.04, 0.02, 0.06];
 
 export function clamp01(t) {
     return Math.min(Math.max(t, 0), 1);
