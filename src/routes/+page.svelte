@@ -466,11 +466,13 @@
                 <NotIBoughtHomes {homes} />
                 
                  <!-- <PastPresent/> -->
-                 <Background {homes}/>
+                 
 
                 <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 
             <EverythingIsGettingExpensive />
+
+            <Background {homes}/>
 
             <FairPrices 
                 {timeScale} 
