@@ -57,7 +57,7 @@
     <div style="flex: 1; text-align: left;">
         <p><b>How do you find a hidden market?</b> There is no public dataset of iBuying in the Greater Boston Area. While our previous chart focused more broadly on <i>corporate speculation</i> in Boston, our analysis wishes to look at iBuying in particular. 
         
-        </p><p>Our analysis involved <b>creating our own dataset</b> of iBuying in the Greater Boston Area. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players in iBuying. This type of keyword matching is the approach that was used in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research</a>. 
+        </p><p>Our analysis involved <b>creating our own dataset</b> of iBuying in the Greater Boston Area. To do this, we turned to the <a href="https://www.masslandrecords.com/">Mass Land Records</a>, searching for key names like Opendoor, Zillow, Redfin, and Offerpad—the big players in iBuying. This type of keyword matching is the approach that was used in <a href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">prior research [5]</a>. 
         </p> 
         <p>Using this simple but powerful method, we uncovered <b>407 homes purchased by iBuyers</b> between 2019 and 2025. <b>Features of our dataset are listed on the right.</b> </p>
             
