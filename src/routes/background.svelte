@@ -126,7 +126,7 @@
           with an average loss of around $11,311, comparing the home's selling price to its Zestimate in that year.</p>
           
           <p>We also found that iBuyers targeted affordable housing options in a variety of communities. 
-          Most iBought homes in the Greater Boston area (75%) were less than the U.S. Census Boston median value ($710,400) and 
+          Most iBought homes in the Greater Boston area (75%) were less than the U.S. Census Boston median value ($710,400)[8] and 
           95% were under $1,000,000.</p>
 
       <p>Other work by Wonyoung So [6] found a positive correlation between iBuyer's profit margins and 

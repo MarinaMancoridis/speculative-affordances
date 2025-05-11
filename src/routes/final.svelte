@@ -18,23 +18,47 @@
     <li> <b>Advocate</b> for protections against automated speculation practices.</li>
     </ul>
 </div>
+
+    <div id="side-info">
+        <div id="acks">
+            <h3>Acknowledgements</h3>
+            <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
+        </div>
+
+        <br><br>
+        <div id="data-sources">
+            <h3>Data Sources</h3>
+            <ul>
+                <li> <a class="ref" href="https://dsl.richmond.edu/panorama/redlining/data">Mapping Inequality: Redlining Data</a></li>
+                <li> <a class="ref" href="https://www.masslandrecords.com/">Massachusetts Land Records</a></li>
+                <li> <a class="ref" href="https://www.zillow.com/research/data/">Zillow Housing Data</a></li>
+                <li> <a class="ref" href="https://data.boston.gov/dataset/2020-census-for-boston">2020 Census for Boston</a></li>
+                <li> <a class="ref" href="https://data.boston.gov/dataset/boston-neighborhood-boundaries-approximated-by-2020-census-block-groups1">Boston Neighborhood Boundaries Approximated by 2020 Census Block Groups</a></li>
+                <li> <a class="ref" href="https://data.boston.gov/dataset/property-assessment">Property Assessment Data for the City of Boston from 2004 - 2024</a></li>
+            </ul> 
+        </div>
+    </div>
+
+    <div id="references">
+        <h3>References</h3>
+        <ul>
+        <li> [1] United States Government Accountability Office, <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">
+            "Report to Congressional Committees: Information on
+            Institutional Investment in SingleFamily Homes"</a>  (May 2024)</li>
+        <li> [2] Edmund Keith, <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">
+            "A Comprehensive Timeline of Zillow's Misadventures in iBuying"</a> (Novemeber 2021)</li>
+        <li> [3] Federal Trade Commission, <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">
+            "FTC Sends Nearly $62 Million in Refunds to Sellers Deceived by Online Real Estate Listing Service Opendoor Labs"</a> (April 2024)</li>
+        <li> [4] Opendoor, <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">"FAQs"</a> (2025)</li>
+        <li> [5] Isaac Slaughter, Eva Maxfield Brown, and Nic Weber, <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">
+        "The Impact of iBuying is About More Than Just Racial Disparities: Evidence from Mecklenburg County, NC"</a> (June 2024)</li>
+        <li> [6] Wonyoung So, <a class="ref" href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract">
+            "Race, profit, and algorithms: Neighborhood-level analysis of iBuyers’ profit margin"</a> (October 2024)</li>
+        <li> [7] David M. Harrison, Michael J. Seiler, and Liuming Yang, <a class="ref" href="https://link.springer.com/article/10.1007/s11146-023-09954-z">
+            "The Impact of iBuyers on Housing Market Dynamics"</a> (May 2023)</li>
+        <li> [8] U.S. Censu Bureau, <a class="ref" href="https://www.census.gov/quickfacts/fact/table/bostoncitymassachusetts/PST045224">
+            "QuickFacts: Boston city, Massachusetts</a></li>
+        </ul>
+</div>
 </div>
 
-<div id="acks" class="info-grid">
-    <h3>Acknowledgements</h3>
-    <p>This project was developed with guidance and feedback from the <a id="action-links" href="https://www.mapc.org/">Metropolitan Area Planning Commission (MAPC)</a>.</p>
-</div>
-
-<br><br>
-<div id="references" class="info-grid">
-    <h3>References</h3>
-    <ul>
-    <li> [1] <a class="ref" href="https://www.gao.gov/assets/gao-24-106643.pdf">https://www.gao.gov/assets/gao-24-106643.pdf</a></li>
-    <li> [2] <a class="ref" href="https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/">https://www.onlinemarketplaces.com/articles/timeline-of-zillow-ibuying/</a></li>
-    <li> [3] <a class="ref" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor</a> </li>
-    <li> [4] <a class="ref" href="https://investor.opendoor.com/ir-resources/faqs">https://investor.opendoor.com/ir-resources/faqs</a></li>
-    <li> [5] <a class="ref" href="https://dl.acm.org/doi/pdf/10.1145/3630106.3659027">https://dl.acm.org/doi/pdf/10.1145/3630106.3659027</a></li>
-    <li> [6] <a class="ref" href="https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract">https://www.tandfonline.com/doi/full/10.1080/07352166.2024.2415936#abstract></li>
-    <li> [7] <a class="ref" href="https://link.springer.com/article/10.1007/s11146-023-09954-z">https://link.springer.com/article/10.1007/s11146-023-09954-z</a></li>
-    </ul>
-</div>

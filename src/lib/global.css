@@ -97,7 +97,7 @@ a:hover {
     border-bottom-color: currentColor;
 }
 
-#takeaways, #action, #references, #acks {
+#takeaways, #action, #references, #acks, #data-sources {
     background-color: #f8f8f8;
     padding: 2em;
     border-radius: 10px;
@@ -111,6 +111,7 @@ a:hover {
 #takeaways h3,
 #action h3,
 #references h3,
+#data-sources h3,
 #acks h3 {
     margin-top: 0;
     margin-bottom: 0.8em;
@@ -131,17 +132,38 @@ a:hover {
 
 #acks {
     background-color: #e6f0e9; /* muted sage green */
-	max-height: 350px;
 }
 
 #references {
     background-color: #e3eef6; /* subtle sky blue */
-	max-height: 350px;
+}
+
+#data-sources {
+    background-color: #f9f3d2; /* subtle sky blue */
 }
 
 #references ul {
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 14px;
+}
+
+#data-sources ul {
+    font-size: 14px;
+}
+
+#acks p {
+    font-size: 14px;
+}
+
+#refs {
+	display: flex;
+	gap: 40px; /* adjust spacing as needed */
+	margin-top: 2em;
+}
+  
+#side-info {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
 }
 
 .action-links, .ref {
