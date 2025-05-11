@@ -41,7 +41,6 @@
     import RedliningMap from "./redlining.svelte";
     import FairPrices from "./fairprices.svelte";
     import TitlePage from "./titlepage.svelte";
-    import PastPresent from "./pastPresent.svelte";
     import Background from "./background.svelte";
 
     // Zestimate helpers
@@ -464,10 +463,7 @@
                 <DataCollection />
 
                 <NotIBoughtHomes {homes} />
-                
-                 <!-- <PastPresent/> -->
-                 
-
+        
                 <RedliningMap {mapViewChangedSwipe} {homesSwipe} {getHomesSwipe} />
 
             <EverythingIsGettingExpensive />

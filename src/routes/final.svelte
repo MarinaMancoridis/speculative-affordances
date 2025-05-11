@@ -16,6 +16,7 @@
     <ul>
     <li> <b>Reconsider selling your home to iBuyers</b>. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
     <li> <b>Reach out</b> to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
+    <li> <b>Conduct regular audits</b> of automated valuation models (AVM) like Zestimates and automated speculation practices like iBuying for potential discrimination.</li>
     <li> <b>Advocate</b> for protections against automated speculation practices.</li>
     </ul>
 </div>
