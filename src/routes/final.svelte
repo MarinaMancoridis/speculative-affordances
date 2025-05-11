@@ -14,10 +14,11 @@
 <div id="action">
     <h3>What can we do?</h3>
     <ul>
-    <li> <b>Reconsider selling your home to iBuyers</b>. If you do, make sure you are getting a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
+    <li> <b>Reconsider selling your home to iBuyers</b>. If you do, ensure you get a fair price by checking its value through Zillow's <a id="action-links" href="https://www.zillow.com/how-much-is-my-home-worth/">Zestimate tool</a>.</li>
     <li> <b>Reach out</b> to <a id="action-links" href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-nearly-62-million-refunds-sellers-deceived-online-real-estate-listing-service-opendoor">Federal Trade Commission</a> if you suspect that you have been given an unfair price by an iBuyer.</li>
-    <li> <b>Conduct regular audits</b> of automated valuation models (AVM) like Zestimates and automated speculation practices like iBuying for potential discrimination.</li>
-    <li> <b>Advocate</b> for protections against automated speculation practices.</li>
+    <li> <b>Conduct regular audits</b> of automated valuation models like Zestimates and iBuying practices for potential discrimination.</li>
+    <li> <b>File a complaint</b> with the <a id="action-links" href="https://www.boston.gov/departments/fair-housing-and-equity">City of Boston's Fair Housing and Equity Department</a> if you have experienced discrimination when renting, buying, or selling a home.</li>
+    <li> <b>Contact your local representative</b>, which you can find <a id="action-links" href="https://malegislature.gov/Search/FindMyLegislator">here</a>, to advocate for better protections against automated speculation practices.</li>
     </ul>
 </div>
 
