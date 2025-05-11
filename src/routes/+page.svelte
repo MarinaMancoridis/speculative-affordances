@@ -485,6 +485,7 @@
                 {filteredHomes}
             />
             
+            <br><br>
             <FtcRefund />
             <FinalTakeaways />
               

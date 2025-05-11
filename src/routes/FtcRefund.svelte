@@ -98,8 +98,11 @@ onMount(() => {
 }
 </style>
 <div>
+    <h1 style="text-align: center;">Currently Issued Refunds</h1>
     <div class="chart-text">
-        <p>The Opendoor FTC case is still processing refunds. What might be your <b>guess</b> for how many <b>recipients</b> there have been in Massachusetts, and the <b>median refund amount</b>? Click here for the official FTC refund dashboard: </p>
+        <p><b>How transparent are iBuying companies with homeowners?</b> In the present day, the Federal Trade Commission's (FTC) case against Opendoor—mentioned in two previous visualizations—is actively issuing refunds to affected homeowners. Opendoor faced allegations from the FTC of misleading sellers by promising market-value offers while delivering significantly lower sale prices, resulting in substantial financial losses. Massachusetts homeowners continue to receive refunds, reflecting ongoing repercussions from these practices. (<a href="https://www.ftc.gov/enforcement/refunds/opendoor-refunds">More details from the FTC here.</a>)</p>
+
+        <p><b>The Opendoor FTC case is still processing refunds.</b> Before exploring the visualization, ask yourself: what might be your guess for how many recipients there have been in Massachusetts, and the median refund amount? Click below for the official FTC refund dashboard: </p>
 
         <div style="display: flex; justify-content: center; align-items: center"><button class="btn-outline" on:click={toggle}>Click to view Opendoor refunds in MA</button></div>
     </div>
